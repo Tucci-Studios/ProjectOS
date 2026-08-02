@@ -19,8 +19,8 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             <Link href="/projects" className="transition hover:text-cyan-400">
               projects
             </Link>
-            <Link href="/uplink" className="transition hover:text-cyan-400">
-              uplink
+            <Link href="/wire" className="transition hover:text-cyan-400">
+              wire
             </Link>
           </nav>
           <div className="ml-auto flex items-center gap-4">
@@ -77,10 +77,10 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           <p className="mt-8 mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-600">Feed</p>
           <nav className="space-y-0.5">
             <Link
-              href="/uplink"
+              href="/wire"
               className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-900 hover:text-white"
             >
-              ⇅ uplink
+              ⇅ wire
             </Link>
           </nav>
         </aside>

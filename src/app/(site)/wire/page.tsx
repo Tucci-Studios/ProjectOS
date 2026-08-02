@@ -16,7 +16,7 @@ type PostRow = {
   project_id: string | null;
 };
 
-export default async function UplinkPage() {
+export default async function WirePage() {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT po.id, po.title, po.body_md, po.kind, po.created_at, po.project_id, u.github_login,
@@ -33,10 +33,10 @@ export default async function UplinkPage() {
     <div className="max-w-3xl">
       <div className="mb-1 flex items-center justify-between">
         <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
-          Uplink <span className="text-neutral-600">({results.length})</span>
+          The Wire <span className="text-neutral-600">({results.length})</span>
         </h1>
         <Link
-          href="/uplink/new"
+          href="/wire/new"
           className="rounded-lg border border-cyan-400/50 px-4 py-2 font-mono text-sm font-semibold text-cyan-400 transition hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(34,211,238,0.25)]"
         >
           + new post
@@ -50,12 +50,17 @@ export default async function UplinkPage() {
             className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-cyan-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(34,211,238,0.07)]"
           >
             <div className="flex flex-wrap items-center gap-2.5">
-              <Link href={`/uplink/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-cyan-400">
+              <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-cyan-400">
                 {post.title ?? "(untitled)"}
               </Link>
               {post.kind === "tutorial" && (
                 <span className="rounded-md border border-amber-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-amber-400">
                   tutorial
+                </span>
+              )}
+              {post.kind === "request" && (
+                <span className="rounded-md border border-violet-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-violet-400">
+                  request
                 </span>
               )}
               {post.project_display && post.project_id && (
@@ -69,7 +74,7 @@ export default async function UplinkPage() {
             </div>
             <p className="mt-1 font-mono text-xs text-neutral-500">
               by <span className="text-neutral-400">@{post.github_login}</span> · {timeAgo(post.created_at)} ·{" "}
-              <Link href={`/uplink/${post.id}`} className="transition hover:text-neutral-300">
+              <Link href={`/wire/${post.id}`} className="transition hover:text-neutral-300">
                 {post.comment_count} comment{post.comment_count === 1 ? "" : "s"}
               </Link>
             </p>

@@ -1,10 +1,11 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { ProjectFeedRow } from "@/components/project-card";
 
-/** Feed rows, newest first, optionally filtered by category. */
-export async function getProjectFeed(category?: string): Promise<ProjectFeedRow[]> {
+/** Feed rows, optionally filtered by category. sort: "top" (likes) or "new". */
+export async function getProjectFeed(category?: string, sort: "top" | "new" = "new"): Promise<ProjectFeedRow[]> {
   const { env } = getCloudflareContext();
   const where = category ? "p.status = 'live' AND p.category = ?1" : "p.status = 'live'";
+  const order = sort === "top" ? "like_count DESC, p.created_at DESC" : "p.created_at DESC";
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
             u.github_login,
@@ -15,7 +16,7 @@ export async function getProjectFeed(category?: string): Promise<ProjectFeedRow[
              FROM projects pp WHERE pp.id = p.parent_id) AS parent_display
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE ${where}
-     ORDER BY p.created_at DESC`,
+     ORDER BY ${order}`,
   );
   const { results } = await (category ? stmt.bind(category) : stmt).all<ProjectFeedRow>();
   return results;

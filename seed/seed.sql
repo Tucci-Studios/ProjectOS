@@ -74,15 +74,35 @@ INSERT INTO repo_stats (project_id, stars, github_forks, release_downloads, refr
   ('p_freezer', 4, 0, 0, 1754130000), ('p_autopilot', 27, 5, 0, 1754130000),
   ('p_basement', 156, 22, 900, 1754130000), ('p_yeet', 340, 60, 2100, 1754130000);
 
-INSERT INTO posts (id, author_id, project_id, title, body_md, kind, status, created_at) VALUES
+INSERT INTO posts (id, author_id, project_id, title, body_md, kind, category, status, created_at) VALUES
   ('post_1', 'u_patch', 'p_subwolf', 'Subwolf devlog #3: guards can hear you now',
-   'Added directional audio to guard AI. If you sprint on metal floors, they come looking. Sneaking on carpet is silent. Next up: vents.', 'post', 'live', 1754200000),
+   'Added directional audio to guard AI. If you sprint on metal floors, they come looking. Sneaking on carpet is silent. Next up: vents.', 'post', 'games', 'live', 1754200000),
   ('post_2', 'u_zero', NULL, 'Hot take: your AGENTS.md is more important than your README',
-   'READMEs are for humans who skim. AGENTS.md is for the AI that will actually maintain your project in 6 months. Write it first.', 'post', 'live', 1754210000),
+   'READMEs are for humans who skim. AGENTS.md is for the AI that will actually maintain your project in 6 months. Write it first.', 'post', NULL, 'live', 1754210000),
   ('post_3', 'u_nyx', 'p_yeet', 'YEET.sh just crossed 2000 downloads',
-   'It started as a joke. It is no longer a joke. 4.2 TB of node_modules have been yeeted worldwide. Top single yeet: 38 GB from one agency laptop.', 'post', 'live', 1754220000),
-  ('post_4', 'u_rook', 'p_fridge', 'Tutorial: wiring Fridge MCP to a dumb fridge with a $6 sensor',
-   'You do not need a smart fridge. A $6 door sensor + a webcam + this MCP server = your fridge is now smarter than most smart fridges. Steps below.', 'tutorial', 'live', 1754230000);
+   'It started as a joke. It is no longer a joke. 4.2 TB of node_modules have been yeeted worldwide. Top single yeet: 38 GB from one agency laptop.', 'post', 'scripts-tools', 'live', 1754220000),
+  ('post_4', 'u_rook', 'p_fridge', 'Wiring Fridge MCP to a dumb fridge with a $6 sensor',
+   'GOAL
+Your dumb fridge answers "what can I cook?" through Claude by the end.
+
+PREREQS
+- A $6 magnetic door sensor
+- Any webcam
+- @[Fridge MCP] cloned locally
+
+## Step 1 — Tape the sensor to the door
+Stick the magnet half on the door, the sensor half on the frame. When the door opens, the sensor fires — that is our "inventory might have changed" signal.
+
+## Step 2 — Point the webcam at the shelves
+Top corner, angled down. Bad angles are fine; the model is better at reading blurry ketchup bottles than you are.
+
+## Step 3 — Wire both into the MCP server
+Set SENSOR_PIN and CAMERA_URL in .env, then npm start. Door opens -> snapshot -> inventory updates.
+
+VERIFY
+Ask Claude "what is in my fridge?" If it lists your sad condiments, it works.', 'tutorial', 'mcp-servers', 'live', 1754230000),
+  ('post_5', 'u_zero', NULL, 'How do I make a Claude skill that reads my bank CSV exports?',
+   'Every bank gives me a different cursed CSV format. I want a skill that normalizes them into one ledger. Someone has to have built this — or can someone''s Claude build a tutorial for it?', 'request', 'claude-skills', 'live', 1754225000);
 
 -- Shift all seed timestamps so the newest content is "now" and the oldest ~8 days back.
 -- (anchor epoch 1754231000 = the newest seed comment)

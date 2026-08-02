@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getSessionUser } from "@/lib/auth";
 import { timeAgo } from "@/lib/categories";
 import { RichBody, type ProjectRef } from "@/components/rich-body";
+import { TutorialBody } from "@/components/tutorial-body";
 import { CommentForm } from "./comment-form";
 
 export const dynamic = "force-dynamic";
@@ -55,8 +56,8 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="max-w-3xl">
       <p className="mb-3 font-mono text-sm">
-        <Link href="/uplink" className="text-neutral-500 transition hover:text-neutral-300">
-          &larr; uplink
+        <Link href="/wire" className="text-neutral-500 transition hover:text-neutral-300">
+          &larr; wire
         </Link>
       </p>
       <article className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-5">
@@ -65,6 +66,11 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           {post.kind === "tutorial" && (
             <span className="rounded-md border border-amber-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-amber-400">
               tutorial
+            </span>
+          )}
+          {post.kind === "request" && (
+            <span className="rounded-md border border-violet-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-violet-400">
+              tutorial request
             </span>
           )}
           {post.project_display && post.project_id && (
@@ -81,7 +87,11 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           <span className="text-neutral-600">#{post.id}</span>
         </p>
         <div className="mt-4 text-[15px] leading-relaxed text-neutral-200">
-          <RichBody text={post.body_md} projects={projectRefs} />
+          {post.kind === "tutorial" ? (
+            <TutorialBody text={post.body_md} projects={projectRefs} />
+          ) : (
+            <RichBody text={post.body_md} projects={projectRefs} />
+          )}
         </div>
       </article>
 

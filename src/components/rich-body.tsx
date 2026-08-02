@@ -58,7 +58,7 @@ export function RichBody({ text, projects }: { text: string; projects: ProjectRe
           const id = part.slice(1);
           if (id.startsWith("post_")) {
             return (
-              <Link key={i} href={`/uplink/${id}`} className="text-cyan-400 hover:underline">
+              <Link key={i} href={`/wire/${id}`} className="text-cyan-400 hover:underline">
                 {part}
               </Link>
             );
