@@ -33,7 +33,7 @@ export default async function WirePage() {
     <div className="max-w-3xl">
       <div className="mb-1 flex items-center justify-between">
         <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
-          The Wire <span className="text-neutral-600">({results.length})</span>
+          Feed <span className="font-normal text-neutral-600">// the_wire</span>
         </h1>
         <Link
           href="/wire/new"
