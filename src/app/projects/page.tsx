@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
+import { getSessionUser } from "@/lib/auth";
 
 // L1: deliberately unstyled (shapes-first — see KICKOFF.md). Styling lands at L7.
 
@@ -17,6 +18,7 @@ type ProjectRow = {
 };
 
 export default async function ProjectsPage() {
+  const user = await getSessionUser();
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id,
@@ -29,6 +31,18 @@ export default async function ProjectsPage() {
 
   return (
     <main style={{ padding: 24, fontFamily: "monospace" }}>
+      <header style={{ borderBottom: "1px solid #ccc", paddingBottom: 8, marginBottom: 16 }}>
+        {user ? (
+          <span>
+            signed in as @{user.github_login} ({user.role}){" "}
+            <form action="/api/auth/logout" method="post" style={{ display: "inline" }}>
+              <button type="submit">sign out</button>
+            </form>
+          </span>
+        ) : (
+          <a href="/api/auth/login">sign in with GitHub</a>
+        )}
+      </header>
       <h1>Projects ({results.length})</h1>
       <ul>
         {results.map((p) => (
