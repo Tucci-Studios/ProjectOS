@@ -12,7 +12,7 @@ export function CommentForm({ postId, signedIn }: { postId: string; signedIn: bo
   if (!signedIn) {
     return (
       <p className="mt-4 font-mono text-xs text-neutral-500">
-        <a href="/api/auth/login" className="text-cyan-400 hover:underline">
+        <a href="/api/auth/login" className="text-emerald-400 hover:underline">
           sign in with GitHub
         </a>{" "}
         to comment
@@ -53,13 +53,13 @@ export function CommentForm({ postId, signedIn }: { postId: string; signedIn: bo
         rows={3}
         maxLength={2000}
         placeholder="Add a comment... (@Project and #post_id refs work here too)"
-        className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-cyan-400"
+        className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400"
       />
       <div className="flex items-center gap-3">
         <button
           type="submit"
           disabled={busy}
-          className="rounded bg-cyan-400 px-4 py-1.5 font-mono text-xs font-semibold text-black transition hover:bg-cyan-300 disabled:opacity-50"
+          className="rounded bg-emerald-400 px-4 py-1.5 font-mono text-xs font-semibold text-black transition hover:bg-emerald-300 disabled:opacity-50"
         >
           {busy ? "..." : "Comment"}
         </button>

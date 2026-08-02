@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const inputCls =
-  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-cyan-400";
+  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 
 const CATEGORIES = [
   "claude-code",
@@ -163,7 +163,7 @@ export function NewPostForm({
       <button
         type="submit"
         disabled={busy}
-        className="rounded bg-cyan-400 px-5 py-2 font-mono text-sm font-semibold text-black transition hover:bg-cyan-300 disabled:opacity-50"
+        className="rounded bg-emerald-400 px-5 py-2 font-mono text-sm font-semibold text-black transition hover:bg-emerald-300 disabled:opacity-50"
       >
         {busy ? "Posting..." : kind === "request" ? "Post request" : kind === "tutorial" ? "Publish tutorial" : "Post to The Wire"}
       </button>

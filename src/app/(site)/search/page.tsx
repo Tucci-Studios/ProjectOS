@@ -43,7 +43,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   return (
     <div>
       <h1 className="mb-5 font-mono text-2xl font-bold tracking-tight text-white">
-        Search: <span className="text-cyan-400">{query}</span>
+        Search: <span className="text-emerald-400">{query}</span>
       </h1>
       <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.25em] text-neutral-500">
         projects ({projects.length})
@@ -66,7 +66,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <ul className="space-y-3">
           {posts.map((post) => (
             <li key={post.id}>
-              <Link href={`/wire/${post.id}`} className="font-mono text-sm text-neutral-200 transition hover:text-cyan-400">
+              <Link href={`/wire/${post.id}`} className="font-mono text-sm text-neutral-200 transition hover:text-emerald-400">
                 {post.title ?? "(untitled)"}
               </Link>
               <span className="ml-2 font-mono text-[11px] text-neutral-600">

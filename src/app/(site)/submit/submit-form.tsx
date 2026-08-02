@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const inputCls =
-  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-cyan-400";
+  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 
 export function SubmitForm({ needsTos }: { needsTos: boolean }) {
   const router = useRouter();
@@ -62,7 +62,7 @@ export function SubmitForm({ needsTos }: { needsTos: boolean }) {
           />
           <span>
             I agree to the{" "}
-            <a href="/terms" target="_blank" className="text-cyan-400 hover:underline">
+            <a href="/terms" target="_blank" className="text-emerald-400 hover:underline">
               Project OS terms
             </a>
             : my project is open source, it will never be sold or paywalled, forks stay open, and no malware — ever.
@@ -72,7 +72,7 @@ export function SubmitForm({ needsTos }: { needsTos: boolean }) {
       <button
         type="submit"
         disabled={busy}
-        className="rounded bg-cyan-400 px-5 py-2 font-mono text-sm font-semibold text-black transition hover:bg-cyan-300 disabled:opacity-50"
+        className="rounded bg-emerald-400 px-5 py-2 font-mono text-sm font-semibold text-black transition hover:bg-emerald-300 disabled:opacity-50"
       >
         {busy ? "Checking repo..." : "Publish"}
       </button>

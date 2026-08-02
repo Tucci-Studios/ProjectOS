@@ -108,9 +108,9 @@ export default async function SectionPage({
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-cyan-400/40 hover:bg-neutral-900/40"
+                className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-900/40"
               >
-                <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-cyan-400">
+                <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-emerald-400">
                   {post.title ?? "(untitled)"}
                 </Link>
                 <p className="mt-1 font-mono text-xs text-neutral-500">

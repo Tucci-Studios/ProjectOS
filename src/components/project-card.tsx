@@ -20,18 +20,18 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
   const meta = categoryMeta(p.category);
 
   return (
-    <article className="group flex gap-3 rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-cyan-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(34,211,238,0.07)]">
+    <article className="group flex gap-3 rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]">
       <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={liked} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2.5">
           <Link
             href={`/p/${p.id}`}
-            className="font-mono text-lg font-bold tracking-tight text-white transition group-hover:text-cyan-400"
+            className="font-mono text-lg font-bold tracking-tight text-white transition group-hover:text-emerald-400"
           >
             {p.base_name}
             {p.variant_name && (
               <>
-                <span className="text-cyan-400"> // </span>
+                <span className="text-emerald-400"> // </span>
                 {p.variant_name}
               </>
             )}
@@ -54,7 +54,7 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
           {p.fork_count > 0 && (
             <>
               {" "}
-              · <span className="text-cyan-400">{p.fork_count}</span> fork{p.fork_count === 1 ? "" : "s"}
+              · <span className="text-emerald-400">{p.fork_count}</span> fork{p.fork_count === 1 ? "" : "s"}
             </>
           )}
         </p>

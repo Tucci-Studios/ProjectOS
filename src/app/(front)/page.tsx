@@ -92,8 +92,8 @@ export default async function FrontPage() {
     <div>
       {/* Dateline */}
       <p className="mb-6 border-b border-neutral-800 pb-3 font-mono text-xs tracking-[0.25em] text-neutral-500">
-        PROJECT_OS <span className="text-cyan-400">//</span> WEEK {String(week).padStart(2, "0")}{" "}
-        <span className="text-cyan-400">//</span> {dateline}
+        PROJECT_OS <span className="text-emerald-400">//</span> WEEK {String(week).padStart(2, "0")}{" "}
+        <span className="text-emerald-400">//</span> {dateline}
         <span className="float-right hidden text-neutral-600 sm:inline">THE OPERATING SYSTEM FOR OPEN SOURCE</span>
       </p>
 
@@ -101,7 +101,7 @@ export default async function FrontPage() {
       {hero && heroMeta && (
         <section
           className="mb-8 rounded-2xl border border-neutral-800 bg-neutral-950/60 p-6 sm:p-8"
-          style={{ boxShadow: `0 0 60px ${ACCENT_HEX[hero.category] ?? "#22d3ee"}12` }}
+          style={{ boxShadow: `0 0 60px ${ACCENT_HEX[hero.category] ?? "#34d399"}12` }}
         >
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: ACCENT_HEX[hero.category] }}>
             ★ project of the week
@@ -109,7 +109,7 @@ export default async function FrontPage() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
             <div className="min-w-0 flex-1">
               <h1 className="font-mono text-4xl font-bold tracking-tight text-white">
-                <Link href={`/p/${hero.id}`} className="transition hover:text-cyan-400">
+                <Link href={`/p/${hero.id}`} className="transition hover:text-emerald-400">
                   {hero.base_name}
                   {hero.variant_name && (
                     <>
@@ -156,7 +156,7 @@ export default async function FrontPage() {
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr_1fr]">
         {/* Column 1: Top 10 */}
         <section className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
-          <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-cyan-400">
+          <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-emerald-400">
             top 10 // all categories
           </h2>
           <ol className="divide-y divide-neutral-900">
@@ -165,7 +165,7 @@ export default async function FrontPage() {
               const move = p.prev_rank == null ? null : p.prev_rank - (i + 1);
               return (
                 <li key={p.id} className="flex items-center gap-3 py-2.5">
-                  <span className={`w-7 shrink-0 text-right font-mono text-base font-bold ${i === 0 ? "text-cyan-400" : i < 3 ? "text-neutral-200" : "text-neutral-600"}`}>
+                  <span className={`w-7 shrink-0 text-right font-mono text-base font-bold ${i === 0 ? "text-emerald-400" : i < 3 ? "text-neutral-200" : "text-neutral-600"}`}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="w-10 shrink-0 text-center font-mono text-[11px]">
@@ -179,7 +179,7 @@ export default async function FrontPage() {
                       <span className="text-neutral-600">—</span>
                     )}
                   </span>
-                  <Link href={`/p/${p.id}`} className="min-w-0 flex-1 truncate font-mono text-sm text-neutral-200 transition hover:text-cyan-400">
+                  <Link href={`/p/${p.id}`} className="min-w-0 flex-1 truncate font-mono text-sm text-neutral-200 transition hover:text-emerald-400">
                     {p.base_name}
                     {p.variant_name && <span className="text-neutral-500"> // {p.variant_name}</span>}
                   </Link>
@@ -188,7 +188,7 @@ export default async function FrontPage() {
               );
             })}
           </ol>
-          <Link href="/projects" className="mt-3 block font-mono text-xs text-neutral-500 transition hover:text-cyan-400">
+          <Link href="/projects" className="mt-3 block font-mono text-xs text-neutral-500 transition hover:text-emerald-400">
             full rankings →
           </Link>
         </section>
@@ -259,7 +259,7 @@ export default async function FrontPage() {
               </li>
             ))}
           </ul>
-          <Link href="/wire" className="mt-4 block font-mono text-xs text-neutral-500 transition hover:text-cyan-400">
+          <Link href="/wire" className="mt-4 block font-mono text-xs text-neutral-500 transition hover:text-emerald-400">
             open the feed →
           </Link>
         </section>

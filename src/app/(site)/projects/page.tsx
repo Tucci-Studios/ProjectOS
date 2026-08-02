@@ -20,7 +20,7 @@ export default async function ProjectsPage({
       href={key === "top" ? "/projects" : `/projects?sort=${key}`}
       className={`rounded-lg px-4 py-1.5 font-mono text-sm transition ${
         sort === key
-          ? "bg-cyan-400/10 text-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.15)]"
+          ? "bg-emerald-400/10 text-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.15)]"
           : "text-neutral-500 hover:text-neutral-300"
       }`}
     >
@@ -45,7 +45,7 @@ export default async function ProjectsPage({
             {sort === "top" && (
               <span
                 className={`w-9 shrink-0 text-right font-mono text-lg font-bold ${
-                  i === 0 ? "text-cyan-400" : i < 3 ? "text-neutral-300" : "text-neutral-700"
+                  i === 0 ? "text-emerald-400" : i < 3 ? "text-neutral-300" : "text-neutral-700"
                 }`}
               >
                 {String(i + 1).padStart(2, "0")}

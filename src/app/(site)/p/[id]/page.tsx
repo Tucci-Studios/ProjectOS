@@ -59,7 +59,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             {p.base_name}
             {p.variant_name && (
               <>
-                <span className="text-cyan-400"> // </span>
+                <span className="text-emerald-400"> // </span>
                 {p.variant_name}
               </>
             )}
@@ -80,8 +80,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       <p className="mt-5 text-lg leading-relaxed text-neutral-200">{p.description}</p>
       {p.change_summary && (
-        <p className="mt-3 rounded border-l-2 border-cyan-400/50 bg-neutral-900/50 p-3 text-sm text-neutral-400">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-cyan-400">vs. parent</span>
+        <p className="mt-3 rounded border-l-2 border-emerald-400/50 bg-neutral-900/50 p-3 text-sm text-neutral-400">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">vs. parent</span>
           <br />
           {p.change_summary}
         </p>
@@ -98,7 +98,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </a>
         <Link
           href={`/p/${p.id}/fork`}
-          className="rounded border border-cyan-400/50 px-3 py-1.5 font-semibold text-cyan-400 transition hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(34,211,238,0.25)]"
+          className="rounded border border-emerald-400/50 px-3 py-1.5 font-semibold text-emerald-400 transition hover:bg-emerald-400/10 hover:shadow-[0_0_16px_rgba(52,211,153,0.25)]"
         >
           ⑂ fork this
         </Link>
@@ -116,13 +116,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               <Link
                 href={`/p/${node.id}`}
                 className={`font-mono text-sm ${
-                  node.id === p.id ? "font-bold text-cyan-400" : "text-neutral-300 hover:text-white"
+                  node.id === p.id ? "font-bold text-emerald-400" : "text-neutral-300 hover:text-white"
                 }`}
               >
                 {node.base_name}
                 {node.variant_name && (
                   <>
-                    <span className="text-cyan-400/60"> // </span>
+                    <span className="text-emerald-400/60"> // </span>
                     {node.variant_name}
                   </>
                 )}

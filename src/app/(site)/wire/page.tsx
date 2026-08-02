@@ -37,7 +37,7 @@ export default async function WirePage() {
         </h1>
         <Link
           href="/wire/new"
-          className="rounded-lg border border-cyan-400/50 px-4 py-2 font-mono text-sm font-semibold text-cyan-400 transition hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(34,211,238,0.25)]"
+          className="rounded-lg border border-emerald-400/50 px-4 py-2 font-mono text-sm font-semibold text-emerald-400 transition hover:bg-emerald-400/10 hover:shadow-[0_0_16px_rgba(52,211,153,0.25)]"
         >
           + new post
         </Link>
@@ -47,10 +47,10 @@ export default async function WirePage() {
         {results.map((post) => (
           <article
             key={post.id}
-            className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-cyan-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(34,211,238,0.07)]"
+            className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]"
           >
             <div className="flex flex-wrap items-center gap-2.5">
-              <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-cyan-400">
+              <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-emerald-400">
                 {post.title ?? "(untitled)"}
               </Link>
               {post.kind === "tutorial" && (

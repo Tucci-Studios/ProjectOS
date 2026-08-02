@@ -37,7 +37,7 @@ export function RichBody({ text, projects }: { text: string; projects: ProjectRe
             );
           }
           return (
-            <a key={i} href={part} target="_blank" rel="noopener noreferrer nofollow" className="text-cyan-400 hover:underline">
+            <a key={i} href={part} target="_blank" rel="noopener noreferrer nofollow" className="text-emerald-400 hover:underline">
               {part}
             </a>
           );
@@ -47,7 +47,7 @@ export function RichBody({ text, projects }: { text: string; projects: ProjectRe
           const project = findProject(name, projects);
           if (project) {
             return (
-              <Link key={i} href={`/p/${project.id}`} className="text-cyan-400 hover:underline">
+              <Link key={i} href={`/p/${project.id}`} className="text-emerald-400 hover:underline">
                 @{project.display}
               </Link>
             );
@@ -58,7 +58,7 @@ export function RichBody({ text, projects }: { text: string; projects: ProjectRe
           const id = part.slice(1);
           if (id.startsWith("post_")) {
             return (
-              <Link key={i} href={`/wire/${id}`} className="text-cyan-400 hover:underline">
+              <Link key={i} href={`/wire/${id}`} className="text-emerald-400 hover:underline">
                 {part}
               </Link>
             );

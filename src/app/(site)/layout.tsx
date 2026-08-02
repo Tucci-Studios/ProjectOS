@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-neutral-200">
+    <div className="min-h-screen bg-[#0a0f0b] text-neutral-200">
       <SiteHeader />
       <div className="mx-auto flex max-w-7xl gap-8 px-5 py-8">
         {/* Sections sidebar */}

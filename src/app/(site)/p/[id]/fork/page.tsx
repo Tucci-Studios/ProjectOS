@@ -27,47 +27,47 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
         </Link>
       </p>
       <h1 className="mb-2 font-mono text-2xl font-bold tracking-tight text-white">
-        Fork <span className="text-cyan-400">{display}</span>
+        Fork <span className="text-emerald-400">{display}</span>
       </h1>
       <p className="mb-6 text-[15px] leading-relaxed text-neutral-400">
         Your fork joins the lineage as{" "}
         <span className="font-mono text-neutral-200">
           {p.base_name}
-          <span className="text-cyan-400"> // </span>YourVariant
+          <span className="text-emerald-400"> // </span>YourVariant
         </span>
         . The base name stays down the whole lineage — the variant name is yours.
       </p>
 
       <ol className="mb-8 space-y-4 text-sm text-neutral-300">
         <li className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
-          <span className="font-mono text-xs text-cyan-400">STEP 1</span>
+          <span className="font-mono text-xs text-emerald-400">STEP 1</span>
           <p className="mt-1">
             Fork the repo on GitHub:{" "}
             <a
               href={`https://github.com/${p.github_repo}/fork`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-400 hover:underline"
+              className="text-emerald-400 hover:underline"
             >
               github.com/{p.github_repo}/fork ↗
             </a>
           </p>
         </li>
         <li className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
-          <span className="font-mono text-xs text-cyan-400">STEP 2</span>
+          <span className="font-mono text-xs text-emerald-400">STEP 2</span>
           <p className="mt-1">
-            In your fork, edit <code className="text-cyan-400">project.json</code>: add your{" "}
-            <code className="text-cyan-400">variant</code> name and a{" "}
-            <code className="text-cyan-400">lineage</code> block pointing at{" "}
+            In your fork, edit <code className="text-emerald-400">project.json</code>: add your{" "}
+            <code className="text-emerald-400">variant</code> name and a{" "}
+            <code className="text-emerald-400">lineage</code> block pointing at{" "}
             <code className="text-neutral-200">{p.github_repo}</code> with a one-line change summary. (The{" "}
-            <Link href="/submit/wizard" className="text-cyan-400 hover:underline">
+            <Link href="/submit/wizard" className="text-emerald-400 hover:underline">
               wizard
             </Link>{" "}
             generates it.) Make your changes.
           </p>
         </li>
         <li className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
-          <span className="font-mono text-xs text-cyan-400">STEP 3</span>
+          <span className="font-mono text-xs text-emerald-400">STEP 3</span>
           <p className="mt-1">Register your fork below — we verify the fork relationship with GitHub and add you to the tree.</p>
         </li>
       </ol>
@@ -76,7 +76,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
         <SubmitForm needsTos={!user.tos_accepted_at} />
       ) : (
         <p className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-6 text-center font-mono text-sm text-neutral-300">
-          <a href="/api/auth/login" className="text-cyan-400 hover:underline">
+          <a href="/api/auth/login" className="text-emerald-400 hover:underline">
             Sign in with GitHub
           </a>{" "}
           to register your fork.

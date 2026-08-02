@@ -16,7 +16,7 @@ const CATEGORIES = [
 ];
 
 const inputCls =
-  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-cyan-400";
+  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 const labelCls = "mb-1 block font-mono text-xs text-neutral-400";
 
 function CopyBlock({ title, text }: { title: string; text: string }) {
@@ -31,7 +31,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
           }}
-          className="rounded border border-cyan-400/40 px-2 py-0.5 font-mono text-[10px] text-cyan-400 hover:bg-cyan-400/10"
+          className="rounded border border-emerald-400/40 px-2 py-0.5 font-mono text-[10px] text-emerald-400 hover:bg-emerald-400/10"
         >
           {copied ? "copied ✓" : "copy"}
         </button>
@@ -93,7 +93,7 @@ ${howToRun || "(exact commands from fresh clone)"}
       <h1 className="mb-2 font-mono text-lg font-bold text-white">Manifest wizard</h1>
       <p className="mb-6 text-sm text-neutral-400">
         Fill this in, copy both files into your repo root, then{" "}
-        <a href="/submit" className="text-cyan-400 hover:underline">
+        <a href="/submit" className="text-emerald-400 hover:underline">
           publish
         </a>
         .
