@@ -37,12 +37,14 @@ export function LikeButton({
       <button
         onClick={toggle}
         title={error ?? (liked ? "unlike" : "like")}
-        className={`flex flex-col items-center rounded px-2 py-1 font-mono text-xs transition ${
-          liked ? "text-cyan-400" : "text-neutral-500 hover:text-cyan-400"
+        className={`flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 font-mono text-sm transition ${
+          liked
+            ? "text-cyan-400 drop-shadow-[0_0_6px_rgba(34,211,238,0.5)]"
+            : "text-neutral-500 hover:bg-neutral-900 hover:text-cyan-400"
         }`}
       >
-        <span className="text-base leading-none">{liked ? "▲" : "△"}</span>
-        <span>{count}</span>
+        <span className="text-lg leading-none">{liked ? "▲" : "△"}</span>
+        <span className="font-semibold">{count}</span>
       </button>
       {error && <span className="max-w-[80px] text-center font-mono text-[9px] text-rose-400">{error}</span>}
     </div>

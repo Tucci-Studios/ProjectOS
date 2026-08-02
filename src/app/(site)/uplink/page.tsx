@@ -31,41 +31,41 @@ export default async function UplinkPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="mb-1 font-mono text-lg font-bold text-white">
+      <h1 className="mb-1 font-mono text-2xl font-bold tracking-tight text-white">
         Uplink <span className="text-neutral-600">({results.length})</span>
       </h1>
-      <p className="mb-4 font-mono text-[11px] text-neutral-500">posts, tips, devlogs, tutorials — the feed IS the community</p>
-      <div className="space-y-2">
+      <p className="mb-5 font-mono text-sm text-neutral-500">posts, tips, devlogs, tutorials — the feed IS the community</p>
+      <div className="space-y-3">
         {results.map((post) => (
           <article
             key={post.id}
-            className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-3 transition hover:border-neutral-700"
+            className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-cyan-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(34,211,238,0.07)]"
           >
-            <div className="flex flex-wrap items-center gap-2">
-              <Link href={`/uplink/${post.id}`} className="font-mono text-sm font-bold text-white hover:text-cyan-400">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Link href={`/uplink/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-cyan-400">
                 {post.title ?? "(untitled)"}
               </Link>
               {post.kind === "tutorial" && (
-                <span className="rounded border border-amber-400/30 bg-neutral-900/60 px-1.5 py-0.5 font-mono text-[10px] text-amber-400">
+                <span className="rounded-md border border-amber-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-amber-400">
                   tutorial
                 </span>
               )}
               {post.project_display && post.project_id && (
                 <Link
                   href={`/p/${post.project_id}`}
-                  className="rounded border border-neutral-700 bg-neutral-900/60 px-1.5 py-0.5 font-mono text-[10px] text-neutral-300 hover:border-neutral-500"
+                  className="rounded-md border border-neutral-700 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-neutral-300 transition hover:border-neutral-500"
                 >
                   @{post.project_display}
                 </Link>
               )}
             </div>
-            <p className="mt-0.5 font-mono text-[11px] text-neutral-500">
-              by @{post.github_login} · {timeAgo(post.created_at)} ·{" "}
-              <Link href={`/uplink/${post.id}`} className="hover:text-neutral-300">
+            <p className="mt-1 font-mono text-xs text-neutral-500">
+              by <span className="text-neutral-400">@{post.github_login}</span> · {timeAgo(post.created_at)} ·{" "}
+              <Link href={`/uplink/${post.id}`} className="transition hover:text-neutral-300">
                 {post.comment_count} comment{post.comment_count === 1 ? "" : "s"}
               </Link>
             </p>
-            <p className="mt-1.5 line-clamp-2 text-sm text-neutral-400">{post.body_md}</p>
+            <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-neutral-300">{post.body_md}</p>
           </article>
         ))}
       </div>

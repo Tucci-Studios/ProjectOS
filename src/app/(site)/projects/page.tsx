@@ -10,10 +10,10 @@ export default async function ProjectsPage() {
 
   return (
     <div>
-      <h1 className="mb-4 font-mono text-lg font-bold text-white">
+      <h1 className="mb-5 font-mono text-2xl font-bold tracking-tight text-white">
         All projects <span className="text-neutral-600">({feed.length})</span>
       </h1>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {feed.map((p) => (
           <ProjectCard key={p.id} p={p} liked={liked.has(p.id)} />
         ))}

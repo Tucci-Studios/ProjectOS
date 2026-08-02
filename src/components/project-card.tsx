@@ -18,14 +18,16 @@ export type ProjectFeedRow = {
 
 export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean }) {
   const meta = categoryMeta(p.category);
-  const display = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
   return (
-    <article className="flex gap-2 rounded-lg border border-neutral-800 bg-neutral-950/60 p-3 transition hover:border-neutral-700">
+    <article className="group flex gap-3 rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-cyan-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(34,211,238,0.07)]">
       <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={liked} />
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <Link href={`/p/${p.id}`} className="font-mono text-sm font-bold text-white hover:text-cyan-400">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link
+            href={`/p/${p.id}`}
+            className="font-mono text-lg font-bold tracking-tight text-white transition group-hover:text-cyan-400"
+          >
             {p.base_name}
             {p.variant_name && (
               <>
@@ -36,29 +38,27 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
           </Link>
           <Link
             href={`/s/${meta.slug}`}
-            className={`rounded border ${meta.border} bg-neutral-900/60 px-1.5 py-0.5 font-mono text-[10px] ${meta.text}`}
+            className={`rounded-md border ${meta.border} bg-neutral-900/80 px-2 py-0.5 font-mono text-xs ${meta.text}`}
           >
             {meta.label}
           </Link>
         </div>
-        <p className="mt-0.5 font-mono text-[11px] text-neutral-500">
-          by @{p.github_login} · {timeAgo(p.created_at)}
+        <p className="mt-1 font-mono text-xs text-neutral-500">
+          by <span className="text-neutral-400">@{p.github_login}</span> · {timeAgo(p.created_at)}
           {p.parent_display && (
             <>
               {" "}
-              · forked from <span className="text-neutral-300">{p.parent_display}</span>
+              · ⑂ from <span className="text-neutral-300">{p.parent_display}</span>
             </>
           )}
           {p.fork_count > 0 && (
             <>
               {" "}
-              · <span className="text-neutral-300">{p.fork_count}</span> fork{p.fork_count === 1 ? "" : "s"}
+              · <span className="text-cyan-400">{p.fork_count}</span> fork{p.fork_count === 1 ? "" : "s"}
             </>
           )}
         </p>
-        <p className="mt-1.5 truncate text-sm text-neutral-400" title={display}>
-          {p.description}
-        </p>
+        <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-neutral-300">{p.description}</p>
       </div>
     </article>
   );

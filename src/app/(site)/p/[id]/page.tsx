@@ -55,7 +55,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       <div className="flex items-start gap-3">
         <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={!!likedRow} />
         <div className="min-w-0 flex-1">
-          <h1 className="font-mono text-2xl font-bold text-white">
+          <h1 className="font-mono text-3xl font-bold tracking-tight text-white">
             {p.base_name}
             {p.variant_name && (
               <>
@@ -64,7 +64,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               </>
             )}
           </h1>
-          <p className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[11px] text-neutral-500">
+          <p className="mt-2 flex flex-wrap items-center gap-2 font-mono text-xs text-neutral-500">
             <Link
               href={`/s/${meta.slug}`}
               className={`rounded border ${meta.border} bg-neutral-900/60 px-1.5 py-0.5 ${meta.text}`}
@@ -78,7 +78,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
-      <p className="mt-4 text-neutral-300">{p.description}</p>
+      <p className="mt-5 text-lg leading-relaxed text-neutral-200">{p.description}</p>
       {p.change_summary && (
         <p className="mt-3 rounded border-l-2 border-cyan-400/50 bg-neutral-900/50 p-3 text-sm text-neutral-400">
           <span className="font-mono text-[10px] uppercase tracking-widest text-cyan-400">vs. parent</span>
@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </p>
       )}
 
-      <div className="mt-4 flex gap-3 font-mono text-xs">
+      <div className="mt-5 flex gap-3 font-mono text-sm">
         <a
           href={`https://github.com/${p.github_repo}`}
           target="_blank"
