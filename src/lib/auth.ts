@@ -53,6 +53,7 @@ export type SessionUser = {
   avatar_url: string | null;
   role: string;
   tos_accepted_at: number | null;
+  github_created_at: number;
 };
 
 /** Current signed-in user, or null. Call from server components / route handlers. */
@@ -63,7 +64,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const uid = await verifySession(token, env.SESSION_SECRET);
   if (!uid) return null;
   return await env.DB.prepare(
-    "SELECT id, github_login, display_name, avatar_url, role, tos_accepted_at FROM users WHERE id = ?1 AND banned_at IS NULL",
+    "SELECT id, github_login, display_name, avatar_url, role, tos_accepted_at, github_created_at FROM users WHERE id = ?1 AND banned_at IS NULL",
   )
     .bind(uid)
     .first<SessionUser>();
