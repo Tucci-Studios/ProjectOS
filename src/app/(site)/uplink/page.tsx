@@ -31,9 +31,17 @@ export default async function UplinkPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="mb-1 font-mono text-2xl font-bold tracking-tight text-white">
-        Uplink <span className="text-neutral-600">({results.length})</span>
-      </h1>
+      <div className="mb-1 flex items-center justify-between">
+        <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
+          Uplink <span className="text-neutral-600">({results.length})</span>
+        </h1>
+        <Link
+          href="/uplink/new"
+          className="rounded-lg border border-cyan-400/50 px-4 py-2 font-mono text-sm font-semibold text-cyan-400 transition hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(34,211,238,0.25)]"
+        >
+          + new post
+        </Link>
+      </div>
       <p className="mb-5 font-mono text-sm text-neutral-500">posts, tips, devlogs, tutorials — the feed IS the community</p>
       <div className="space-y-3">
         {results.map((post) => (

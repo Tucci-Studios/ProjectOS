@@ -96,12 +96,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         >
           view on GitHub ↗
         </a>
-        <span
-          className="cursor-not-allowed rounded border border-cyan-400/40 px-3 py-1.5 text-cyan-400/50"
-          title="Fork registration lands next"
+        <Link
+          href={`/p/${p.id}/fork`}
+          className="rounded border border-cyan-400/50 px-3 py-1.5 font-semibold text-cyan-400 transition hover:bg-cyan-400/10 hover:shadow-[0_0_16px_rgba(34,211,238,0.25)]"
         >
           ⑂ fork this
-        </span>
+        </Link>
       </div>
 
       {/* Lineage */}
