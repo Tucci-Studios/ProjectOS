@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://projectos.dev/schemas/project.schema.json",
+  "title": "Project OS Manifest (project.json)",
+  "description": "Required in the repo root of every project published on Project OS. Validated on submit; missing or invalid manifest = can't publish.",
+  "type": "object",
+  "required": ["name", "category", "description", "license", "howToRun"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 40,
+      "description": "Base name if this is a lineage root (e.g. \"Subwolf\"). Immutable down the lineage."
+    },
+    "variant": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 40,
+      "description": "Variant name if this is a fork (e.g. \"Cyber\" — displayed as \"Subwolf // Cyber\"). Omit for lineage roots."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "claude-code",
+        "claude-skills",
+        "claude-md",
+        "mcp-servers",
+        "codex",
+        "local-llms",
+        "scripts-tools",
+        "games"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 500,
+      "description": "What this project is, in plain words. Shown on the project card."
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX identifier (GPL-3.0-or-later, MIT, Apache-2.0, ...). Must match the LICENSE file in the repo.",
+      "default": "GPL-3.0-or-later"
+    },
+    "howToRun": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 2000,
+      "description": "Markdown: exact steps to get this running from a fresh clone."
+    },
+    "screenshots": {
+      "type": "array",
+      "maxItems": 6,
+      "items": { "type": "string", "description": "Repo-relative path or https URL" }
+    },
+    "tags": {
+      "type": "array",
+      "maxItems": 10,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,29}$" }
+    },
+    "lineage": {
+      "type": "object",
+      "description": "Present on forks only. Verified against the GitHub fork graph on registration.",
+      "required": ["parentRepo"],
+      "additionalProperties": false,
+      "properties": {
+        "parentRepo": { "type": "string", "pattern": "^[\\w.-]+/[\\w.-]+$", "description": "GitHub \"owner/repo\" of the direct parent." },
+        "changeSummary": { "type": "string", "maxLength": 280, "description": "One line: what this fork changes vs. the parent." }
+      }
+    }
+  }
+}

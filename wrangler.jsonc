@@ -1,0 +1,23 @@
+{
+  // Project OS — Cloudflare Workers config (deployed via OpenNext)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "project-os",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // D1 database — create with: npx wrangler d1 create project-os
+  // then paste the returned database_id below.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "project-os",
+      "database_id": "PLACEHOLDER_RUN_wrangler_d1_create"
+    }
+  ]
+  // R2 bucket for images (add when needed):
+  // "r2_buckets": [{ "binding": "IMAGES", "bucket_name": "project-os-images" }]
+}
