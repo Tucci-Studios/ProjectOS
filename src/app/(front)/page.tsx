@@ -91,16 +91,16 @@ export default async function FrontPage() {
   return (
     <div>
       {/* Dateline */}
-      <p className="mb-6 border-b border-neutral-800 pb-3 font-mono text-xs tracking-[0.25em] text-neutral-500">
+      <p className="mb-6 border-b border-neutral-700 pb-3 font-mono text-xs tracking-[0.25em] text-neutral-500">
         PROJECT_OS <span className="text-emerald-400">//</span> WEEK {String(week).padStart(2, "0")}{" "}
         <span className="text-emerald-400">//</span> {dateline}
-        <span className="float-right hidden text-neutral-600 sm:inline">THE OPERATING SYSTEM FOR OPEN SOURCE</span>
+        <span className="float-right hidden text-neutral-500 sm:inline">THE OPERATING SYSTEM FOR OPEN SOURCE</span>
       </p>
 
       {/* Hero: Project of the Week */}
       {hero && heroMeta && (
         <section
-          className="mb-8 rounded-2xl border border-neutral-800 bg-neutral-950/60 p-6 sm:p-8"
+          className="mb-8 rounded-2xl border border-neutral-700 bg-neutral-900/60 p-6 sm:p-8"
           style={{ boxShadow: `0 0 60px ${ACCENT_HEX[hero.category] ?? "#34d399"}12` }}
         >
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.3em]" style={{ color: ACCENT_HEX[hero.category] }}>
@@ -144,7 +144,7 @@ export default async function FrontPage() {
             </div>
             {heroLineage.length > 0 && (
               <div className="w-full shrink-0 lg:w-96">
-                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-600">lineage</p>
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-500">lineage</p>
                 <MiniTree nodes={heroLineage} highlightId={hero.id} accent={ACCENT_HEX[hero.category]} />
               </div>
             )}
@@ -155,28 +155,28 @@ export default async function FrontPage() {
       {/* Editorial band: three columns */}
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr_1fr]">
         {/* Column 1: Top 10 */}
-        <section className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
+        <section className="rounded-2xl border border-neutral-700 bg-neutral-900/60 p-5">
           <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-emerald-400">
             top 10 // all categories
           </h2>
-          <ol className="divide-y divide-neutral-900">
+          <ol className="divide-y divide-neutral-800">
             {top.map((p, i) => {
               const meta = categoryMeta(p.category);
               const move = p.prev_rank == null ? null : p.prev_rank - (i + 1);
               return (
                 <li key={p.id} className="flex items-center gap-3 py-2.5">
-                  <span className={`w-7 shrink-0 text-right font-mono text-base font-bold ${i === 0 ? "text-emerald-400" : i < 3 ? "text-neutral-200" : "text-neutral-600"}`}>
+                  <span className={`w-7 shrink-0 text-right font-mono text-base font-bold ${i === 0 ? "text-emerald-400" : i < 3 ? "text-neutral-200" : "text-neutral-500"}`}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="w-10 shrink-0 text-center font-mono text-[11px]">
                     {move == null ? (
-                      <span className="text-neutral-600">♥{p.like_count}</span>
+                      <span className="text-neutral-500">♥{p.like_count}</span>
                     ) : move > 0 ? (
                       <span className="text-emerald-400">▲{move}</span>
                     ) : move < 0 ? (
                       <span className="text-rose-400">▼{-move}</span>
                     ) : (
-                      <span className="text-neutral-600">—</span>
+                      <span className="text-neutral-500">—</span>
                     )}
                   </span>
                   <Link href={`/p/${p.id}`} className="min-w-0 flex-1 truncate font-mono text-sm text-neutral-200 transition hover:text-emerald-400">
@@ -194,10 +194,10 @@ export default async function FrontPage() {
         </section>
 
         {/* Column 2: Tutorials + Requests */}
-        <section className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
+        <section className="rounded-2xl border border-neutral-700 bg-neutral-900/60 p-5">
           <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-amber-400">tutorials</h2>
           {tutorials.length === 0 ? (
-            <p className="font-mono text-xs text-neutral-600">none yet — write the first one</p>
+            <p className="font-mono text-xs text-neutral-500">none yet — write the first one</p>
           ) : (
             <ul className="space-y-3">
               {tutorials.map((t) => (
@@ -212,7 +212,7 @@ export default async function FrontPage() {
           )}
           <h2 className="mt-6 mb-3 font-mono text-xs font-bold uppercase tracking-[0.25em] text-violet-400">open requests</h2>
           {requests.length === 0 ? (
-            <p className="font-mono text-xs text-neutral-600">nothing requested yet</p>
+            <p className="font-mono text-xs text-neutral-500">nothing requested yet</p>
           ) : (
             <ul className="space-y-3">
               {requests.map((r) => (
@@ -231,10 +231,10 @@ export default async function FrontPage() {
         </section>
 
         {/* Column 3: Fresh forks + from the feed */}
-        <section className="rounded-2xl border border-neutral-800 bg-neutral-950/60 p-5">
+        <section className="rounded-2xl border border-neutral-700 bg-neutral-900/60 p-5">
           <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-emerald-400">fresh forks</h2>
           {freshForks.length === 0 ? (
-            <p className="font-mono text-xs text-neutral-600">no forks yet — start a lineage</p>
+            <p className="font-mono text-xs text-neutral-500">no forks yet — start a lineage</p>
           ) : (
             <ul className="space-y-3">
               {freshForks.map((f) => (
@@ -244,7 +244,7 @@ export default async function FrontPage() {
                     <span className="text-emerald-400"> // </span>
                     {f.variant_name}
                   </Link>
-                  <span className="font-mono text-[10px] text-neutral-600">by @{f.github_login}</span>
+                  <span className="font-mono text-[10px] text-neutral-500">by @{f.github_login}</span>
                 </li>
               ))}
             </ul>
@@ -271,9 +271,9 @@ export default async function FrontPage() {
           <Link
             key={c.slug}
             href={`/s/${c.slug}`}
-            className={`rounded-lg border ${c.border} bg-neutral-950/60 px-3 py-1.5 font-mono text-xs ${c.text} transition hover:bg-neutral-900`}
+            className={`rounded-lg border ${c.border} bg-neutral-900/60 px-3 py-1.5 font-mono text-xs ${c.text} transition hover:bg-neutral-800`}
           >
-            {c.label} <span className="text-neutral-600">{countBy.get(c.slug) ?? 0}</span>
+            {c.label} <span className="text-neutral-500">{countBy.get(c.slug) ?? 0}</span>
           </Link>
         ))}
       </div>
@@ -281,7 +281,7 @@ export default async function FrontPage() {
       {/* Fork Wars footer */}
       <Link
         href="/fork-wars"
-        className="mt-8 block rounded-2xl border border-rose-400/30 bg-neutral-950/60 p-5 text-center transition hover:border-rose-400/60 hover:shadow-[0_0_30px_rgba(251,113,133,0.1)]"
+        className="mt-8 block rounded-2xl border border-rose-400/30 bg-neutral-900/60 p-5 text-center transition hover:border-rose-400/60 hover:shadow-[0_0_30px_rgba(251,113,133,0.1)]"
       >
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-rose-400">⑂ fork wars — coming at launch</p>
         <p className="mt-1 font-mono text-sm text-neutral-400">

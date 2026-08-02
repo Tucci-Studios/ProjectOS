@@ -5,7 +5,7 @@ export async function SiteHeader() {
   const user = await getSessionUser();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#0a0f0b]/95 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-neutral-700 bg-[#161d18]/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-7 px-5">
         <Link href="/" className="font-mono text-lg font-bold tracking-widest text-white">
           PROJECT<span className="text-emerald-400">_</span>OS
@@ -28,7 +28,7 @@ export async function SiteHeader() {
           <input
             name="q"
             placeholder="search projects..."
-            className="w-52 rounded-lg border border-neutral-800 bg-neutral-900/80 px-3 py-1.5 font-mono text-sm text-white placeholder-neutral-600 outline-none transition focus:border-emerald-400"
+            className="w-52 rounded-lg border border-neutral-700 bg-neutral-800/80 px-3 py-1.5 font-mono text-sm text-white placeholder-neutral-600 outline-none transition focus:border-emerald-400"
           />
         </form>
         <div className="flex items-center gap-4">
@@ -46,7 +46,7 @@ export async function SiteHeader() {
               )}
               @{user.github_login}
               <form action="/api/auth/logout" method="post">
-                <button type="submit" className="text-neutral-600 transition hover:text-neutral-300">
+                <button type="submit" className="text-neutral-500 transition hover:text-neutral-300">
                   [out]
                 </button>
               </form>

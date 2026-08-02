@@ -39,7 +39,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
       </p>
 
       <ol className="mb-8 space-y-4 text-sm text-neutral-300">
-        <li className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
+        <li className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4">
           <span className="font-mono text-xs text-emerald-400">STEP 1</span>
           <p className="mt-1">
             Fork the repo on GitHub:{" "}
@@ -53,7 +53,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
             </a>
           </p>
         </li>
-        <li className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
+        <li className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4">
           <span className="font-mono text-xs text-emerald-400">STEP 2</span>
           <p className="mt-1">
             In your fork, edit <code className="text-emerald-400">project.json</code>: add your{" "}
@@ -66,7 +66,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
             generates it.) Make your changes.
           </p>
         </li>
-        <li className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4">
+        <li className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4">
           <span className="font-mono text-xs text-emerald-400">STEP 3</span>
           <p className="mt-1">Register your fork below — we verify the fork relationship with GitHub and add you to the tree.</p>
         </li>
@@ -75,7 +75,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
       {user ? (
         <SubmitForm needsTos={!user.tos_accepted_at} />
       ) : (
-        <p className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-6 text-center font-mono text-sm text-neutral-300">
+        <p className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-6 text-center font-mono text-sm text-neutral-300">
           <a href="/api/auth/login" className="text-emerald-400 hover:underline">
             Sign in with GitHub
           </a>{" "}

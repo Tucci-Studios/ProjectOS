@@ -39,7 +39,7 @@ export function MiniTree({ nodes, highlightId, accent = "#34d399" }: { nodes: Li
         const hot = n.id === highlightId;
         return (
           <g key={n.id}>
-            <circle cx={p.x} cy={p.y} r={hot ? R + 2 : R} fill={hot ? accent : "#0a0f0b"} stroke={accent} strokeWidth={1.5}>
+            <circle cx={p.x} cy={p.y} r={hot ? R + 2 : R} fill={hot ? accent : "#161d18"} stroke={accent} strokeWidth={1.5}>
               {hot && <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite" />}
             </circle>
             {hot && <circle cx={p.x} cy={p.y} r={R + 7} fill="none" stroke={accent} strokeOpacity={0.25} strokeWidth={1} />}

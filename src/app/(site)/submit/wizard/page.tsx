@@ -16,7 +16,7 @@ const CATEGORIES = [
 ];
 
 const inputCls =
-  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
+  "w-full rounded border border-neutral-700 bg-neutral-800 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 const labelCls = "mb-1 block font-mono text-xs text-neutral-400";
 
 function CopyBlock({ title, text }: { title: string; text: string }) {
@@ -36,7 +36,7 @@ function CopyBlock({ title, text }: { title: string; text: string }) {
           {copied ? "copied ✓" : "copy"}
         </button>
       </div>
-      <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg border border-neutral-800 bg-neutral-950/80 p-4 font-mono text-xs text-neutral-300">
+      <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg border border-neutral-700 bg-neutral-900/80 p-4 font-mono text-xs text-neutral-300">
         {text}
       </pre>
     </div>
@@ -99,7 +99,7 @@ ${howToRun || "(exact commands from fresh clone)"}
         .
       </p>
 
-      <div className="space-y-4 rounded-lg border border-neutral-800 bg-neutral-950/60 p-4">
+      <div className="space-y-4 rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
         <div className="grid grid-cols-2 gap-4">
           <label>
             <span className={labelCls}>Name (base)</span>
@@ -142,7 +142,7 @@ ${howToRun || "(exact commands from fresh clone)"}
           <span className={labelCls}>Tags (comma-separated)</span>
           <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="game, stealth, neon" className={inputCls} />
         </label>
-        <div className="grid grid-cols-2 gap-4 border-t border-neutral-800 pt-4">
+        <div className="grid grid-cols-2 gap-4 border-t border-neutral-700 pt-4">
           <label>
             <span className={labelCls}>Parent repo (forks only)</span>
             <input value={parentRepo} onChange={(e) => setParentRepo(e.target.value)} placeholder="owner/repo" className={inputCls} />

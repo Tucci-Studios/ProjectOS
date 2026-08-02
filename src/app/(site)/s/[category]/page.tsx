@@ -52,7 +52,7 @@ export default async function SectionPage({
       href={key === "projects" ? `/s/${category}` : `/s/${category}?tab=${key}`}
       className={`rounded-lg px-4 py-1.5 font-mono text-sm transition ${
         tab === key
-          ? `bg-neutral-900 ${meta.text} shadow-[0_0_12px_rgba(255,255,255,0.05)]`
+          ? `bg-neutral-800 ${meta.text} shadow-[0_0_12px_rgba(255,255,255,0.05)]`
           : "text-neutral-500 hover:text-neutral-300"
       }`}
     >
@@ -108,7 +108,7 @@ export default async function SectionPage({
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-900/40"
+                className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-800/40"
               >
                 <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-emerald-400">
                   {post.title ?? "(untitled)"}
@@ -133,7 +133,7 @@ export default async function SectionPage({
         {meta.label}
       </h1>
       <p className={`mb-4 font-mono text-sm ${meta.text}`}>s/{meta.slug}</p>
-      <div className="mb-5 flex gap-1 rounded-lg border border-neutral-800 bg-neutral-950/60 p-1">
+      <div className="mb-5 flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
         {tabLink("projects", "projects")}
         {tabLink("tutorials", "tutorials")}
         {tabLink("requests", "requests")}
@@ -145,7 +145,7 @@ export default async function SectionPage({
 
 function Empty({ text }: { text: string }) {
   return (
-    <p className="rounded-xl border border-dashed border-neutral-800 p-10 text-center font-mono text-sm text-neutral-600">
+    <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center font-mono text-sm text-neutral-500">
       {text}
     </p>
   );

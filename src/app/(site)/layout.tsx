@@ -6,16 +6,16 @@ export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#0a0f0b] text-neutral-200">
+    <div className="min-h-screen bg-[#161d18] text-neutral-200">
       <SiteHeader />
       <div className="mx-auto flex max-w-7xl gap-8 px-5 py-8">
         {/* Sections sidebar */}
         <aside className="hidden w-52 shrink-0 md:block">
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-600">Sections</p>
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">Sections</p>
           <nav className="space-y-0.5">
             <Link
               href="/projects"
-              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-200 transition hover:bg-neutral-900"
+              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-200 transition hover:bg-neutral-800"
             >
               ⌂ all projects
             </Link>
@@ -23,24 +23,24 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
               <Link
                 key={c.slug}
                 href={`/s/${c.slug}`}
-                className="flex items-center gap-2.5 rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-900 hover:text-white"
+                className="flex items-center gap-2.5 rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
               >
                 <span className={`h-2 w-2 rounded-full ${c.dot} shadow-[0_0_6px_currentColor]`} />
                 {c.label}
               </Link>
             ))}
           </nav>
-          <p className="mt-8 mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-600">Community</p>
+          <p className="mt-8 mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">Community</p>
           <nav className="space-y-0.5">
             <Link
               href="/wire"
-              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-900 hover:text-white"
+              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
             >
               ⇅ feed
             </Link>
             <Link
               href="/fork-wars"
-              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-900 hover:text-white"
+              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
             >
               ⑂ fork wars
             </Link>

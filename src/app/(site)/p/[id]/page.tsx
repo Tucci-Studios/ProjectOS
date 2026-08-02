@@ -67,7 +67,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <p className="mt-2 flex flex-wrap items-center gap-2 font-mono text-xs text-neutral-500">
             <Link
               href={`/s/${meta.slug}`}
-              className={`rounded border ${meta.border} bg-neutral-900/60 px-1.5 py-0.5 ${meta.text}`}
+              className={`rounded border ${meta.border} bg-neutral-800/60 px-1.5 py-0.5 ${meta.text}`}
             >
               {meta.label}
             </Link>
@@ -80,7 +80,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       <p className="mt-5 text-lg leading-relaxed text-neutral-200">{p.description}</p>
       {p.change_summary && (
-        <p className="mt-3 rounded border-l-2 border-emerald-400/50 bg-neutral-900/50 p-3 text-sm text-neutral-400">
+        <p className="mt-3 rounded border-l-2 border-emerald-400/50 bg-neutral-800/50 p-3 text-sm text-neutral-400">
           <span className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">vs. parent</span>
           <br />
           {p.change_summary}
@@ -106,10 +106,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Lineage */}
       <section className="mt-8">
-        <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
+        <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
           Lineage — {lineage.length} project{lineage.length === 1 ? "" : "s"}
         </h2>
-        <div className="rounded-lg border border-neutral-800 bg-neutral-950/60 p-4">
+        <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
           {lineage.map((node) => (
             <div key={node.id} style={{ paddingLeft: node.depth * 24 }} className="py-1">
               <span className="font-mono text-xs text-neutral-700">{node.depth > 0 ? "└─ " : "◉ "}</span>
@@ -127,7 +127,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                   </>
                 )}
               </Link>
-              <span className="ml-2 font-mono text-[10px] text-neutral-600">
+              <span className="ml-2 font-mono text-[10px] text-neutral-500">
                 @{node.github_login} · ♥ {node.like_count}
               </span>
             </div>

@@ -13,7 +13,7 @@ const CATEGORIES = [
 
 export default function Home() {
   return (
-    <main className="flex-1 bg-[#0a0f0b] text-neutral-200">
+    <main className="flex-1 bg-[#161d18] text-neutral-200">
       <div className="mx-auto max-w-3xl px-6 py-24">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-emerald-400">
           project_os // coming soon
@@ -51,12 +51,12 @@ export default function Home() {
 
         <div className="mt-12">
           <WaitlistForm />
-          <p className="mt-3 font-mono text-xs text-neutral-600">
+          <p className="mt-3 font-mono text-xs text-neutral-500">
             No spam. One email when the doors open.
           </p>
         </div>
 
-        <div className="mt-16 border-t border-neutral-800 pt-8">
+        <div className="mt-16 border-t border-neutral-700 pt-8">
           <p className="font-mono text-xs uppercase tracking-widest text-neutral-500">
             Launch sections
           </p>
@@ -64,7 +64,7 @@ export default function Home() {
             {CATEGORIES.map((c) => (
               <span
                 key={c.name}
-                className={`rounded border bg-neutral-900/60 px-3 py-1 font-mono text-xs ${c.color}`}
+                className={`rounded border bg-neutral-800/60 px-3 py-1 font-mono text-xs ${c.color}`}
               >
                 {c.name}
               </span>

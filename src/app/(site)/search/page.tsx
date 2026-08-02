@@ -49,7 +49,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         projects ({projects.length})
       </h2>
       {projects.length === 0 ? (
-        <p className="mb-6 font-mono text-xs text-neutral-600">no projects matched</p>
+        <p className="mb-6 font-mono text-xs text-neutral-500">no projects matched</p>
       ) : (
         <div className="mb-8 space-y-3">
           {projects.map((p) => (
@@ -61,7 +61,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         feed posts ({posts.length})
       </h2>
       {posts.length === 0 ? (
-        <p className="font-mono text-xs text-neutral-600">no posts matched</p>
+        <p className="font-mono text-xs text-neutral-500">no posts matched</p>
       ) : (
         <ul className="space-y-3">
           {posts.map((post) => (
@@ -69,7 +69,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               <Link href={`/wire/${post.id}`} className="font-mono text-sm text-neutral-200 transition hover:text-emerald-400">
                 {post.title ?? "(untitled)"}
               </Link>
-              <span className="ml-2 font-mono text-[11px] text-neutral-600">
+              <span className="ml-2 font-mono text-[11px] text-neutral-500">
                 {post.kind} · @{post.github_login} · {timeAgo(post.created_at)}
               </span>
             </li>

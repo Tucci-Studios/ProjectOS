@@ -34,7 +34,7 @@ export default async function ProjectsPage({
         <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
           {sort === "top" ? "Top on Project OS" : "Newest"}
         </h1>
-        <div className="flex gap-1 rounded-lg border border-neutral-800 bg-neutral-950/60 p-1">
+        <div className="flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
           {tab("top", "▲ top")}
           {tab("new", "◷ new")}
         </div>

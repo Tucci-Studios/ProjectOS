@@ -4,7 +4,7 @@ export default function TermsPage() {
   return (
     <div className="max-w-2xl">
       <h1 className="mb-4 font-mono text-lg font-bold text-white">
-        Project OS — Terms <span className="text-neutral-600">(v0 draft)</span>
+        Project OS — Terms <span className="text-neutral-500">(v0 draft)</span>
       </h1>
       <p className="mb-3 text-sm text-neutral-400">By publishing a project on Project OS you agree:</p>
       <ol className="list-decimal space-y-3 pl-5 text-sm text-neutral-300">

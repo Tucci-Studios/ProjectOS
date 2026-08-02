@@ -40,7 +40,7 @@ export function LikeButton({
         className={`flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 font-mono text-sm transition ${
           liked
             ? "text-emerald-400 drop-shadow-[0_0_6px_rgba(52,211,153,0.5)]"
-            : "text-neutral-500 hover:bg-neutral-900 hover:text-emerald-400"
+            : "text-neutral-500 hover:bg-neutral-800 hover:text-emerald-400"
         }`}
       >
         <span className="text-lg leading-none">{liked ? "▲" : "△"}</span>

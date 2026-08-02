@@ -32,7 +32,7 @@ export function RichBody({ text, projects }: { text: string; projects: ProjectRe
                 src={part}
                 alt=""
                 loading="lazy"
-                className="my-2 block max-h-96 max-w-full rounded-lg border border-neutral-800"
+                className="my-2 block max-h-96 max-w-full rounded-lg border border-neutral-700"
               />
             );
           }

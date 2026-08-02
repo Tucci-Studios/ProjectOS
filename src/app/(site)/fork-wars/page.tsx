@@ -12,11 +12,11 @@ export default function ForkWarsPage() {
         <span className="text-white">the most-liked fork wears the crown</span>{" "}
         <span className="text-amber-400">♛</span> on the lineage tree. Forever.
       </p>
-      <div className="mt-8 rounded-2xl border border-rose-400/30 bg-neutral-950/60 p-6 font-mono text-sm text-neutral-400">
+      <div className="mt-8 rounded-2xl border border-rose-400/30 bg-neutral-900/60 p-6 font-mono text-sm text-neutral-400">
         <p>STATUS: <span className="text-rose-400">arming</span></p>
         <p className="mt-1">The starter project drops when the doors open.</p>
       </div>
-      <p className="mt-6 font-mono text-xs text-neutral-600">
+      <p className="mt-6 font-mono text-xs text-neutral-500">
         every fork = a new branch on a public family tree. bring your weirdest ideas.
       </p>
     </div>

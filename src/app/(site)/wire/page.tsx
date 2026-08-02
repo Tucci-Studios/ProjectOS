@@ -33,7 +33,7 @@ export default async function WirePage() {
     <div className="max-w-3xl">
       <div className="mb-1 flex items-center justify-between">
         <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
-          Feed <span className="font-normal text-neutral-600">// the_wire</span>
+          Feed <span className="font-normal text-neutral-500">// the_wire</span>
         </h1>
         <Link
           href="/wire/new"
@@ -47,26 +47,26 @@ export default async function WirePage() {
         {results.map((post) => (
           <article
             key={post.id}
-            className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]"
+            className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-800/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]"
           >
             <div className="flex flex-wrap items-center gap-2.5">
               <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-emerald-400">
                 {post.title ?? "(untitled)"}
               </Link>
               {post.kind === "tutorial" && (
-                <span className="rounded-md border border-amber-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-amber-400">
+                <span className="rounded-md border border-amber-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-amber-400">
                   tutorial
                 </span>
               )}
               {post.kind === "request" && (
-                <span className="rounded-md border border-violet-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-violet-400">
+                <span className="rounded-md border border-violet-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-violet-400">
                   request
                 </span>
               )}
               {post.project_display && post.project_id && (
                 <Link
                   href={`/p/${post.project_id}`}
-                  className="rounded-md border border-neutral-700 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-neutral-300 transition hover:border-neutral-500"
+                  className="rounded-md border border-neutral-700 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-neutral-300 transition hover:border-neutral-500"
                 >
                   @{post.project_display}
                 </Link>

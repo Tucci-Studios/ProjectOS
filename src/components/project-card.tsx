@@ -20,7 +20,7 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
   const meta = categoryMeta(p.category);
 
   return (
-    <article className="group flex gap-3 rounded-xl border border-neutral-800 bg-neutral-950/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-900/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]">
+    <article className="group flex gap-3 rounded-xl border border-neutral-700 bg-neutral-900/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-800/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]">
       <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={liked} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2.5">
@@ -38,7 +38,7 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
           </Link>
           <Link
             href={`/s/${meta.slug}`}
-            className={`rounded-md border ${meta.border} bg-neutral-900/80 px-2 py-0.5 font-mono text-xs ${meta.text}`}
+            className={`rounded-md border ${meta.border} bg-neutral-800/80 px-2 py-0.5 font-mono text-xs ${meta.text}`}
           >
             {meta.label}
           </Link>

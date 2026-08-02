@@ -31,7 +31,7 @@ export function TutorialBody({ text, projects }: { text: string; projects: Proje
       )}
       <ol className="space-y-3">
         {steps.map((step, i) => (
-          <li key={i} className="rounded-xl border border-neutral-800 bg-neutral-950/80 p-4">
+          <li key={i} className="rounded-xl border border-neutral-700 bg-neutral-900/80 p-4">
             <p className="mb-2 font-mono text-xs font-bold uppercase tracking-widest text-amber-400">
               step {String(i + 1).padStart(2, "0")}
               <span className="ml-2 normal-case tracking-normal text-white">{step.title.replace(/^step\s*\d+\s*[—–-]\s*/i, "")}</span>

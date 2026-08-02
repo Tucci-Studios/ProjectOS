@@ -53,7 +53,7 @@ export function CommentForm({ postId, signedIn }: { postId: string; signedIn: bo
         rows={3}
         maxLength={2000}
         placeholder="Add a comment... (@Project and #post_id refs work here too)"
-        className="w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400"
+        className="w-full rounded border border-neutral-700 bg-neutral-800 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400"
       />
       <div className="flex items-center gap-3">
         <button

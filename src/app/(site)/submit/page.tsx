@@ -7,7 +7,7 @@ export default async function SubmitPage() {
   const user = await getSessionUser();
   if (!user) {
     return (
-      <div className="max-w-xl rounded-lg border border-neutral-800 bg-neutral-950/60 p-8 text-center">
+      <div className="max-w-xl rounded-lg border border-neutral-700 bg-neutral-900/60 p-8 text-center">
         <p className="font-mono text-sm text-neutral-300">
           <a href="/api/auth/login" className="text-emerald-400 hover:underline">
             Sign in with GitHub

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const inputCls =
-  "w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
+  "w-full rounded border border-neutral-700 bg-neutral-800 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 
 export function SubmitForm({ needsTos }: { needsTos: boolean }) {
   const router = useRouter();
@@ -53,7 +53,7 @@ export function SubmitForm({ needsTos }: { needsTos: boolean }) {
         />
       </label>
       {needsTos && (
-        <label className="flex items-start gap-2 rounded border border-neutral-700 bg-neutral-900/50 p-3 text-sm text-neutral-300">
+        <label className="flex items-start gap-2 rounded border border-neutral-700 bg-neutral-800/50 p-3 text-sm text-neutral-300">
           <input
             type="checkbox"
             checked={acceptTos}

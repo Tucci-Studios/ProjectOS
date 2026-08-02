@@ -60,23 +60,23 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           &larr; wire
         </Link>
       </p>
-      <article className="rounded-xl border border-neutral-800 bg-neutral-950/60 p-5">
+      <article className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-5">
         <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="font-mono text-xl font-bold tracking-tight text-white">{post.title ?? "(untitled)"}</h1>
           {post.kind === "tutorial" && (
-            <span className="rounded-md border border-amber-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-amber-400">
+            <span className="rounded-md border border-amber-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-amber-400">
               tutorial
             </span>
           )}
           {post.kind === "request" && (
-            <span className="rounded-md border border-violet-400/30 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-violet-400">
+            <span className="rounded-md border border-violet-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-violet-400">
               tutorial request
             </span>
           )}
           {post.project_display && post.project_id && (
             <Link
               href={`/p/${post.project_id}`}
-              className="rounded-md border border-neutral-700 bg-neutral-900/80 px-2 py-0.5 font-mono text-xs text-neutral-300 transition hover:border-neutral-500"
+              className="rounded-md border border-neutral-700 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-neutral-300 transition hover:border-neutral-500"
             >
               @{post.project_display}
             </Link>
@@ -84,7 +84,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
         </div>
         <p className="mt-1 font-mono text-xs text-neutral-500">
           by <span className="text-neutral-400">@{post.github_login}</span> · {timeAgo(post.created_at)} ·{" "}
-          <span className="text-neutral-600">#{post.id}</span>
+          <span className="text-neutral-500">#{post.id}</span>
         </p>
         <div className="mt-4 text-[15px] leading-relaxed text-neutral-200">
           {post.kind === "tutorial" ? (
@@ -96,12 +96,12 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       </article>
 
       <section className="mt-6">
-        <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-600">
+        <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">
           {comments.length} comment{comments.length === 1 ? "" : "s"}
         </h2>
         <div className="space-y-3">
           {comments.map((c) => (
-            <div key={c.id} className="rounded-xl border border-neutral-800/60 bg-neutral-950/40 p-4">
+            <div key={c.id} className="rounded-xl border border-neutral-700/60 bg-neutral-900/40 p-4">
               <p className="font-mono text-xs text-neutral-500">
                 <span className="text-neutral-400">@{c.github_login}</span> · {timeAgo(c.created_at)}
               </p>
