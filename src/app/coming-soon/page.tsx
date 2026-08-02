@@ -45,7 +45,7 @@ export default function Home() {
           </li>
           <li>
             <span className="font-mono text-emerald-400">▸</span> Lineage trees,
-            likes, and Fork Wars: the most-remixed projects wear the crown.
+            likes, and Remix Wars: the most-remixed projects wear the crown.
           </li>
         </ul>
 

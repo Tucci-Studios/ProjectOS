@@ -1,8 +1,10 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
+import { GitFork, ArrowRight, MessageSquarePlus } from "lucide-react";
 import { getLineage } from "@/lib/queries";
 import { CATEGORY_META, categoryMeta } from "@/lib/categories";
 import { MiniTree } from "@/components/mini-tree";
+import { ButtonLink } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -123,23 +125,20 @@ export default async function FrontPage() {
                 <Link href={`/s/${heroMeta.slug}`} className={heroMeta.text}>
                   {heroMeta.label}
                 </Link>{" "}
-                · by @{hero.github_login} · ♥ {hero.like_count} · ⑂ {hero.fork_count} fork{hero.fork_count === 1 ? "" : "s"}
+                · by @{hero.github_login} · ♥ {hero.like_count} · ⑂ {hero.fork_count} remix{hero.fork_count === 1 ? "" : "es"}
               </p>
               <p className="mt-4 max-w-xl text-lg leading-relaxed text-neutral-300">{hero.description}</p>
-              <div className="mt-6 flex gap-3">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <Link
-                  href={`/p/${hero.id}/fork`}
-                  className="rounded-lg px-5 py-2.5 font-mono text-sm font-bold text-black transition hover:brightness-110"
+                  href={`/p/${hero.id}/remix`}
+                  className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-lg px-5 font-mono text-sm font-bold text-black outline-none transition duration-200 hover:brightness-110 hover:shadow-[0_0_24px_rgba(52,211,153,0.3)] focus-visible:ring-2 focus-visible:ring-white"
                   style={{ backgroundColor: ACCENT_HEX[hero.category] }}
                 >
-                  ⑂ FORK THIS
+                  <GitFork size={16} aria-hidden /> REMIX THIS
                 </Link>
-                <Link
-                  href={`/p/${hero.id}`}
-                  className="rounded-lg border border-neutral-700 px-5 py-2.5 font-mono text-sm text-neutral-300 transition hover:border-neutral-500"
-                >
-                  view project
-                </Link>
+                <ButtonLink href={`/p/${hero.id}`} variant="ghost">
+                  view project <ArrowRight size={15} aria-hidden />
+                </ButtonLink>
               </div>
             </div>
             {heroLineage.length > 0 && (
@@ -188,9 +187,11 @@ export default async function FrontPage() {
               );
             })}
           </ol>
-          <Link href="/projects" className="mt-3 block font-mono text-xs text-neutral-500 transition hover:text-emerald-400">
-            full rankings →
-          </Link>
+          <div className="mt-3">
+            <ButtonLink href="/projects" variant="subtle" className="w-full">
+              full rankings <ArrowRight size={15} aria-hidden />
+            </ButtonLink>
+          </div>
         </section>
 
         {/* Column 2: Tutorials + Requests */}
@@ -225,16 +226,22 @@ export default async function FrontPage() {
               ))}
             </ul>
           )}
-          <Link href="/wire/new?kind=request" className="mt-4 block font-mono text-xs text-violet-400 transition hover:underline">
-            + request a tutorial
-          </Link>
+          <div className="mt-4">
+            <ButtonLink
+              href="/wire/new?kind=request"
+              variant="subtle"
+              className="w-full border-violet-400/40 text-violet-400 hover:bg-violet-400/10 hover:text-violet-300"
+            >
+              <MessageSquarePlus size={15} aria-hidden /> request a tutorial
+            </ButtonLink>
+          </div>
         </section>
 
-        {/* Column 3: Fresh forks + from the feed */}
+        {/* Column 3: Fresh remixes + from the feed */}
         <section className="rounded-2xl border border-neutral-700 bg-neutral-900/60 p-5">
-          <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-emerald-400">fresh forks</h2>
+          <h2 className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-emerald-400">fresh remixes</h2>
           {freshForks.length === 0 ? (
-            <p className="font-mono text-xs text-neutral-500">no forks yet — start a lineage</p>
+            <p className="font-mono text-xs text-neutral-500">no remixes yet — start a lineage</p>
           ) : (
             <ul className="space-y-3">
               {freshForks.map((f) => (
@@ -259,9 +266,11 @@ export default async function FrontPage() {
               </li>
             ))}
           </ul>
-          <Link href="/wire" className="mt-4 block font-mono text-xs text-neutral-500 transition hover:text-emerald-400">
-            open the feed →
-          </Link>
+          <div className="mt-4">
+            <ButtonLink href="/wire" variant="subtle" className="w-full">
+              open the feed <ArrowRight size={15} aria-hidden />
+            </ButtonLink>
+          </div>
         </section>
       </div>
 
@@ -271,21 +280,21 @@ export default async function FrontPage() {
           <Link
             key={c.slug}
             href={`/s/${c.slug}`}
-            className={`rounded-lg border ${c.border} bg-neutral-900/60 px-3 py-1.5 font-mono text-xs ${c.text} transition hover:bg-neutral-800`}
+            className={`inline-flex min-h-[40px] cursor-pointer items-center gap-1.5 rounded-lg border ${c.border} bg-neutral-900/60 px-3 font-mono text-xs ${c.text} outline-none transition duration-200 hover:bg-neutral-800 hover:shadow-[0_0_12px_currentColor] focus-visible:ring-2 focus-visible:ring-emerald-400`}
           >
             {c.label} <span className="text-neutral-500">{countBy.get(c.slug) ?? 0}</span>
           </Link>
         ))}
       </div>
 
-      {/* Fork Wars footer */}
+      {/* Remix Wars footer */}
       <Link
-        href="/fork-wars"
+        href="/remix-wars"
         className="mt-8 block rounded-2xl border border-rose-400/30 bg-neutral-900/60 p-5 text-center transition hover:border-rose-400/60 hover:shadow-[0_0_30px_rgba(251,113,133,0.1)]"
       >
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-rose-400">⑂ fork wars — coming at launch</p>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-rose-400">remix wars — coming at launch</p>
         <p className="mt-1 font-mono text-sm text-neutral-400">
-          7 days. one starter project. most-liked fork wears the crown <span className="text-amber-400">♛</span> forever.
+          7 days. one starter project. most-liked remix wears the crown <span className="text-amber-400">♛</span> forever.
         </p>
       </Link>
     </div>

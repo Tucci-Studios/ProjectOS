@@ -1,6 +1,10 @@
 import Link from "next/link";
+import { LayoutGrid, Radio, Swords } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { CATEGORY_META } from "@/lib/categories";
+
+const SIDE_LINK =
+  "flex min-h-[44px] cursor-pointer items-center gap-2.5 rounded-lg px-3 font-mono text-sm text-neutral-400 outline-none transition duration-200 hover:bg-neutral-800 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400";
 
 export const dynamic = "force-dynamic";
 
@@ -13,18 +17,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         <aside className="hidden w-52 shrink-0 md:block">
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">Sections</p>
           <nav className="space-y-0.5">
-            <Link
-              href="/projects"
-              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-200 transition hover:bg-neutral-800"
-            >
-              ⌂ all projects
+            <Link href="/projects" className={`${SIDE_LINK} text-neutral-200`}>
+              <LayoutGrid size={15} aria-hidden /> all projects
             </Link>
             {CATEGORY_META.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/s/${c.slug}`}
-                className="flex items-center gap-2.5 rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
-              >
+              <Link key={c.slug} href={`/s/${c.slug}`} className={SIDE_LINK}>
                 <span className={`h-2 w-2 rounded-full ${c.dot} shadow-[0_0_6px_currentColor]`} />
                 {c.label}
               </Link>
@@ -32,17 +29,11 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           </nav>
           <p className="mt-8 mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">Community</p>
           <nav className="space-y-0.5">
-            <Link
-              href="/wire"
-              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
-            >
-              ⇅ feed
+            <Link href="/wire" className={SIDE_LINK}>
+              <Radio size={15} aria-hidden /> feed
             </Link>
-            <Link
-              href="/fork-wars"
-              className="block rounded-lg px-3 py-2 font-mono text-sm text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
-            >
-              ⑂ fork wars
+            <Link href="/remix-wars" className={SIDE_LINK}>
+              <Swords size={15} aria-hidden /> remix wars
             </Link>
           </nav>
         </aside>

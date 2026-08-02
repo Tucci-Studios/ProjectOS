@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowBigUp } from "lucide-react";
 
 export function LikeButton({
   projectId,
@@ -13,22 +14,29 @@ export function LikeButton({
 }) {
   const [count, setCount] = useState(initialCount);
   const [liked, setLiked] = useState(initialLiked);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function toggle() {
+    if (busy) return;
+    setBusy(true);
     setError(null);
-    const res = await fetch("/api/likes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId }),
-    });
-    const data = (await res.json()) as { liked?: boolean; count?: number; error?: string };
-    if (res.ok && data.count !== undefined) {
-      setLiked(!!data.liked);
-      setCount(data.count);
-    } else {
-      setError(data.error ?? "Failed.");
-      setTimeout(() => setError(null), 3000);
+    try {
+      const res = await fetch("/api/likes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId }),
+      });
+      const data = (await res.json()) as { liked?: boolean; count?: number; error?: string };
+      if (res.ok && data.count !== undefined) {
+        setLiked(!!data.liked);
+        setCount(data.count);
+      } else {
+        setError(data.error ?? "Failed.");
+        setTimeout(() => setError(null), 3000);
+      }
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -36,17 +44,20 @@ export function LikeButton({
     <div className="flex flex-col items-center">
       <button
         onClick={toggle}
+        disabled={busy}
         title={error ?? (liked ? "unlike" : "like")}
-        className={`flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 font-mono text-sm transition ${
+        aria-label={liked ? "Unlike" : "Like"}
+        aria-pressed={liked}
+        className={`flex min-h-[44px] min-w-[44px] cursor-pointer flex-col items-center justify-center rounded-lg border font-mono text-sm outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-wait ${
           liked
-            ? "text-emerald-400 drop-shadow-[0_0_6px_rgba(52,211,153,0.5)]"
-            : "text-neutral-500 hover:bg-neutral-800 hover:text-emerald-400"
+            ? "border-emerald-400/60 bg-emerald-400/10 text-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.3)]"
+            : "border-neutral-700 text-neutral-400 hover:border-emerald-400/50 hover:bg-neutral-800 hover:text-emerald-400"
         }`}
       >
-        <span className="text-lg leading-none">{liked ? "▲" : "△"}</span>
-        <span className="font-semibold">{count}</span>
+        <ArrowBigUp size={18} fill={liked ? "currentColor" : "none"} aria-hidden />
+        <span className="text-xs font-semibold leading-none">{count}</span>
       </button>
-      {error && <span className="max-w-[80px] text-center font-mono text-[9px] text-rose-400">{error}</span>}
+      {error && <span className="mt-1 max-w-[90px] text-center font-mono text-[11px] text-rose-400">{error}</span>}
     </div>
   );
 }

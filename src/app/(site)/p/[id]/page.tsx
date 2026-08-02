@@ -1,6 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { GitFork, ExternalLink } from "lucide-react";
+import { ButtonLink } from "@/components/ui";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage } from "@/lib/queries";
 import { categoryMeta, timeAgo } from "@/lib/categories";
@@ -87,21 +89,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </p>
       )}
 
-      <div className="mt-5 flex gap-3 font-mono text-sm">
-        <a
-          href={`https://github.com/${p.github_repo}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded border border-neutral-700 px-3 py-1.5 text-neutral-300 transition hover:border-neutral-500"
-        >
-          view on GitHub ↗
-        </a>
-        <Link
-          href={`/p/${p.id}/fork`}
-          className="rounded border border-emerald-400/50 px-3 py-1.5 font-semibold text-emerald-400 transition hover:bg-emerald-400/10 hover:shadow-[0_0_16px_rgba(52,211,153,0.25)]"
-        >
-          ⑂ fork this
-        </Link>
+      <div className="mt-5 flex flex-wrap gap-3">
+        <ButtonLink href={`/p/${p.id}/remix`} variant="primary">
+          <GitFork size={16} aria-hidden /> remix this
+        </ButtonLink>
+        <ButtonLink href={`https://github.com/${p.github_repo}`} variant="ghost" external>
+          view on GitHub <ExternalLink size={15} aria-hidden />
+        </ButtonLink>
       </div>
 
       {/* Lineage */}

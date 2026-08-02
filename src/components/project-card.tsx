@@ -48,13 +48,13 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
           {p.parent_display && (
             <>
               {" "}
-              · ⑂ from <span className="text-neutral-300">{p.parent_display}</span>
+              · remix of <span className="text-neutral-300">{p.parent_display}</span>
             </>
           )}
           {p.fork_count > 0 && (
             <>
               {" "}
-              · <span className="text-emerald-400">{p.fork_count}</span> fork{p.fork_count === 1 ? "" : "s"}
+              · <span className="text-emerald-400">{p.fork_count}</span> remix{p.fork_count === 1 ? "" : "es"}
             </>
           )}
         </p>
