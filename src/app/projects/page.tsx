@@ -32,6 +32,7 @@ export default async function ProjectsPage() {
   return (
     <main style={{ padding: 24, fontFamily: "monospace" }}>
       <header style={{ borderBottom: "1px solid #ccc", paddingBottom: 8, marginBottom: 16 }}>
+        <Link href="/submit">+ publish</Link>{" | "}
         {user ? (
           <span>
             signed in as @{user.github_login} ({user.role}){" "}
