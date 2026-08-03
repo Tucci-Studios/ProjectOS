@@ -47,7 +47,7 @@ export function FollowButton({
   }
 
   const dims = iconOnly
-    ? "h-8 w-8 justify-center"
+    ? "h-8 justify-end px-[7px] hover:pl-2.5 focus-visible:pl-2.5"
     : size === "sm"
       ? "min-h-[32px] px-2.5 text-[11px]"
       : "min-h-[40px] px-4 text-sm";
@@ -67,12 +67,16 @@ export function FollowButton({
     >
       {iconOnly ? (
         <>
-          {/* Label floats out to the left; it never touches layout, so nothing shifts. */}
+          {/* The word unfurls to the left of the icon; the button grows into it. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute right-full mr-1.5 translate-x-1 whitespace-nowrap rounded-md border border-neutral-700 bg-[#1a221d] px-2 py-1 font-mono text-[11px] text-neutral-200 opacity-0 shadow-lg transition-all duration-200 ease-out group-hover/follow:translate-x-0 group-hover/follow:opacity-100 group-focus-visible/follow:translate-x-0 group-focus-visible/follow:opacity-100"
+            className="grid grid-cols-[0fr] overflow-hidden transition-[grid-template-columns] duration-200 ease-out group-hover/follow:grid-cols-[1fr] group-focus-visible/follow:grid-cols-[1fr]"
           >
-            {following ? "Following" : label}
+            <span className="min-w-0">
+              <span className="block whitespace-nowrap pr-1.5 font-mono text-[11px]">
+                {following ? "Following" : label}
+              </span>
+            </span>
           </span>
           {following ? <BellRing size={iconSize} aria-hidden /> : <Bell size={iconSize} aria-hidden />}
         </>

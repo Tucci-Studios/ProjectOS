@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 import { checkRate } from "@/lib/rate-limit";
 import { validateManifest, type Manifest } from "@/lib/manifest";
+import { CATEGORY_SLUGS } from "@/lib/categories";
 import { getRepo, getFileText } from "@/lib/github";
 
 const REPO_RE = /^[\w.-]+\/[\w.-]+$/;
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
     description?: unknown;
     images?: unknown;
     changeSummary?: unknown;
+    category?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -86,6 +88,10 @@ export async function POST(request: Request) {
         })
         .slice(0, 6)
     : [];
+
+  // The section picked in the form wins — people choose it there, not in JSON.
+  const typedCategory = typeof body.category === "string" ? body.category : "";
+  if (typedCategory && CATEGORY_SLUGS.includes(typedCategory)) manifest.category = typedCategory;
 
   const errors = validateManifest(manifest);
   if (errors.length) return bad(errors);

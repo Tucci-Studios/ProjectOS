@@ -60,7 +60,7 @@ export function UserBadges({
           {/* Explain it on hover — a new person has no idea what a crown means. */}
           <span
             role="tooltip"
-            className="pointer-events-none absolute left-1/2 top-[calc(100%+6px)] z-40 w-52 -translate-x-1/2 translate-y-1 rounded-lg border border-neutral-700 bg-[#1a221d] px-3 py-2 text-left opacity-0 shadow-xl transition-all duration-150 group-hover/badge:translate-y-0 group-hover/badge:opacity-100"
+            className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-50 w-52 -translate-x-1/2 translate-y-1 scale-[0.97] rounded-lg border border-neutral-700 bg-[#1a221d] px-3 py-2 text-left opacity-0 shadow-2xl shadow-black/60 transition-all duration-200 ease-out group-hover/badge:translate-y-0 group-hover/badge:scale-100 group-hover/badge:opacity-100"
           >
             <span className={`block font-mono text-[11px] font-bold ${b.cls.split(" ").find((c) => c.startsWith("text-"))}`}>
               {b.title}

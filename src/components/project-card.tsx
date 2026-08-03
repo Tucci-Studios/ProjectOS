@@ -89,7 +89,7 @@ export function ProjectCard({
   const fullName = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
   return (
-    <article className="group relative overflow-hidden rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
+    <article className="group relative rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
       <div className="flex items-start gap-3 px-4 py-4">
         <div className="relative z-[2] flex shrink-0 self-center">
           <LikeButton projectId={p.id} initialCount={p.like_count} initialVote={vote} />

@@ -17,7 +17,6 @@
       "database_name": "project-os",
       "database_id": "PLACEHOLDER_RUN_wrangler_d1_create"
     }
-  ]
-  // R2 bucket for images (add when needed):
-  // "r2_buckets": [{ "binding": "IMAGES", "bucket_name": "project-os-images" }]
+  ],
+  "r2_buckets": [{ "binding": "SHOTS", "bucket_name": "project-os-images" }]
 }

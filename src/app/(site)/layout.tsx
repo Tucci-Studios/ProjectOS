@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header";
 import { TermsGate } from "@/components/terms-gate";
 import { getSessionUser } from "@/lib/auth";
 import { SectionsNav } from "@/components/sections-nav";
+import { RouteMotion } from "@/components/route-motion";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
             <SectionsNav />
           </div>
         </aside>
-        <div className="min-w-0 flex-1 py-8 md:pl-8">{children}</div>
+        <div className="min-w-0 flex-1 py-8 md:pl-8">
+          <RouteMotion>{children}</RouteMotion>
+        </div>
       </div>
     </div>
   );
