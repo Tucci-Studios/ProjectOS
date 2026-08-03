@@ -5,10 +5,9 @@ import { GitBranch, ExternalLink } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { InstallBlock } from "@/components/install-block";
 import { BranchTree } from "@/components/branch-tree";
-import { ACCENT_HEX } from "@/lib/categories";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage } from "@/lib/queries";
-import { categoryMeta, timeAgo } from "@/lib/categories";
+import { categoryMeta, groupOf, accentHex, timeAgo } from "@/lib/categories";
 import { LikeButton } from "@/components/like-button";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +49,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   if (!p) notFound();
 
   const meta = categoryMeta(p.category);
+  const g = groupOf(p.category);
   const likedRow = user
     ? await env.DB.prepare("SELECT 1 FROM likes WHERE user_id = ?1 AND project_id = ?2").bind(user.id, p.id).first()
     : null;
@@ -64,7 +64,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <span className="text-neutral-700">/</span>
         <Link href="/projects" className="rounded px-1 py-0.5 hover:text-neutral-200">Projects</Link>
         <span className="text-neutral-700">/</span>
-        <Link href={`/s/${meta.slug}`} className={`rounded px-1 py-0.5 hover:opacity-80 ${meta.text}`}>{meta.label}</Link>
+        <Link href={`/s/${meta.slug}`} className={`rounded px-1 py-0.5 hover:opacity-80 ${g.text}`}>{meta.label}</Link>
         <span className="text-neutral-700">/</span>
         <span className="px-1 py-0.5 text-neutral-300">{crumbLabel}</span>
       </nav>
@@ -83,7 +83,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <p className="mt-2 flex flex-wrap items-center gap-2 font-mono text-xs text-neutral-500">
             <Link
               href={`/s/${meta.slug}`}
-              className={`rounded border ${meta.border} bg-neutral-800/60 px-1.5 py-0.5 ${meta.text}`}
+              className={`rounded border ${g.border} bg-neutral-800/60 px-1.5 py-0.5 ${g.text}`}
             >
               {meta.label}
             </Link>
@@ -122,7 +122,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             {lineage.length} branch{lineage.length === 1 ? "" : "es"} growing from {p.base_name}
           </span>
         </h2>
-        <BranchTree nodes={lineage} currentId={p.id} accent={ACCENT_HEX[p.category] ?? "#34d399"} />
+        <BranchTree nodes={lineage} currentId={p.id} accent={accentHex(p.category)} />
       </section>
     </div>
   );

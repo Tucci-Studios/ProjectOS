@@ -3,24 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, Boxes, Radio } from "lucide-react";
-import { CATEGORY_META, CATEGORY_GROUPS } from "@/lib/categories";
+import { ChevronRight, Compass } from "lucide-react";
+import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
-// The sidebar is a tree: a trunk down the left, one branch per group, each
-// opening to its sections. No counts — just places to go. The branch you're
-// standing on opens itself and stays lit.
+// Three doors: AI, Build, Play. Each opens to its sections. The group you're in
+// stays open and wears its color down the whole spine, so an expanded group is
+// unmistakable.
 
 export function SectionsNav() {
   const pathname = usePathname();
   const activeSlug = pathname.startsWith("/s/") ? pathname.split("/")[2] : undefined;
-  const activeGroup = CATEGORY_META.find((c) => c.slug === activeSlug)?.group;
+  const activeGroup = activeSlug ? categoryMeta(activeSlug).group : undefined;
 
   const [open, setOpen] = useState<Record<string, boolean>>(
-    Object.fromEntries(CATEGORY_GROUPS.map((g) => [g, g === activeGroup])),
+    Object.fromEntries(GROUP_ORDER.map((g) => [g, g === activeGroup])),
   );
 
   return (
-    <nav aria-label="Sections" className="space-y-1">
+    <nav aria-label="Browse" className="space-y-1.5">
       <Link
         href="/projects"
         aria-current={pathname === "/projects" ? "page" : undefined}
@@ -30,84 +30,81 @@ export function SectionsNav() {
             : "text-neutral-200 hover:bg-neutral-800"
         }`}
       >
-        <Boxes size={16} aria-hidden /> All projects
+        <Compass size={16} aria-hidden /> Everything
       </Link>
 
-      <div className="relative pl-3">
-        <span className="absolute left-[7px] top-1 bottom-5 w-px bg-neutral-800" aria-hidden />
+      {GROUP_ORDER.map((key) => {
+        const g = GROUPS[key];
+        const isOpen = open[key];
+        const isActiveGroup = activeGroup === key;
 
-        {CATEGORY_GROUPS.map((group) => {
-          const isOpen = open[group];
-          const sections = CATEGORY_META.filter((c) => c.group === group);
-          return (
-            <div key={group} className="relative">
-              <span className="absolute left-[-5px] top-[21px] h-px w-3 bg-neutral-800" aria-hidden />
-              <button
-                onClick={() => setOpen((o) => ({ ...o, [group]: !o[group] }))}
-                aria-expanded={isOpen}
-                className={`flex min-h-[42px] w-full cursor-pointer items-center gap-1.5 rounded-lg pl-2.5 pr-2 font-mono text-sm outline-none transition-colors duration-200 hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                  activeGroup === group ? "text-white" : "text-neutral-300"
-                }`}
-              >
-                <ChevronRight
-                  size={14}
-                  aria-hidden
-                  className={`text-neutral-500 transition-transform duration-200 ease-out ${isOpen ? "rotate-90" : ""}`}
-                />
-                {group}
-              </button>
+        return (
+          <div
+            key={key}
+            className={`overflow-hidden rounded-lg border transition-colors duration-200 ${
+              isOpen ? "border-neutral-700 bg-neutral-900/60" : "border-transparent"
+            }`}
+          >
+            <button
+              onClick={() => setOpen((o) => ({ ...o, [key]: !o[key] }))}
+              aria-expanded={isOpen}
+              className="flex min-h-[44px] w-full cursor-pointer items-center gap-2 px-3 text-left outline-none transition-colors duration-200 hover:bg-neutral-800/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
+            >
+              <span className={`h-2 w-2 shrink-0 rounded-full ${g.dot}`} aria-hidden />
+              <span className={`flex-1 font-mono text-sm font-bold ${isOpen || isActiveGroup ? g.text : "text-neutral-300"}`}>
+                {g.label}
+              </span>
+              <ChevronRight
+                size={14}
+                aria-hidden
+                className={`text-neutral-500 transition-transform duration-200 ease-out ${isOpen ? "rotate-90" : ""}`}
+              />
+            </button>
 
-              <div
-                className="grid transition-[grid-template-rows] duration-300 ease-out"
-                style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
-              >
-                <div className="overflow-hidden">
-                  <div className="relative pb-1 pl-4">
-                    <span className="absolute left-[9px] top-0 bottom-3 w-px bg-neutral-800" aria-hidden />
-                    {sections.map((c) => {
-                      const isActive = activeSlug === c.slug;
-                      return (
-                        <Link
-                          key={c.slug}
-                          href={`/s/${c.slug}`}
-                          aria-current={isActive ? "page" : undefined}
-                          tabIndex={isOpen ? undefined : -1}
-                          className={`relative flex min-h-[38px] items-center gap-2 rounded-lg pl-4 pr-2 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                            isActive
-                              ? `bg-neutral-800 font-bold ${c.text}`
-                              : "text-neutral-400 hover:bg-neutral-800/60 hover:text-white"
-                          }`}
-                        >
-                          <span className="absolute left-[-7px] top-1/2 h-px w-3 bg-neutral-800" aria-hidden />
+            <div
+              className="grid transition-[grid-template-rows] duration-300 ease-out"
+              style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+            >
+              <div className="overflow-hidden">
+                <p className="px-3 pb-2 text-[11px] leading-snug text-neutral-500">{g.blurb}</p>
+                <div className="relative pb-2 pl-3">
+                  {/* group-colored spine */}
+                  <span
+                    className="absolute left-[15px] top-0 bottom-3 w-px opacity-40"
+                    style={{ background: g.hex }}
+                    aria-hidden
+                  />
+                  {sectionsIn(key).map((c) => {
+                    const isActive = activeSlug === c.slug;
+                    return (
+                      <Link
+                        key={c.slug}
+                        href={`/s/${c.slug}`}
+                        aria-current={isActive ? "page" : undefined}
+                        tabIndex={isOpen ? undefined : -1}
+                        className={`relative ml-3 flex min-h-[36px] items-center rounded-md pl-3 pr-2 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+                          isActive
+                            ? `bg-neutral-800 font-bold ${g.text}`
+                            : "text-neutral-400 hover:bg-neutral-800/60 hover:text-white"
+                        }`}
+                      >
+                        {isActive && (
                           <span
-                            className={`h-1.5 w-1.5 shrink-0 rounded-full ${c.dot} ${isActive ? "shadow-[0_0_6px_currentColor]" : "opacity-50"}`}
+                            className="absolute left-[-1px] top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full"
+                            style={{ background: g.hex }}
                             aria-hidden
                           />
-                          {c.label}
-                        </Link>
-                      );
-                    })}
-                  </div>
+                        )}
+                        {c.label}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      <div className="mt-4 border-t border-neutral-800 pt-3">
-        <Link
-          href="/wire"
-          aria-current={pathname.startsWith("/wire") ? "page" : undefined}
-          className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-            pathname.startsWith("/wire")
-              ? "bg-sky-400/10 font-bold text-sky-300"
-              : "text-neutral-300 hover:bg-neutral-800"
-          }`}
-        >
-          <Radio size={16} aria-hidden /> Community feed
-        </Link>
-      </div>
+          </div>
+        );
+      })}
     </nav>
   );
 }

@@ -1,61 +1,83 @@
-// Single source of truth for category display + grouping. Slugs must match
-// docs/manifest/project.schema.json's category enum.
+// Single source of truth for sections, grouping, and color.
+//
+// COLOR RULE: color carries meaning, not decoration. There are exactly three
+// group colors (AI-purple, Build-amber, Play-rose) plus the emerald accent for
+// "you can click this". Individual sections inherit their group's color — no
+// ten-way rainbow.
 
 export type CategoryMeta = {
   slug: string;
   label: string;
-  group: string;
-  /** Tailwind classes for the accent */
-  text: string;
-  border: string;
-  dot: string;
+  /** What this kind of thing IS, in one or two words — shown as a badge on cards. */
+  kind: string;
+  group: GroupKey;
 };
 
-export const CATEGORY_GROUPS = ["Claude", "AI", "Software"] as const;
+export type GroupKey = "ai" | "build" | "play";
+
+export const GROUPS: Record<GroupKey, { label: string; blurb: string; text: string; border: string; dot: string; hex: string }> = {
+  ai: {
+    label: "AI",
+    blurb: "Things that make your AI better",
+    text: "text-violet-300",
+    border: "border-violet-400/30",
+    dot: "bg-violet-400",
+    hex: "#c4b5fd",
+  },
+  build: {
+    label: "Build",
+    blurb: "Tools and code you build with",
+    text: "text-amber-300",
+    border: "border-amber-400/30",
+    dot: "bg-amber-400",
+    hex: "#fcd34d",
+  },
+  play: {
+    label: "Play",
+    blurb: "Things you run and enjoy",
+    text: "text-rose-300",
+    border: "border-rose-400/30",
+    dot: "bg-rose-400",
+    hex: "#fda4af",
+  },
+};
+
+export const GROUP_ORDER: GroupKey[] = ["ai", "build", "play"];
 
 export const CATEGORY_META: CategoryMeta[] = [
-  // Claude — everything in the Claude ecosystem, branched properly
-  { slug: "claude-code",   label: "Code Projects", group: "Claude",   text: "text-cyan-400",    border: "border-cyan-400/30",    dot: "bg-cyan-400" },
-  { slug: "claude-skills", label: "Skills",        group: "Claude",   text: "text-fuchsia-400", border: "border-fuchsia-400/30", dot: "bg-fuchsia-400" },
-  { slug: "claude-md",     label: "CLAUDE.md",     group: "Claude",   text: "text-amber-400",   border: "border-amber-400/30",   dot: "bg-amber-400" },
-  // Other AI ecosystems
-  { slug: "codex",         label: "Codex",         group: "AI",       text: "text-sky-400",     border: "border-sky-400/30",     dot: "bg-sky-400" },
-  { slug: "grok",          label: "Grok / xAI",    group: "AI",       text: "text-zinc-300",    border: "border-zinc-300/30",    dot: "bg-zinc-300" },
-  { slug: "local-llms",    label: "Local LLMs",    group: "AI",       text: "text-violet-400",  border: "border-violet-400/30",  dot: "bg-violet-400" },
-  { slug: "mcp-servers",   label: "MCP Servers",   group: "AI",       text: "text-emerald-400", border: "border-emerald-400/30", dot: "bg-emerald-400" },
-  // Software — things you run
-  { slug: "apps",          label: "Apps",          group: "Software", text: "text-orange-400",  border: "border-orange-400/30",  dot: "bg-orange-400" },
-  { slug: "games",         label: "Games",         group: "Software", text: "text-rose-400",    border: "border-rose-400/30",    dot: "bg-rose-400" },
-  { slug: "scripts-tools", label: "Scripts & Tools", group: "Software", text: "text-lime-400",  border: "border-lime-400/30",    dot: "bg-lime-400" },
+  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", group: "ai" },
+  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", group: "ai" },
+  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", group: "ai" },
+  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", group: "ai" },
+  { slug: "codex", label: "Codex", kind: "Codex Setup", group: "ai" },
+  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", group: "ai" },
+
+  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", group: "build" },
+  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", group: "build" },
+
+  { slug: "apps", label: "Apps", kind: "App", group: "play" },
+  { slug: "games", label: "Games", kind: "Game", group: "play" },
 ];
 
 export const CATEGORY_SLUGS = CATEGORY_META.map((c) => c.slug);
 
-/** Raw hex per category, for SVG/inline styles that can't use Tailwind classes. */
-export const ACCENT_HEX: Record<string, string> = {
-  "claude-code": "#22d3ee",
-  "claude-skills": "#e879f9",
-  "claude-md": "#fbbf24",
-  codex: "#38bdf8",
-  grok: "#d4d4d8",
-  "local-llms": "#a78bfa",
-  "mcp-servers": "#34d399",
-  apps: "#fb923c",
-  games: "#fb7185",
-  "scripts-tools": "#a3e635",
-};
+const FALLBACK: CategoryMeta = { slug: "", label: "Other", kind: "Project", group: "build" };
 
 export function categoryMeta(slug: string): CategoryMeta {
-  return (
-    CATEGORY_META.find((c) => c.slug === slug) ?? {
-      slug,
-      label: slug,
-      group: "Software",
-      text: "text-neutral-400",
-      border: "border-neutral-400/30",
-      dot: "bg-neutral-400",
-    }
-  );
+  return CATEGORY_META.find((c) => c.slug === slug) ?? { ...FALLBACK, slug, label: slug };
+}
+
+export function groupOf(slug: string) {
+  return GROUPS[categoryMeta(slug).group];
+}
+
+export function sectionsIn(group: GroupKey) {
+  return CATEGORY_META.filter((c) => c.group === group);
+}
+
+/** Raw hex for SVG/inline styles that can't use Tailwind classes. */
+export function accentHex(slug: string) {
+  return groupOf(slug).hex;
 }
 
 export function timeAgo(epochSeconds: number): string {

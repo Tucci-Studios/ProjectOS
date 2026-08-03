@@ -5,7 +5,7 @@ import { getSessionUser } from "@/lib/auth";
 import { getProjectFeed, getLikedIds } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
 import { Boxes } from "lucide-react";
-import { CATEGORY_META, categoryMeta, timeAgo } from "@/lib/categories";
+import { CATEGORY_META, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { PageHeader } from "@/components/page-header";
 
 // One plain-English line per section, so a newcomer knows what belongs here.
@@ -59,6 +59,7 @@ export default async function SectionPage({
   const { tab: tabParam } = await searchParams;
   if (!CATEGORY_META.some((c) => c.slug === category)) notFound();
   const meta = categoryMeta(category);
+  const g = groupOf(category);
   const tab = tabParam === "tutorials" ? "tutorials" : tabParam === "requests" ? "requests" : "projects";
 
   const user = await getSessionUser();
@@ -68,7 +69,7 @@ export default async function SectionPage({
       href={key === "projects" ? `/s/${category}` : `/s/${category}?tab=${key}`}
       className={`rounded-lg px-4 py-1.5 font-mono text-sm transition ${
         tab === key
-          ? `bg-neutral-800 ${meta.text} shadow-[0_0_12px_rgba(255,255,255,0.05)]`
+          ? `bg-neutral-800 ${g.text} shadow-[0_0_12px_rgba(255,255,255,0.05)]`
           : "text-neutral-500 hover:text-neutral-300"
       }`}
     >
@@ -154,12 +155,12 @@ export default async function SectionPage({
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Projects", href: "/projects" },
-          { label: meta.group },
+          { label: g.label },
           { label: meta.label },
         ]}
         title={meta.label}
         purpose={TAB_PURPOSE[tab]}
-        accent={meta.text}
+        accent={g.text}
         Icon={Boxes}
       />
       <div className="mb-5 inline-flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
