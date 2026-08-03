@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, Plus, Wrench, Bug, Rocket, GitBranch, Download, MessageSquare, Lightbulb } from "lucide-react";
+import { X, Plus, Wrench, Bug, Rocket, Download, GitBranch, Vote } from "lucide-react";
 import { BrandMark } from "./brand";
 
 export type SplashUpdate = {
@@ -22,31 +22,22 @@ const LINE_KINDS = {
   ">": { Icon: Rocket, cls: "text-fuchsia-300", label: "From an idea" },
 } as const;
 
-/**
- * Shows the newest update once per person, as an overlay on top of whatever
- * page they're on. Closing it leaves them exactly where they were.
- * `trigger` lets the header re-open it on demand.
- */
-const WELCOME = [
+// Three steps, not four paragraphs. Whole thing fits on one screen.
+const STEPS = [
   {
     Icon: Download,
-    title: "Take what you need",
-    body: "Skills, MCP servers, CLAUDE.md files, tools, apps, games — every project has a copy-paste line that installs it into your setup. Nothing is behind a paywall, because nothing here can be sold.",
+    title: "Take it",
+    body: "Every project installs with one copy-paste command. Skills, MCP servers, tools, games — all free, all open.",
   },
   {
     Icon: GitBranch,
-    title: "Branch anything",
-    body: "See a project you'd do differently? Branch it. Your version keeps the original's name and adds yours — Subwolf // Cyber — and joins a public family tree that shows where every idea came from.",
+    title: "Branch it",
+    body: "Change anything you find. Your version keeps the original name and adds yours, and joins its family tree.",
   },
   {
-    Icon: MessageSquare,
-    title: "Ask, answer, show off",
-    body: "Post what you're building, ask when you're stuck, or write a tutorial for the thing you just figured out. Every section has its own tutorials and help-wanted list.",
-  },
-  {
-    Icon: Lightbulb,
-    title: "Change the site itself",
-    body: "Project OS is open source and runs on its own rules. Build a change, deploy it, and put it up for a vote — the ones people want most get merged.",
+    Icon: Vote,
+    title: "Vote on it",
+    body: "Vote projects up, and vote on changes to this site. What wins gets built.",
   },
 ];
 
@@ -85,7 +76,6 @@ export function UpdateSplash({
   function close() {
     setOpen(false);
     onClosed?.();
-    // Mark seen; failure is harmless — they'd just see it once more.
     void fetch("/api/updates/seen", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -102,134 +92,143 @@ export function UpdateSplash({
   });
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="What's new"
-      className="animate-overlay fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm sm:p-8"
-      onClick={(e) => e.target === e.currentTarget && close()}
-    >
-      <div className="animate-dialog my-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-400/30 bg-[#161d18] shadow-2xl shadow-black/70">
-        {/* Banner */}
-        <div className="relative flex items-center gap-3 border-b border-neutral-800 bg-neutral-900/70 px-5 py-4">
-          <BrandMark size={36} />
-          <div className="min-w-0 flex-1">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-300">
-              {tab === "welcome" ? "Welcome" : "What's new"}
-            </p>
-            <h2 className="truncate font-mono text-lg font-bold leading-tight text-white">
-              {tab === "welcome" ? "Project OS — open source" : update.title}
-            </h2>
-            <p className="font-mono text-[11px] text-neutral-500">
-              {tab === "welcome" ? (
-                "publish · branch · vote"
-              ) : (
-                <>
-                  {update.version && <span className="text-neutral-400">{update.version} · </span>}
-                  {date}
-                </>
-              )}
-            </p>
-          </div>
-          <button
-            onClick={close}
-            aria-label="Close"
-            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg text-neutral-500 outline-none transition hover:bg-neutral-800 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
-          >
-            <X size={18} aria-hidden />
-          </button>
-        </div>
+    <div role="dialog" aria-modal="true" aria-label="About Project OS" className="animate-overlay fixed inset-0 z-50 flex flex-col bg-[#141a16]">
+      {/* Top bar — brand, tabs, and a close target you can't miss */}
+      <div className="flex shrink-0 items-center gap-5 border-b border-neutral-800 px-5 py-3.5">
+        <span className="flex items-center gap-2.5">
+          <BrandMark size={30} />
+          <span className="hidden font-mono text-[15px] font-bold tracking-[0.16em] text-white sm:block">
+            PROJECT<span className="text-emerald-400">_</span>OS
+          </span>
+        </span>
 
-        <div className="flex gap-1 border-b border-neutral-800 px-4 pt-2">
+        <div className="flex gap-1">
           {(["welcome", "new"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               aria-current={tab === t ? "page" : undefined}
-              className={`relative min-h-[40px] cursor-pointer px-3 font-mono text-[13px] outline-none transition-colors ${
-                tab === t ? "text-white" : "text-neutral-500 hover:text-neutral-300"
+              className={`relative min-h-[38px] cursor-pointer rounded-lg px-3 font-mono text-[13px] outline-none transition-colors focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+                tab === t ? "bg-neutral-800 text-white" : "text-neutral-500 hover:text-neutral-300"
               }`}
             >
               {t === "welcome" ? "What is this?" : "What's new"}
-              {tab === t && <span className="absolute inset-x-2 bottom-0 h-[2px] rounded-t bg-emerald-400" aria-hidden />}
             </button>
           ))}
         </div>
 
-        <div className="max-h-[58vh] overflow-y-auto px-5 py-5">
-          {tab === "welcome" ? (
-            <div>
-              <p className="text-[15px] leading-relaxed text-neutral-300">
-                <span className="font-bold text-white">Project OS is where open-source projects grow branches.</span>{" "}
-                People publish things they built — mostly with AI — and anyone can take one, change it, and publish
-                their own version. Every version stays connected to the one it came from.
-              </p>
-              <ul className="mt-5 space-y-3.5">
-                {WELCOME.map((w) => (
-                  <li key={w.title} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
-                      <w.Icon size={15} aria-hidden />
-                    </span>
-                    <span>
-                      <span className="block font-mono text-sm font-bold text-white">{w.title}</span>
-                      <span className="mt-0.5 block text-sm leading-relaxed text-neutral-400">{w.body}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5 rounded-lg border border-neutral-800 bg-neutral-900/60 p-3.5 text-xs leading-relaxed text-neutral-500">
-                Code lives on GitHub — Project OS lists it, tracks its branches, and helps people install it. Projects
-                are community-submitted, so read before you run.
-              </p>
+        <button
+          onClick={close}
+          aria-label="Close"
+          className="ml-auto flex h-11 items-center gap-2 rounded-lg border border-neutral-700 px-3.5 font-mono text-[13px] text-neutral-300 outline-none transition hover:border-neutral-500 hover:bg-neutral-800 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
+        >
+          <X size={17} aria-hidden /> <span className="hidden sm:inline">Close</span>
+        </button>
+      </div>
+
+      {/* Body — sized to the screen, scrolls only if it truly must */}
+      <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-5 py-6">
+        {tab === "welcome" ? (
+          <div className="animate-rise w-full max-w-4xl">
+            <h1 className="text-center font-mono text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
+              Publish what you build.
+              <br />
+              <span className="text-emerald-400">Branch</span> what everyone else built.
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-center text-[15px] leading-relaxed text-neutral-400">
+              Project OS is a home for open-source projects — mostly built with AI. Nothing here can be sold, and every
+              version stays linked to the one it came from.
+            </p>
+
+            <div className="mt-9 grid gap-4 sm:grid-cols-3">
+              {STEPS.map((s, i) => (
+                <div key={s.title} className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
+                    <s.Icon size={18} aria-hidden />
+                  </span>
+                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">
+                    <span className="text-neutral-600">{i + 1}. </span>
+                    {s.title}
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">{s.body}</p>
+                </div>
+              ))}
             </div>
-          ) : (
-            <>
-          {update.intro && <p className="mb-4 text-[15px] leading-relaxed text-neutral-300">{update.intro}</p>}
-          <ul className="space-y-2.5">
-            {update.body_md
-              .split("\n")
-              .map((l) => l.trim())
-              .filter(Boolean)
-              .map((line, i) => {
-                const kind = LINE_KINDS[line[0] as keyof typeof LINE_KINDS];
-                if (!kind)
+
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={close}
+                className="min-h-[46px] cursor-pointer rounded-lg bg-emerald-400 px-7 font-mono text-sm font-bold text-black transition hover:bg-emerald-300"
+              >
+                Start exploring
+              </button>
+              <button
+                onClick={() => setTab("new")}
+                className="min-h-[46px] cursor-pointer rounded-lg border border-neutral-700 px-5 font-mono text-sm text-neutral-300 transition hover:border-neutral-500 hover:text-white"
+              >
+                See what&apos;s new
+              </button>
+            </div>
+
+            <p className="mt-6 text-center text-xs text-neutral-600">
+              Code lives on GitHub — projects here are community-submitted, so read before you run.
+            </p>
+          </div>
+        ) : (
+          <div className="animate-rise w-full max-w-2xl">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-300">What&apos;s new</p>
+            <h1 className="mt-1.5 font-mono text-2xl font-bold leading-tight tracking-tight text-white">{update.title}</h1>
+            <p className="mt-1 font-mono text-[11px] text-neutral-500">
+              {update.version && <span className="text-neutral-400">{update.version} · </span>}
+              {date} · @{update.github_login}
+            </p>
+
+            {update.intro && <p className="mt-4 text-[15px] leading-relaxed text-neutral-300">{update.intro}</p>}
+
+            <ul className="mt-5 space-y-2.5">
+              {update.body_md
+                .split("\n")
+                .map((l) => l.trim())
+                .filter(Boolean)
+                .map((line, i) => {
+                  const kind = LINE_KINDS[line[0] as keyof typeof LINE_KINDS];
+                  if (!kind)
+                    return (
+                      <li key={i} className="text-sm leading-relaxed text-neutral-400">
+                        {line}
+                      </li>
+                    );
                   return (
-                    <li key={i} className="text-sm leading-relaxed text-neutral-400">
-                      {line}
+                    <li key={i} className="flex items-start gap-2.5">
+                      <kind.Icon size={14} className={`mt-[3px] shrink-0 ${kind.cls}`} aria-hidden />
+                      <span className="text-sm leading-relaxed text-neutral-300">
+                        <span className={`mr-1.5 font-mono text-[10px] font-bold uppercase tracking-wider ${kind.cls}`}>
+                          {kind.label}
+                        </span>
+                        {line.slice(1).trim()}
+                      </span>
                     </li>
                   );
-                return (
-                  <li key={i} className="flex items-start gap-2.5">
-                    <kind.Icon size={14} className={`mt-[3px] shrink-0 ${kind.cls}`} aria-hidden />
-                    <span className="text-sm leading-relaxed text-neutral-300">
-                      <span className={`mr-1.5 font-mono text-[10px] font-bold uppercase tracking-wider ${kind.cls}`}>
-                        {kind.label}
-                      </span>
-                      {line.slice(1).trim()}
-                    </span>
-                  </li>
-                );
-              })}
-          </ul>
-            </>
-          )}
-        </div>
+                })}
+            </ul>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800 px-5 py-3.5">
-          <Link
-            href="/news"
-            onClick={close}
-            className="font-mono text-[12px] text-neutral-500 transition hover:text-neutral-300"
-          >
-            All past updates
-          </Link>
-          <button
-            onClick={close}
-            className="min-h-[40px] cursor-pointer rounded-lg bg-emerald-400 px-5 font-mono text-sm font-bold text-black transition hover:bg-emerald-300"
-          >
-            {tab === "welcome" ? "Start exploring" : "Got it"}
-          </button>
-        </div>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <button
+                onClick={close}
+                className="min-h-[44px] cursor-pointer rounded-lg bg-emerald-400 px-6 font-mono text-sm font-bold text-black transition hover:bg-emerald-300"
+              >
+                Got it
+              </button>
+              <Link
+                href="/news"
+                onClick={close}
+                className="font-mono text-[13px] text-neutral-500 transition hover:text-neutral-300"
+              >
+                All past updates
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

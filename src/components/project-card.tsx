@@ -121,9 +121,11 @@ export function ProjectCard({
           </div>
         </div>
 
-        <div className="relative z-[2] flex shrink-0 flex-col items-end gap-2 self-start pt-1">
+        <div className="relative z-[2] flex shrink-0 flex-col items-end justify-between self-stretch pt-1">
           <GroupGlyph category={p.category} size={20} />
-          {canFollow && <FollowButton projectId={p.id} initialFollowing={!!following} size="sm" />}
+          {canFollow && (
+            <FollowButton projectId={p.id} initialFollowing={!!following} iconOnly />
+          )}
         </div>
       </div>
 

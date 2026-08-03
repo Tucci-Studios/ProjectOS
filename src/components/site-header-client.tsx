@@ -49,7 +49,7 @@ export function SiteHeaderClient({
         </span>
 
         {/* Center: the two places you go */}
-        <form action="/search" method="get" className="relative mx-8 hidden max-w-xl flex-1 md:block">
+        <form action="/search" method="get" className="relative ml-8 hidden w-full max-w-[560px] md:block">
           <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" aria-hidden />
           <input
             name="q"
@@ -59,7 +59,7 @@ export function SiteHeaderClient({
           />
         </form>
 
-        <div className="ml-auto flex items-center gap-2 border-l border-neutral-800 pl-3 md:ml-0">
+        <div className="ml-auto flex items-center gap-2 border-l border-neutral-800 pl-4">
           <ButtonLink href="/submit" variant="primary" className="!min-h-[34px] !rounded-full !px-3 !text-[13px]">
             <Plus size={14} aria-hidden /> <span className="hidden sm:inline">Publish</span>
           </ButtonLink>
