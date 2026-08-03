@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Flame } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds } from "@/lib/queries";
+import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds , getSavedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,7 @@ export default async function PopularPage() {
   const user = await getSessionUser();
   const { env } = getCloudflareContext();
 
-  const [{ results: allTop }, votes, follows, blocked] = await Promise.all([
+  const [{ results: allTop }, votes, follows, blocked, savedIds] = await Promise.all([
     env.DB.prepare(
       `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
               u.github_login, u.avatar_url, p.owner_id,
@@ -32,6 +32,7 @@ export default async function PopularPage() {
     getUserVotes(user?.id),
     getFollowedIds(user?.id),
     getBlockedIds(user?.id),
+    getSavedIds(user?.id),
   ]);
 
   const top = allTop.filter((p) => !blocked.has(p.owner_id ?? ""));
@@ -74,7 +75,7 @@ export default async function PopularPage() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0 flex-1">
-                <ProjectCard p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} badges={badges.get(p.owner_id ?? "")} />
+                <ProjectCard p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} saved={savedIds.has(p.id)} canFollow={!!user} badges={badges.get(p.owner_id ?? "")} />
               </div>
             </li>
           ))}

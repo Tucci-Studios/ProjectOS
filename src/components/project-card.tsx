@@ -3,6 +3,7 @@ import { GitBranch } from "lucide-react";
 import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
+import { SaveButton } from "./save-button";
 import { CardComments } from "./card-comments";
 import { UserChip } from "./user-chip";
 import type { Badges } from "./user-badges";
@@ -77,12 +78,14 @@ export function ProjectCard({
   p,
   vote = 0,
   following,
+  saved,
   canFollow = false,
   badges,
 }: {
   p: ProjectFeedRow;
   vote?: number;
   following?: boolean;
+  saved?: boolean;
   canFollow?: boolean;
   badges?: Badges;
 }) {
@@ -142,7 +145,10 @@ export function ProjectCard({
         <div className="relative z-[2] flex shrink-0 flex-col items-end justify-between self-stretch pt-1">
           <GroupGlyph category={p.category} size={20} />
           {canFollow && (
-            <FollowButton projectId={p.id} initialFollowing={!!following} iconOnly />
+            <span className="flex flex-col items-end gap-1.5">
+              <SaveButton projectId={p.id} initialSaved={!!saved} iconOnly />
+              <FollowButton projectId={p.id} initialFollowing={!!following} iconOnly />
+            </span>
           )}
         </div>
       </div>

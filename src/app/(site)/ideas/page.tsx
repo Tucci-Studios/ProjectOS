@@ -26,7 +26,7 @@ type IdeaRow = {
 
 export default async function IdeasPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab: raw } = await searchParams;
-  const tab: IdeaTab = raw === "winners" || raw === "passed" ? raw : "vote";
+  const tab: IdeaTab = raw === "winners" || raw === "archive" ? raw : "vote";
 
   const user = await getSessionUser();
   const { env } = getCloudflareContext();
@@ -46,39 +46,49 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
   const incoming = results.filter((i) => i.status === "planned" || i.status === "building");
   const shipped = results.filter((i) => i.status === "shipped");
   const declined = results.filter((i) => i.status === "declined");
-  const counts = { vote: upForVote.length, winners: incoming.length + shipped.length, passed: declined.length };
+  const counts = { vote: upForVote.length, winners: incoming.length + shipped.length, archive: declined.length };
 
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader
-        crumbs={[{ label: "Ideas" }]}
-        title="Ideas"
-        purpose="The site is built on itself. Branch it, build your change, deploy it, and post it here — everyone tries the real thing before they vote. The round's winner ships."
-        Icon={Lightbulb}
-        action={
-          <div className="flex flex-wrap gap-2.5">
-            <ButtonLink href="/ideas/build" variant="ghost">
-              <Code2 size={15} aria-hidden /> Get the code
-            </ButtonLink>
-            <ButtonLink href={user ? "/ideas/new" : "/api/auth/login"} variant="primary">
-              <Plus size={16} aria-hidden /> Submit a change
-            </ButtonLink>
-          </div>
-        }
-      />
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-x-5 gap-y-3">
+        <div className="min-w-0">
+          <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
+            <Lightbulb size={22} className="text-amber-300" aria-hidden /> Ideas
+          </h1>
+          <p className="mt-1 font-mono text-[13px] text-neutral-400">
+            {tab === "vote" ? (
+              <>
+                <span className="font-bold text-emerald-300">Round {cycle.n}</span>
+                <span className="text-neutral-600"> · </span>
+                voting {closesInWords(cycle.daysLeft)}
+                <span className="text-neutral-600"> · </span>
+                most votes ships
+              </>
+            ) : tab === "winners" ? (
+              <>Changes that won a round — shipped, or on the way.</>
+            ) : (
+              <>Everything that didn&apos;t make it. Nothing is ever deleted.</>
+            )}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ButtonLink href="/ideas/build" variant="ghost" className="!min-h-[38px] !text-[13px]">
+            <Code2 size={14} aria-hidden /> Get the code
+          </ButtonLink>
+          <ButtonLink
+            href={user ? "/ideas/new" : "/api/auth/login"}
+            variant="primary"
+            className="!min-h-[38px] !text-[13px]"
+          >
+            <Plus size={15} aria-hidden /> Submit a change
+          </ButtonLink>
+        </div>
+      </div>
 
       <IdeaTabs active={tab} counts={counts} />
 
       {tab === "vote" && (
         <>
-          <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-emerald-400/25 bg-emerald-400/[0.05] px-4 py-3">
-            <span className="flex items-center gap-2 font-mono text-sm font-bold text-emerald-300">
-              <Clock size={15} aria-hidden /> Round {cycle.n}
-            </span>
-            <span className="font-mono text-sm text-neutral-300">Voting {closesInWords(cycle.daysLeft)}</span>
-            <span className="ml-auto font-mono text-[11px] text-neutral-500">Most votes wins</span>
-          </div>
-
           {upForVote.length === 0 ? (
             <Empty>Nothing up for vote this round. Branch the site, build something, and show everyone.</Empty>
           ) : (
@@ -227,13 +237,13 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
         </>
       )}
 
-      {tab === "passed" && (
+      {tab === "archive" && (
         <section>
           <p className="mb-3 text-sm leading-relaxed text-neutral-500">
-            Proposals that lost their round or were turned down. Nothing is deleted — you can still read the reasoning.
+Proposals that lost their round or were turned down. Nothing is ever deleted — the reasoning stays readable.
           </p>
           {declined.length === 0 ? (
-            <Empty>Nothing has been turned down.</Empty>
+            <Empty>The archive is empty — nothing has been turned down yet.</Empty>
           ) : (
             <div className="space-y-2">
               {declined.map((idea) => (
@@ -252,6 +262,11 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
           )}
         </section>
       )}
+      <p className="mt-8 border-t border-neutral-800 pt-5 text-[13px] leading-relaxed text-neutral-500">
+        <span className="text-neutral-300">How this works:</span>{" "}the site is built on itself. Branch it, build your
+        change, deploy it, and post it here — everyone tries the real thing before they vote. The round&apos;s winner
+        gets a security check, then ships.
+      </p>
     </div>
   );
 }

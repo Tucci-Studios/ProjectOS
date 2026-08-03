@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Rss, Compass } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds } from "@/lib/queries";
+import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds , getSavedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { UpdateCard, type FeedUpdate } from "@/components/update-card";
 import { ButtonLink } from "@/components/ui";
@@ -25,7 +25,7 @@ export default async function FeedPage() {
                  ELSE pp.base_name || ' // ' || pp.variant_name END
      FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;
 
-  const [followedRaw, votes, follows, blocked, updateRows] = user
+  const [followedRaw, votes, follows, blocked, updateRows, savedIds] = user
     ? await Promise.all([
         env.DB.prepare(
           `SELECT ${FEED_COLS} FROM projects p
@@ -53,8 +53,9 @@ export default async function FeedPage() {
              AND pu.project_id IN (SELECT project_id FROM follows WHERE user_id = ?1)
            ORDER BY pu.created_at DESC LIMIT 30`,
         ).bind(user.id).all<FeedUpdate & { owner_id: string }>().then((r) => r.results),
+        getSavedIds(user.id),
       ])
-    : [[], new Map<string, number>(), new Set<string>(), new Set<string>(), []];
+    : [[], new Map<string, number>(), new Set<string>(), new Set<string>(), [], new Set<string>()];
 
   const followed = followedRaw.filter((p) => !blocked.has(p.owner_id ?? ""));
   const badges = await getBadgesFor(followed.map((p) => p.owner_id ?? ""));
@@ -98,7 +99,7 @@ export default async function FeedPage() {
                 key={item.p.id}
                 p={item.p}
                 vote={votes.get(item.p.id) ?? 0}
-                following={follows.has(item.p.id)}
+                following={follows.has(item.p.id)} saved={savedIds.has(item.p.id)}
                 canFollow={!!user}
                 badges={badges.get(item.p.owner_id ?? "")}
               />

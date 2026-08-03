@@ -46,8 +46,12 @@ export function FollowButton({
     }
   }
 
+  // The icon-only button must NEVER change size on hover. It sits at the right
+  // edge of a card, so growing shifts it out from under the cursor, which drops
+  // the hover, which shrinks it back — a flicker loop. Fixed box; the label
+  // floats out beside it without touching layout.
   const dims = iconOnly
-    ? "h-8 justify-end px-[7px] hover:pl-2.5 focus-visible:pl-2.5"
+    ? "h-8 w-8 justify-center"
     : size === "sm"
       ? "min-h-[32px] px-2.5 text-[11px]"
       : "min-h-[40px] px-4 text-sm";
@@ -67,16 +71,12 @@ export function FollowButton({
     >
       {iconOnly ? (
         <>
-          {/* The word unfurls to the left of the icon; the button grows into it. */}
+          {/* Floated out of flow entirely — the button's own box never moves. */}
           <span
             aria-hidden
-            className="grid grid-cols-[0fr] overflow-hidden transition-[grid-template-columns] duration-200 ease-out group-hover/follow:grid-cols-[1fr] group-focus-visible/follow:grid-cols-[1fr]"
+            className="pointer-events-none absolute right-[calc(100%+5px)] top-1/2 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-md border border-neutral-700 bg-[#1a221d] px-2 py-1 font-mono text-[11px] text-neutral-200 opacity-0 shadow-lg transition-all duration-200 ease-out group-hover/follow:translate-x-0 group-hover/follow:opacity-100 group-focus-visible/follow:translate-x-0 group-focus-visible/follow:opacity-100"
           >
-            <span className="min-w-0">
-              <span className="block whitespace-nowrap pr-1.5 font-mono text-[11px]">
-                {following ? "Following" : label}
-              </span>
-            </span>
+            {following ? "Following" : label}
           </span>
           {following ? <BellRing size={iconSize} aria-hidden /> : <Bell size={iconSize} aria-hidden />}
         </>

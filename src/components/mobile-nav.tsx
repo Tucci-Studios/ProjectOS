@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu, X, Rss, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
+import { Bookmark, Menu, X, Rss, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 const MAIN = [
@@ -11,6 +11,7 @@ const MAIN = [
   { href: "/popular", label: "Popular", Icon: Flame },
   { href: "/explore", label: "Explore", Icon: Sparkles },
   { href: "/news", label: "News", Icon: Megaphone },
+  { href: "/saves", label: "Saves", Icon: Bookmark },
   { href: "/ideas", label: "Ideas", Icon: Lightbulb },
   { href: "/lab", label: "Lab", Icon: FlaskConical },
 ];

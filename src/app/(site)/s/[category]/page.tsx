@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { Boxes, BookOpen, HelpCircle, Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getProjectFeed, getUserVotes, getFollowedIds, getBadgesFor, type FeedSort } from "@/lib/queries";
+import { getProjectFeed, getUserVotes, getFollowedIds, getBadgesFor, type FeedSort , getSavedIds } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
 import { PageHeader } from "@/components/page-header";
 import { SortTabs } from "@/components/sort-tabs";
@@ -105,10 +105,11 @@ export default async function SectionPage({
   let pager: React.ReactNode = null;
 
   if (tab === "projects") {
-    const [{ results: feed, total }, votes, follows] = await Promise.all([
+    const [{ results: feed, total }, votes, follows, savedIds] = await Promise.all([
       getProjectFeed(category, sort, { limit: PER_PAGE, offset: (page - 1) * PER_PAGE, viewerId: user?.id }),
       getUserVotes(user?.id),
       getFollowedIds(user?.id),
+      getSavedIds(user?.id),
     ]);
     const badges = await getBadgesFor(feed.map((p) => p.owner_id ?? ""));
     const pages = Math.max(1, Math.ceil(total / PER_PAGE));
@@ -127,7 +128,7 @@ export default async function SectionPage({
               key={p.id}
               p={p}
               vote={votes.get(p.id) ?? 0}
-              following={follows.has(p.id)}
+              following={follows.has(p.id)} saved={savedIds.has(p.id)}
               canFollow={!!user}
               badges={badges.get(p.owner_id ?? "")}
             />

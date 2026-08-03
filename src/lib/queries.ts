@@ -68,6 +68,15 @@ export async function getBlockedIds(userId: string | undefined): Promise<Set<str
 }
 
 /** Project ids this user follows. */
+export async function getSavedIds(userId: string | undefined): Promise<Set<string>> {
+  if (!userId) return new Set();
+  const { env } = getCloudflareContext();
+  const { results } = await env.DB.prepare("SELECT project_id FROM saves WHERE user_id = ?1")
+    .bind(userId)
+    .all<{ project_id: string }>();
+  return new Set(results.map((r) => r.project_id));
+}
+
 export async function getFollowedIds(userId: string | undefined): Promise<Set<string>> {
   if (!userId) return new Set();
   const { env } = getCloudflareContext();
