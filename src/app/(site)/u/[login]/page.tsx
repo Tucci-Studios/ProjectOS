@@ -16,6 +16,7 @@ const FEED_COLS = `p.id, p.base_name, p.variant_name, p.category, p.description,
   u.github_login, u.avatar_url,
   (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
   (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
+  (SELECT GROUP_CONCAT(url, '|') FROM (SELECT url FROM project_images pi WHERE pi.project_id = p.id ORDER BY pi.position LIMIT 5)) AS image_urls,
   (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                ELSE pp.base_name || ' // ' || pp.variant_name END
    FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;

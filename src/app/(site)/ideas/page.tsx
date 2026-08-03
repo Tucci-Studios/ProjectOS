@@ -48,9 +48,11 @@ export default async function IdeasPage() {
     .all<IdeaRow>();
 
   // Winners are out of the running — they already won a round and are being built.
-  const winners = results.filter((i) => i.status === "planned" || i.status === "building");
+  // Won but not live yet — waiting on the security check / merge.
+  const incoming = results.filter((i) => i.status === "planned" || i.status === "building");
   const upForVote = results.filter((i) => i.status === "open");
-  const settled = results.filter((i) => i.status === "shipped" || i.status === "declined");
+  const shipped = results.filter((i) => i.status === "shipped");
+  const declined = results.filter((i) => i.status === "declined");
   const leader = upForVote[0]?.id;
 
   return (
@@ -84,13 +86,16 @@ export default async function IdeasPage() {
       </div>
 
       {/* Won a previous round — being built now, not competing again */}
-      {winners.length > 0 && (
+      {incoming.length > 0 && (
         <section className="mb-7">
-          <h2 className="mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-amber-300">
-            <Hammer size={13} aria-hidden /> Won a round — getting built
+          <h2 className="mb-1 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-amber-300">
+            <Hammer size={13} aria-hidden /> New winners — shipping soon
           </h2>
+          <p className="mb-3 text-sm leading-relaxed text-neutral-500">
+            These won their round. The code is public and going through a security check before it goes live.
+          </p>
           <div className="space-y-3">
-            {winners.map((idea) => (
+            {incoming.map((idea) => (
               <article
                 key={idea.id}
                 className="group relative rounded-xl border border-amber-400/35 bg-amber-400/[0.05] p-4 transition hover:bg-amber-400/[0.08]"
@@ -100,7 +105,8 @@ export default async function IdeasPage() {
                     <Trophy size={10} aria-hidden /> Won round {Math.max(1, cycle.n - 1)}
                   </span>
                   <span className="font-mono text-[11px] text-neutral-400">
-                    {idea.vote_count} vote{Math.abs(idea.vote_count) === 1 ? "" : "s"} · being built now
+                    {idea.vote_count} vote{Math.abs(idea.vote_count) === 1 ? "" : "s"} ·{" "}
+                    {idea.status === "planned" ? "security check" : "being built"}
                   </span>
                 </div>
                 <h3 className="mt-2 font-mono text-base font-bold leading-snug text-white transition group-hover:text-amber-200">
@@ -195,25 +201,57 @@ export default async function IdeasPage() {
         </div>
       )}
 
-      {settled.length > 0 && (
-        <section className="mt-8 border-t border-neutral-800 pt-6">
-          <h2 className="mb-3 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">
-            <CheckCircle2 size={13} aria-hidden /> Settled
+      {shipped.length > 0 && (
+        <section className="mt-9 border-t border-neutral-800 pt-6">
+          <h2 className="mb-1 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-emerald-400">
+            <CheckCircle2 size={13} aria-hidden /> Old winners — already in the site
           </h2>
+          <p className="mb-3 text-sm leading-relaxed text-neutral-500">
+            Past rounds that shipped. You&apos;re using them right now.
+          </p>
+          <div className="space-y-2.5">
+            {shipped.map((idea) => (
+              <Link
+                key={idea.id}
+                href={`/ideas/${idea.id}`}
+                className="block rounded-xl border border-emerald-400/25 bg-emerald-400/[0.04] px-4 py-3 transition hover:border-emerald-400/50"
+              >
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-300">
+                    <CheckCircle2 size={10} aria-hidden /> Shipped
+                  </span>
+                  <span className="font-mono text-[11px] text-neutral-500">
+                    {idea.vote_count} vote{Math.abs(idea.vote_count) === 1 ? "" : "s"} · by @{idea.github_login}
+                  </span>
+                </span>
+                <span className="mt-1.5 block font-mono text-[15px] font-bold text-white">
+                  &ldquo;{idea.title}&rdquo;
+                </span>
+              </Link>
+            ))}
+          </div>
+          <Link
+            href="/news"
+            className="mt-3 inline-block font-mono text-[12px] text-neutral-500 transition hover:text-emerald-300"
+          >
+            Read the release notes in News →
+          </Link>
+        </section>
+      )}
+
+      {declined.length > 0 && (
+        <section className="mt-8 border-t border-neutral-800 pt-6">
+          <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-600">Turned down</h2>
           <div className="space-y-2">
-            {settled.map((idea) => (
+            {declined.map((idea) => (
               <Link
                 key={idea.id}
                 href={`/ideas/${idea.id}`}
                 className="flex items-center justify-between gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-3.5 py-2.5 transition hover:border-neutral-600"
               >
-                <span className="min-w-0 truncate font-mono text-[13px] text-neutral-400">{idea.title}</span>
-                <span
-                  className={`shrink-0 font-mono text-[10px] font-bold uppercase tracking-wider ${
-                    idea.status === "shipped" ? "text-emerald-400" : "text-neutral-600"
-                  }`}
-                >
-                  {idea.status === "shipped" ? "Shipped" : "Not doing"}
+                <span className="min-w-0 truncate font-mono text-[13px] text-neutral-500">{idea.title}</span>
+                <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-600">
+                  Not doing
                 </span>
               </Link>
             ))}

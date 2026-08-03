@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { GitBranch, ExternalLink, MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { GetItDialog } from "@/components/get-it-dialog";
-import type { ProjectComment } from "@/components/project-comments";
+import { ProjectComments, type ProjectComment } from "@/components/project-comments";
+import { PanelToggle } from "@/components/panel-toggle";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
 import { ImagePreview } from "@/components/image-preview";
@@ -189,36 +190,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       )}
 
       {/* Stats strip */}
-      <section className="mt-9">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
-            <GitBranch size={13} aria-hidden /> The tree
-            <span className="font-normal normal-case tracking-normal">
-              {branchCount === 0 ? (
-                <span className="text-neutral-500">no branches yet</span>
-              ) : (
-                <>
-                  <span className="font-bold text-emerald-400">{branchCount}</span>
-                  <span className="text-neutral-500"> grew from this</span>
-                </>
-              )}
-            </span>
-          </h2>
-          <Link
-            href={`/p/${p.id}/comments`}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg border border-neutral-700 px-3 font-mono text-[13px] text-neutral-300 outline-none transition hover:border-emerald-400/50 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
-          >
-            <MessageCircle size={14} aria-hidden /> Comments {commentRows.results.length}
-          </Link>
-        </div>
-        <BranchTree
-          nodes={lineage}
-          currentId={p.id}
-          accent={accentHex(p.category)}
-          following={following}
-          canFollow={!!user}
-        />
-      </section>
+      <PanelToggle
+        branchCount={branchCount}
+        commentCount={commentRows.results.length}
+        tree={
+          <BranchTree
+            nodes={lineage}
+            currentId={p.id}
+            accent={accentHex(p.category)}
+            following={following}
+            canFollow={!!user}
+          />
+        }
+        comments={<ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />}
+      />
 
       <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
     </div>
