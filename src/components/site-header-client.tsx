@@ -30,9 +30,9 @@ export function SiteHeaderClient({
   return (
     <>
     <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
-      <div className="flex h-[60px] w-full items-center pl-4 pr-4">
+      <div className="grid h-[60px] w-full grid-cols-[1fr_minmax(0,520px)_1fr] items-center gap-6 px-4">
         {/* Left: brand */}
-        <span className="flex select-none items-center gap-2.5">
+        <span className="flex select-none items-center gap-2.5 justify-self-start">
           <BrandMark size={34} />
           <span className="flex flex-col leading-none">
             <span className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
@@ -40,7 +40,7 @@ export function SiteHeaderClient({
             </span>
             <button
               onClick={() => setSplashTrigger((t) => t + 1)}
-              title="What's new"
+              title="What is Project OS?"
               className="mt-[3px] w-fit cursor-pointer rounded font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-500 outline-none transition-colors duration-200 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
             >
               open source
@@ -49,7 +49,7 @@ export function SiteHeaderClient({
         </span>
 
         {/* Center: the two places you go */}
-        <form action="/search" method="get" className="relative ml-8 hidden w-full max-w-[560px] md:block">
+        <form action="/search" method="get" className="relative hidden w-full md:block">
           <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" aria-hidden />
           <input
             name="q"
@@ -59,7 +59,7 @@ export function SiteHeaderClient({
           />
         </form>
 
-        <div className="ml-auto flex items-center gap-2 border-l border-neutral-800 pl-4">
+        <div className="flex items-center justify-end gap-2">
           <ButtonLink href="/submit" variant="primary" className="!min-h-[34px] !rounded-full !px-3 !text-[13px]">
             <Plus size={14} aria-hidden /> <span className="hidden sm:inline">Publish</span>
           </ButtonLink>

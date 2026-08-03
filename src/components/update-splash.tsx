@@ -58,7 +58,10 @@ export function UpdateSplash({
   const [tab, setTab] = useState<"welcome" | "new">(firstTime ? "welcome" : "new");
 
   useEffect(() => {
-    if (trigger) setOpen(true);
+    if (!trigger) return;
+    // Clicking the wordmark asks "what is this?" — never the changelog.
+    setTab("welcome");
+    setOpen(true);
   }, [trigger]);
 
   useEffect(() => {

@@ -6,10 +6,38 @@ import { GitBranch, ChevronDown } from "lucide-react";
 import type { LineageNode } from "@/lib/queries";
 import { FollowButton } from "./follow-button";
 
-// Each row answers "what is this branch?" with its change summary — the thing
-// that actually distinguishes one branch from another. Deep chains collapse so
-// a busy tree stays readable.
-const VISIBLE_BEFORE_COLLAPSE = 6;
+/**
+ * A real tree, drawn like `git log --graph`: a continuous trunk line, elbows
+ * where a branch splits off, and vertical guides that keep running past a row
+ * whenever that level still has siblings below it. That continuity is what
+ * makes it read as branching instead of as an indented list.
+ */
+type Row = LineageNode & { guides: boolean[]; isLast: boolean };
+
+function layout(nodes: LineageNode[]): Row[] {
+  const byParent = new Map<string | null, LineageNode[]>();
+  for (const n of nodes) {
+    const list = byParent.get(n.parent_id) ?? [];
+    list.push(n);
+    byParent.set(n.parent_id, list);
+  }
+
+  const out: Row[] = [];
+  const walk = (parentId: string | null, guides: boolean[]) => {
+    const kids = byParent.get(parentId) ?? [];
+    kids.forEach((kid, i) => {
+      const isLast = i === kids.length - 1;
+      out.push({ ...kid, guides, isLast });
+      // A child's guides = ours plus "does this level continue below me?"
+      walk(kid.id, [...guides, !isLast]);
+    });
+  };
+  walk(null, []);
+  return out;
+}
+
+const COL = 26;
+const VISIBLE = 8;
 
 export function BranchTree({
   nodes,
@@ -27,21 +55,23 @@ export function BranchTree({
   const [expanded, setExpanded] = useState(false);
   if (nodes.length === 0) return null;
 
-  const hidden = Math.max(0, nodes.length - VISIBLE_BEFORE_COLLAPSE);
-  const shown = expanded ? nodes : nodes.slice(0, VISIBLE_BEFORE_COLLAPSE);
+  const rows = layout(nodes);
+  const hidden = Math.max(0, rows.length - VISIBLE);
+  const shown = expanded ? rows : rows.slice(0, VISIBLE);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-neutral-700 bg-neutral-900/50">
+    <div className="overflow-hidden rounded-xl border border-neutral-700 bg-neutral-900/40">
       {shown.map((node, i) => {
         const isCurrent = node.id === currentId;
-        const isRoot = node.depth === 0;
+        const isTrunk = node.guides.length === 0;
+        const indent = node.guides.length * COL;
+
         return (
           <div
             key={node.id}
-            className={`group relative flex items-start gap-3 py-3 pr-3 transition-colors duration-200 ${
+            className={`group relative flex items-stretch transition-colors duration-200 ${
               isCurrent ? "bg-neutral-800/70" : "hover:bg-neutral-800/40"
-            } ${i > 0 ? "border-t border-neutral-800" : ""}`}
-            style={{ paddingLeft: 14 + node.depth * 22 }}
+            } ${i > 0 ? "border-t border-neutral-800/70" : ""}`}
           >
             <Link
               href={`/p/${node.id}`}
@@ -49,36 +79,84 @@ export function BranchTree({
               className="absolute inset-0 z-0 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
             />
 
-            {/* connector */}
-            <span className="relative mt-1 flex w-4 shrink-0 justify-center" aria-hidden>
-              {!isRoot && (
+            {/* graph gutter */}
+            <span className="relative shrink-0" style={{ width: indent + COL + 12 }} aria-hidden>
+              {/* vertical guides for ancestor levels that continue below */}
+              {node.guides.map((continues, level) =>
+                continues ? (
+                  <span
+                    key={level}
+                    className="absolute top-0 bottom-0 w-px"
+                    style={{ left: 18 + level * COL, background: accent, opacity: 0.25 }}
+                  />
+                ) : null,
+              )}
+
+              {!isTrunk && (
                 <>
-                  <span className="absolute -top-4 left-0 h-6 w-px" style={{ background: accent, opacity: 0.3 }} />
-                  <span className="absolute left-0 top-2 h-px w-3" style={{ background: accent, opacity: 0.3 }} />
+                  {/* elbow: down from parent, then across to this node */}
+                  <span
+                    className="absolute top-0 w-px"
+                    style={{ left: 18 + (node.guides.length - 1) * COL, height: 26, background: accent, opacity: 0.45 }}
+                  />
+                  <span
+                    className="absolute h-px"
+                    style={{
+                      left: 18 + (node.guides.length - 1) * COL,
+                      top: 26,
+                      width: COL - 8,
+                      background: accent,
+                      opacity: 0.45,
+                    }}
+                  />
+                  {/* keep the line running past this row if siblings follow */}
+                  {!node.isLast && (
+                    <span
+                      className="absolute bottom-0 w-px"
+                      style={{
+                        left: 18 + (node.guides.length - 1) * COL,
+                        top: 26,
+                        background: accent,
+                        opacity: 0.25,
+                      }}
+                    />
+                  )}
                 </>
               )}
+
+              {/* trunk line continuing down from this node to its own children */}
+              {node.child_count > 0 && (
+                <span
+                  className="absolute bottom-0 w-px"
+                  style={{ left: 18 + node.guides.length * COL, top: 32, background: accent, opacity: 0.25 }}
+                />
+              )}
+
+              {/* the node itself */}
               <span
-                className="relative z-10 mt-1 h-2 w-2 rounded-full"
+                className="absolute rounded-full"
                 style={{
+                  left: 18 + node.guides.length * COL - (isTrunk ? 5 : 4),
+                  top: isTrunk ? 20 : 22,
+                  width: isTrunk ? 10 : 8,
+                  height: isTrunk ? 10 : 8,
                   background: isCurrent ? accent : "#161d18",
                   border: `1.5px solid ${accent}`,
-                  boxShadow: isCurrent ? `0 0 8px ${accent}` : "none",
+                  boxShadow: isCurrent ? `0 0 10px ${accent}` : "none",
                 }}
               />
             </span>
 
-            <span className="min-w-0 flex-1">
+            <span className="min-w-0 flex-1 py-3.5 pr-3">
               <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className={`font-mono text-sm ${isCurrent ? "font-bold text-white" : "text-neutral-200"}`}>
-                  {isRoot ? (
-                    <>
-                      {node.base_name}
-                      <span className="ml-2 font-normal text-[10px] uppercase tracking-widest text-neutral-500">original</span>
-                    </>
-                  ) : (
-                    node.variant_name
-                  )}
+                <span className={`font-mono text-sm ${isCurrent ? "font-bold text-white" : "text-neutral-100"}`}>
+                  {isTrunk ? node.base_name : node.variant_name}
                 </span>
+                {isTrunk && (
+                  <span className="rounded border border-neutral-600 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest text-neutral-400">
+                    original
+                  </span>
+                )}
                 {isCurrent && (
                   <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: accent }}>
                     you are here
@@ -86,14 +164,13 @@ export function BranchTree({
                 )}
                 {node.child_count > 0 && (
                   <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-400">
-                    <GitBranch size={10} aria-hidden /> {node.child_count}
+                    <GitBranch size={10} aria-hidden /> {node.child_count} off this
                   </span>
                 )}
               </span>
 
-              {/* the line that makes branches distinguishable */}
               <span className="mt-0.5 block text-[13px] leading-snug text-neutral-400">
-                {node.change_summary ?? (isRoot ? "Where this all started." : "No summary given.")}
+                {node.change_summary ?? (isTrunk ? "Where this all started." : "No summary given.")}
               </span>
 
               <span className="mt-1 block font-mono text-[11px] text-neutral-500">
@@ -102,8 +179,8 @@ export function BranchTree({
             </span>
 
             {canFollow && (
-              <span className="relative z-[2] mt-0.5 shrink-0">
-                <FollowButton projectId={node.id} initialFollowing={!!following?.has(node.id)} size="sm" />
+              <span className="relative z-[2] flex shrink-0 items-center pr-3">
+                <FollowButton projectId={node.id} initialFollowing={!!following?.has(node.id)} iconOnly />
               </span>
             )}
           </div>

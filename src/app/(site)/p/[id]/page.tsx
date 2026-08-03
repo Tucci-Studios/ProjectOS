@@ -8,7 +8,6 @@ import { BranchTree } from "@/components/branch-tree";
 import { FollowButton } from "@/components/follow-button";
 import { ReportButton } from "@/components/report-button";
 import { BackLink } from "@/components/back-link";
-import { ProjectTabs } from "./project-tabs";
 import { accentHex, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage } from "@/lib/queries";
@@ -35,17 +34,8 @@ type Row = {
   release_downloads: number | null;
 };
 
-export default async function ProjectPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string }>;
-}) {
+export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { tab: tabParam } = await searchParams;
-  const tab = tabParam === "branches" ? "branches" : tabParam === "install" ? "install" : "about";
-
   const user = await getSessionUser();
   const { env } = getCloudflareContext();
 
@@ -154,49 +144,63 @@ export default async function ProjectPage({
         </ButtonLink>
       </div>
 
-      <ProjectTabs projectId={p.id} tab={tab} branchCount={branchCount} />
-
-      {tab === "about" && (
-        <div className="animate-rise">
-          {p.change_summary && (
-            <div className="rounded-xl border-l-2 border-emerald-400/60 bg-neutral-900/50 p-4">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">What this branch changed</p>
-              <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-300">{p.change_summary}</p>
-            </div>
-          )}
-          <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Stat label="Branches" value={branchCount} Icon={GitBranch} />
-            <Stat label="Votes" value={p.like_count} />
-            {p.stars != null && <Stat label="Stars" value={p.stars} Icon={Star} />}
-            {p.release_downloads ? <Stat label="Downloads" value={p.release_downloads} Icon={Download} /> : null}
-          </dl>
-          <p className="mt-4 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
+      {/* What changed vs. parent — only on branches */}
+      {p.change_summary && (
+        <div className="mt-6 rounded-xl border-l-2 border-emerald-400/60 bg-neutral-900/50 p-4">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">What this branch changed</p>
+          <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-300">{p.change_summary}</p>
         </div>
       )}
 
-      {tab === "install" && (
-        <div className="animate-rise">
-          <InstallBlock category={p.category} repo={p.github_repo} />
-        </div>
-      )}
+      {/* Stats strip */}
+      <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Stat label="Branches" value={branchCount} Icon={GitBranch} />
+        <Stat label="Votes" value={p.like_count} />
+        {p.stars != null && <Stat label="Stars" value={p.stars} Icon={Star} />}
+        {p.release_downloads ? <Stat label="Downloads" value={p.release_downloads} Icon={Download} /> : null}
+      </dl>
 
-      {tab === "branches" && (
-        <div className="animate-rise">
-          <p className="mb-3 text-sm text-neutral-400">
-            {branchCount === 0
-              ? "Nobody has branched this yet — you could be first."
-              : `${branchCount} ${branchCount === 1 ? "person has" : "people have"} taken this and made their own version. Follow any of them to get told when they grow.`}
-          </p>
-          <BranchTree
-            nodes={lineage}
-            currentId={p.id}
-            accent={accentHex(p.category)}
-            following={following}
-            canFollow={!!user}
-          />
-        </div>
-      )}
+      <Section title="Get it">
+        <InstallBlock category={p.category} repo={p.github_repo} />
+      </Section>
+
+      <Section
+        title="The tree"
+        note={
+          branchCount === 0
+            ? "Nobody has branched this yet — you could be first."
+            : `${branchCount} ${branchCount === 1 ? "version has" : "versions have"} grown from this. Follow any of them to hear when they change.`
+        }
+      >
+        <BranchTree
+          nodes={lineage}
+          currentId={p.id}
+          accent={accentHex(p.category)}
+          following={following}
+          canFollow={!!user}
+        />
+      </Section>
+
+      <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
     </div>
+  );
+}
+
+function Section({
+  title,
+  note,
+  children,
+}: {
+  title: string;
+  note?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mt-9">
+      <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">{title}</h2>
+      {note && <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">{note}</p>}
+      <div className={note ? "" : "mt-3"}>{children}</div>
+    </section>
   );
 }
 
