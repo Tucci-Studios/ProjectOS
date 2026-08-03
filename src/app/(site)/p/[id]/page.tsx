@@ -96,9 +96,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       : Promise.resolve(null),
     env.DB.prepare("SELECT COUNT(*) AS n FROM follows WHERE project_id = ?1").bind(id).first<{ n: number }>(),
     env.DB.prepare(
-      `SELECT c.id, c.body_md, c.created_at, u.github_login, u.avatar_url
+      `SELECT c.id, c.body_md, c.created_at, c.parent_id, u.github_login, u.avatar_url, u.is_shadow
        FROM project_comments c JOIN users u ON u.id = c.author_id
-       WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT 50`,
+       WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT 500`,
     ).bind(id).all<ProjectComment>(),
     env.DB.prepare("SELECT url FROM project_images WHERE project_id = ?1 ORDER BY position").bind(id).all<{ url: string }>(),
     (async () => {
@@ -188,18 +188,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
 
-      <ProjectStats
-        projectId={p.id}
-        initialFollowing={following.has(p.id)}
-        initialFollowers={followerRow?.n ?? 0}
-        forkCount={forkCount}
-        voteCount={p.like_count}
-        downloads={p.release_downloads}
-        stars={p.stars}
-        signedIn={!!user}
-      />
-
-      <p className="mt-5 text-[17px] leading-relaxed text-neutral-200">{p.description}</p>
+      <p className="mt-4 text-[17px] leading-relaxed text-neutral-200">{p.description}</p>
 
       {/* Actions */}
       <div className="mt-5 flex flex-wrap items-center gap-2.5">
@@ -218,6 +207,17 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           GitHub <ExternalLink size={14} aria-hidden />
         </ButtonLink>
       </div>
+
+      <ProjectStats
+        projectId={p.id}
+        initialFollowing={following.has(p.id)}
+        initialFollowers={followerRow?.n ?? 0}
+        forkCount={forkCount}
+        voteCount={p.like_count}
+        downloads={p.release_downloads}
+        stars={p.stars}
+        signedIn={!!user}
+      />
 
       {user?.id === p.owner_id && (
         <OwnerControls
@@ -259,13 +259,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         />
       )}
 
-      <div className="mt-7 border-t border-neutral-800 pt-6">
-        <ProjectUpdates
-          projectId={p.id}
-          updates={updateRows.results}
-          isOwner={user?.id === p.owner_id}
-        />
-      </div>
+      {(updateRows.results.length > 0 || user?.id === p.owner_id) && (
+        <div className="mt-7 border-t border-neutral-800 pt-6">
+          <ProjectUpdates projectId={p.id} updates={updateRows.results} isOwner={user?.id === p.owner_id} />
+        </div>
+      )}
 
       {/* Stats strip */}
       <PanelToggle

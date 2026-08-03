@@ -65,7 +65,7 @@ export function ProjectStats({
           value={stars}
           label={stars === 1 ? "star" : "stars"}
           explain="Stars on GitHub. Not a Project OS number — it's how the wider world rates it."
-          tone="text-amber-300"
+          tone="text-amber-300/70"
         />
       ) : null}
       {downloads ? (

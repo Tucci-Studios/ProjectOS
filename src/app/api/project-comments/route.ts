@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   if (!rate.ok)
     return NextResponse.json({ error: rate.message }, { status: 429, headers: { "Retry-After": String(rate.retryAfterS) } });
 
-  let body: { projectId?: unknown; body?: unknown };
+  let body: { projectId?: unknown; body?: unknown; parentId?: unknown };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -29,22 +29,41 @@ export async function POST(request: Request) {
     .first<{ id: string; owner_id: string }>();
   if (!project) return NextResponse.json({ error: "No such project." }, { status: 404 });
 
+  // A reply must belong to the same project, or a thread could be spliced onto
+  // somebody else's page.
+  const parentId = typeof body.parentId === "string" && body.parentId ? body.parentId : null;
+  let parentAuthor: string | null = null;
+  if (parentId) {
+    const parent = await env.DB.prepare(
+      "SELECT author_id, project_id FROM project_comments WHERE id = ?1 AND status='live'",
+    )
+      .bind(parentId)
+      .first<{ author_id: string; project_id: string }>();
+    if (!parent || parent.project_id !== projectId)
+      return NextResponse.json({ error: "That comment isn't on this project." }, { status: 400 });
+    parentAuthor = parent.author_id;
+  }
+
   const now = Math.floor(Date.now() / 1000);
   await env.DB.prepare(
-    "INSERT INTO project_comments (id, project_id, author_id, body_md, status, created_at) VALUES (?1, ?2, ?3, ?4, 'live', ?5)",
+    "INSERT INTO project_comments (id, project_id, author_id, body_md, parent_id, status, created_at) VALUES (?1, ?2, ?3, ?4, ?5, 'live', ?6)",
   )
-    .bind(`pc_${crypto.randomUUID().slice(0, 8)}`, projectId, user.id, text, now)
+    .bind(`pc_${crypto.randomUUID().slice(0, 8)}`, projectId, user.id, text, parentId, now)
     .run();
 
-  // Tell the owner, unless they're talking to themselves.
-  if (project.owner_id !== user.id) {
+  // Ping whoever is actually being spoken to: the person replied to if this is
+  // a reply, otherwise the project's owner. Never ping yourself.
+  const notify = parentAuthor ?? project.owner_id;
+  if (notify !== user.id) {
     await env.DB.prepare(
       "INSERT INTO notifications (id, user_id, kind, body, href, created_at) VALUES (?1, ?2, 'reply', ?3, ?4, ?5)",
     )
       .bind(
         `n_${crypto.randomUUID().slice(0, 8)}`,
-        project.owner_id,
-        `@${user.github_login} commented on your project`,
+        notify,
+        parentAuthor
+          ? `@${user.github_login} replied to you`
+          : `@${user.github_login} commented on your project`,
         `/p/${projectId}`,
         now,
       )
@@ -62,7 +81,7 @@ export async function GET(request: Request) {
   const { env } = getCloudflareContext();
   const [{ results }, total] = await Promise.all([
     env.DB.prepare(
-      `SELECT c.id, c.body_md, c.created_at, u.github_login, u.avatar_url
+      `SELECT c.id, c.body_md, c.created_at, c.parent_id, u.github_login, u.avatar_url
        FROM project_comments c JOIN users u ON u.id = c.author_id
        WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT ?2`,
     )
