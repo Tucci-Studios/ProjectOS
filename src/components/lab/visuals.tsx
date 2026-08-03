@@ -17,113 +17,109 @@ function Empty() {
   return <p className="px-2 py-6 font-mono text-xs text-neutral-600">No lineage.</p>;
 }
 
-/* ─────────────────────────── 1. Threadline (today) ─────────────────────────── */
+/* ───────────── 0. Versions — my recommendation, not a tree at all ───────────── */
 
-export function VizThreadline({ nodes }: { nodes: LineageNode[] }) {
+/**
+ * The reframe: stop drawing the family, answer the three questions someone
+ * actually has when they land on a branch.
+ *
+ *   1. Where did this come from?      -> one ancestry line, always short
+ *   2. Is there a better version?     -> the best-scoring branch, called out
+ *   3. What came off this one?        -> its direct children, ranked
+ *
+ * Depth is never drawn. You move one hop at a time and the breadcrumb is your
+ * position. A node with 100 children looks exactly like a node with 3.
+ */
+export function VizVersions({ nodes }: { nodes: LineageNode[] }) {
   const root = useMemo(() => build(nodes), [nodes]);
-  if (!root) return <Empty />;
-  return (
-    <div className="max-h-[460px] overflow-y-auto px-2 py-1">
-      <ThreadNode t={root} />
-    </div>
-  );
-}
+  const [atId, setAtId] = useState<string | null>(null);
+  const [n, setN] = useState(8);
 
-function ThreadNode({ t }: { t: T }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [hot, setHot] = useState(false);
-  if (collapsed)
-    return (
-      <button
-        onClick={() => setCollapsed(false)}
-        className="flex min-h-[28px] cursor-pointer items-center gap-2 rounded px-1 font-mono text-[12px] text-neutral-500 hover:text-neutral-200"
-      >
-        <span className="text-emerald-400">[+]</span> {name(t)} · {t.total - 1} hidden
-      </button>
-    );
+  if (!root) return <Empty />;
+  const at = flatten(root).find((x) => x.id === atId) ?? root;
+  const trail = pathTo(root, at.id);
+  const kids = [...at.children].sort(byVotes);
+  const champ = flatten(root).sort(byVotes)[0];
+
+  const go = (id: string | null) => {
+    setAtId(id);
+    setN(8);
+  };
+
   return (
-    <div className="py-0.5">
-      <div className="flex items-start gap-2.5 rounded px-1 py-1.5">
-        <span
-          className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border"
-          style={{ borderColor: A }}
-        >
-          {t.children.length > 0 && <span className="h-1 w-1 rounded-full" style={{ background: A }} />}
-        </span>
-        <span className="min-w-0">
-          <span className="font-mono text-[13px] text-neutral-100">{name(t)}</span>{" "}
-          <span className="font-mono text-[11px] text-neutral-500">
-            @{t.github_login} · {votes(t.like_count)}
+    <div className="max-h-[460px] overflow-y-auto p-4">
+      {/* 1. where you are */}
+      <nav className="flex flex-wrap items-center gap-1 font-mono text-[11px]">
+        {trail.map((t, i) => (
+          <span key={t.id} className="flex items-center gap-1">
+            {i > 0 && <span className="text-neutral-700">/</span>}
+            {i === trail.length - 1 ? (
+              <span className="text-white">{name(t)}</span>
+            ) : (
+              <button onClick={() => go(i === 0 ? null : t.id)} className="cursor-pointer text-neutral-500 hover:text-emerald-300">
+                {name(t)}
+              </button>
+            )}
           </span>
-        </span>
+        ))}
+      </nav>
+
+      {/* 2. what you're looking at */}
+      <div className="mt-3 rounded-xl border border-neutral-700 bg-neutral-900/60 p-3.5">
+        <p className="font-mono text-[15px] font-bold text-white">{name(at)}</p>
+        <p className="mt-0.5 font-mono text-[11px] text-neutral-500">
+          @{at.github_login} · {votes(at.like_count)} · {at.depth === 0 ? "the original" : `${at.depth} branch${at.depth === 1 ? "" : "es"} from the original`}
+        </p>
+        {at.change_summary && <p className="mt-2 text-[13px] leading-relaxed text-neutral-400">{at.change_summary}</p>}
       </div>
-      {t.children.length > 0 && (
-        <div className="flex">
-          <button
-            onMouseEnter={() => setHot(true)}
-            onMouseLeave={() => setHot(false)}
-            onClick={() => setCollapsed(true)}
-            aria-label="Collapse thread"
-            className="group relative flex w-[17px] shrink-0 cursor-pointer justify-center"
-          >
-            <span
-              className="h-full w-px transition-colors"
-              style={{ background: hot ? A : "#3f3f46" }}
-            />
-          </button>
-          <div className="min-w-0 flex-1">
-            {t.children.map((c) => (
-              <ThreadNode key={c.id} t={c} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
-/* ──────────────────── 2. Ranked + capped ("show 94 more") ──────────────────── */
-
-export function VizRanked({ nodes }: { nodes: LineageNode[] }) {
-  const root = useMemo(() => build(nodes), [nodes]);
-  if (!root) return <Empty />;
-  return (
-    <div className="max-h-[460px] overflow-y-auto px-2 py-1">
-      <RankedNode t={root} depth={0} />
-    </div>
-  );
-}
-
-const SHOW = 4;
-
-function RankedNode({ t, depth }: { t: T; depth: number }) {
-  const [all, setAll] = useState(false);
-  const kids = useMemo(() => [...t.children].sort(byVotes), [t]);
-  const shown = all ? kids : kids.slice(0, SHOW);
-  const hidden = kids.length - shown.length;
-
-  return (
-    <div>
-      <div className="flex items-baseline gap-2 rounded px-1 py-1.5" style={{ paddingLeft: depth * 14 + 4 }}>
-        <span className="font-mono text-[13px] text-neutral-100">{name(t)}</span>
-        <span className="font-mono text-[11px] text-neutral-500">@{t.github_login}</span>
-        <span className="font-mono text-[11px]" style={{ color: t.like_count > 40 ? A : "#71717a" }}>
-          {votes(t.like_count)}
-        </span>
-        {t.total > 1 && (
-          <span className="font-mono text-[10px] text-neutral-600">{t.total - 1} below</span>
-        )}
-      </div>
-      {shown.map((c) => (
-        <RankedNode key={c.id} t={c} depth={depth + 1} />
-      ))}
-      {hidden > 0 && (
+      {/* 3. is there a better one? */}
+      {champ.id !== at.id && (
         <button
-          onClick={() => setAll(true)}
-          style={{ marginLeft: (depth + 1) * 14 + 4 }}
-          className="my-0.5 cursor-pointer rounded border border-neutral-700 px-2 py-1 font-mono text-[11px] text-neutral-400 hover:border-emerald-400/50 hover:text-emerald-300"
+          onClick={() => go(champ.id)}
+          className="mt-2 flex w-full cursor-pointer items-center gap-2 rounded-lg border border-emerald-400/35 bg-emerald-400/[0.06] px-3 py-2 text-left font-mono text-[12px] text-emerald-200 hover:bg-emerald-400/10"
         >
-          show {hidden} more branch{hidden === 1 ? "" : "es"}
+          <Crown size={13} aria-hidden className="shrink-0 text-amber-300" />
+          <span className="min-w-0 truncate">
+            Most-liked version of {at.base_name} is <span className="font-bold">{name(champ)}</span>
+          </span>
+          <span className="ml-auto shrink-0 text-neutral-400">{votes(champ.like_count)}</span>
+        </button>
+      )}
+
+      {/* 4. what came off this one */}
+      <p className="mb-2 mt-4 font-mono text-[11px] uppercase tracking-widest text-neutral-500">
+        {kids.length === 0
+          ? "Nothing has branched off this yet"
+          : `${kids.length} branch${kids.length === 1 ? "" : "es"} off this one`}
+      </p>
+      <div className="space-y-1.5">
+        {kids.slice(0, n).map((c) => (
+          <button
+            key={c.id}
+            onClick={() => go(c.id)}
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg border border-neutral-800 bg-neutral-900/40 px-3 py-2 text-left hover:border-neutral-600 hover:bg-neutral-800/60"
+          >
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-mono text-[13px] text-neutral-100">{name(c)}</span>
+              <span className="block truncate font-mono text-[10px] text-neutral-500">
+                @{c.github_login}
+                {c.total > 1 && ` · ${c.total - 1} further branch${c.total === 2 ? "" : "es"} below`}
+              </span>
+            </span>
+            <span className="shrink-0 font-mono text-[12px]" style={{ color: c.like_count > 40 ? A : "#71717a" }}>
+              {votes(c.like_count)}
+            </span>
+            {c.children.length > 0 && <ChevronRight size={13} className="shrink-0 text-neutral-600" aria-hidden />}
+          </button>
+        ))}
+      </div>
+      {n < kids.length && (
+        <button
+          onClick={() => setN(n + 20)}
+          className="mt-2 w-full cursor-pointer rounded-lg border border-neutral-700 py-2 font-mono text-[11px] text-neutral-400 hover:border-emerald-400/50 hover:text-emerald-300"
+        >
+          show 20 more ({kids.length - n} left)
         </button>
       )}
     </div>

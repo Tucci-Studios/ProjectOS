@@ -4,8 +4,7 @@ import { useMemo, useState } from "react";
 import { FlaskConical } from "lucide-react";
 import { labLineage, SHAPES, type LabShape } from "@/lib/lab-data";
 import {
-  VizThreadline,
-  VizRanked,
+  VizVersions,
   VizExplorer,
   VizColumns,
   VizDendrogram,
@@ -16,72 +15,69 @@ import {
   VizLeaderboard,
 } from "./visuals";
 
-const VISUALS = [
+type Entry = { n: number; title: string; sub: string; holds: string; C: (p: { nodes: ReturnType<typeof labLineage> }) => React.ReactNode; mine?: boolean };
+
+const VISUALS: Entry[] = [
   {
     n: 1,
-    title: "Threadline",
-    sub: "What the site uses today",
-    holds: "Fine at 12. Falls apart past ~30 siblings — you scroll forever and lose the parent.",
-    C: VizThreadline,
+    title: "Versions",
+    sub: "My recommendation — not a tree at all",
+    holds:
+      "The reframe: don't draw the family, answer the three questions people actually have. Where did this come from (a short ancestry line), is there a better version (called out), and what came off this one (ranked, one hop at a time). Depth is never drawn, so a branch with 100 children looks exactly like one with 3 — it reads the same at any size.",
+    C: VizVersions,
+    mine: true,
   },
   {
     n: 2,
-    title: "Ranked + capped",
-    sub: "Top 4 siblings, then “show 94 more”",
-    holds: "Same shape as today but bounded. The 100-branch case becomes 4 rows and a button.",
-    C: VizRanked,
-  },
-  {
-    n: 3,
     title: "File explorer",
     sub: "One dense row per branch, everything folded",
     holds: "Very scannable. Expand-all still hurts on the monster tree, but nothing is ever forced open.",
     C: VizExplorer,
   },
   {
-    n: 4,
+    n: 3,
     title: "Drill-down columns",
     sub: "Finder-style — pick a branch, its children fill the next column",
     holds: "Scales to any size, because you only ever see one generation at a time.",
     C: VizColumns,
   },
   {
-    n: 5,
+    n: 4,
     title: "Dendrogram",
     sub: "The classic left-to-right family tree",
     holds: "Beautiful and honest at small sizes. Gets very tall very fast — needs scrolling in both directions.",
     C: VizDendrogram,
   },
   {
-    n: 6,
+    n: 5,
     title: "Sunburst",
     sub: "Rings outward from the original, slice size = descendants",
     holds: "Handles hundreds in one screen. Great for “where did the growth happen”, bad for reading names.",
     C: VizSunburst,
   },
   {
-    n: 7,
+    n: 6,
     title: "Icicle",
     sub: "Nested bars, width = share of the lineage",
     holds: "Same information as the sunburst but rectangular, so names actually fit. Click to zoom.",
     C: VizIcicle,
   },
   {
-    n: 8,
+    n: 7,
     title: "Spine + tributaries",
     sub: "The strongest path drawn straight, side branches folded",
     holds: "Turns any tree into one readable story. Hides breadth by design — that's the trade.",
     C: VizSpine,
   },
   {
-    n: 9,
+    n: 8,
     title: "Constellation",
     sub: "Every branch a star, distance = depth, size = votes",
     holds: "Gorgeous, works at 400 nodes, tells you shape at a glance. Not something you navigate with.",
     C: VizConstellation,
   },
   {
-    n: 10,
+    n: 9,
     title: "Leaderboard",
     sub: "No tree — ranked list with a path breadcrumb",
     holds: "Infinite scale, zero drawing. Loses the shape of the family entirely.",
@@ -99,9 +95,9 @@ export function LabClient() {
       <div className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-amber-300">
         <FlaskConical size={13} aria-hidden /> Test area — nothing here is live
       </div>
-      <h1 className="font-mono text-[28px] font-bold text-white">Ways to draw a branch tree</h1>
+      <h1 className="font-mono text-[28px] font-bold text-white">Ways to show a lineage</h1>
       <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
-        Ten options for the same problem: a lineage stops being readable long before it stops growing. Switch the test
+        Options for the same problem: a lineage stops being readable long before it stops growing. Switch the test
         tree below to a nasty shape and see which ones survive.
       </p>
 
@@ -127,13 +123,13 @@ export function LabClient() {
       </div>
 
       <div className="mt-5 space-y-5">
-        {VISUALS.map(({ n, title, sub, holds, C }) => (
-          <section key={n} className="overflow-hidden rounded-xl border border-neutral-700 bg-neutral-900/30">
+        {VISUALS.map(({ n, title, sub, holds, C, mine }) => (
+          <section key={n} className={`overflow-hidden rounded-xl border bg-neutral-900/30 ${mine ? "border-emerald-400/50" : "border-neutral-700"}`}>
             <header className="border-b border-neutral-800 px-4 py-3">
               <h2 className="flex items-baseline gap-2.5 font-mono text-[15px] font-bold text-white">
                 <span className="text-neutral-600">{String(n).padStart(2, "0")}</span>
                 {title}
-                <span className="font-normal text-[12px] text-neutral-500">{sub}</span>
+                <span className={`font-normal text-[12px] ${mine ? "text-emerald-300" : "text-neutral-500"}`}>{sub}</span>
               </h2>
               <p className="mt-1 text-[13px] leading-relaxed text-neutral-400">{holds}</p>
             </header>
