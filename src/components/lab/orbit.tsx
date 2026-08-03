@@ -18,7 +18,22 @@ import { build, flatten, name, byVotes, pathTo, medal, radius, ACCENT, type T } 
  * loop. Four hundred nodes re-rendering through React sixty times a second
  * would stutter; moving them by hand costs one attribute write each.
  */
-export function Orbit({ nodes }: { nodes: LabNode[] }) {
+export function Orbit({
+  nodes,
+  height = 620,
+  chrome = true,
+  labels = true,
+  dim = 1,
+}: {
+  nodes: LabNode[];
+  /** Rendered height in px. The drawing scales to fit whatever it's given. */
+  height?: number;
+  /** Show the hover readout and let it be clicked. Off for decorative use. */
+  chrome?: boolean;
+  labels?: boolean;
+  /** Overall opacity, for when it sits behind other content. */
+  dim?: number;
+}) {
   const root = useMemo(() => build(nodes), [nodes]);
   const [hot, setHot] = useState<string | null>(null);
   const [sel, setSel] = useState<string | null>(null);
@@ -182,8 +197,11 @@ export function Orbit({ nodes }: { nodes: LabNode[] }) {
   const shown = active ? byId.get(active) : null;
 
   return (
-    <div className="relative h-[440px] overflow-hidden bg-neutral-900/40 md:h-[620px]">
-      <svg viewBox="-215 -215 430 430" className="h-full w-full">
+    <div
+      className="relative overflow-hidden"
+      style={{ height, opacity: dim }}
+    >
+      <svg viewBox="-215 -215 430 430" className="h-full w-full" style={{ pointerEvents: chrome ? "auto" : "none" }}>
         <defs>
           <radialGradient id="orbit-core">
             <stop offset="0%" stopColor={ACCENT} stopOpacity="0.28" />
@@ -241,7 +259,7 @@ export function Orbit({ nodes }: { nodes: LabNode[] }) {
                 onClick={() => setSel(sel === n.id ? null : n.id)}
                 className="cursor-pointer transition-[r] duration-200"
               />
-              {(isRoot || rk <= 3 || on) && (
+              {labels && (isRoot || rk <= 3 || on) && (
                 <text
                   y={r + 9}
                   textAnchor="middle"
@@ -258,6 +276,7 @@ export function Orbit({ nodes }: { nodes: LabNode[] }) {
         })}
       </svg>
 
+      {chrome && (
       <div className="pointer-events-none absolute bottom-3 left-4 right-4 font-mono text-[11px]">
         {shown ? (
           <span className="text-neutral-300">
@@ -273,6 +292,7 @@ export function Orbit({ nodes }: { nodes: LabNode[] }) {
           </span>
         )}
       </div>
+      )}
     </div>
   );
 }
