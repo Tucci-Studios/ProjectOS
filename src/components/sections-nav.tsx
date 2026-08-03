@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, Compass } from "lucide-react";
+import { ChevronRight, Compass, Lightbulb } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 // Three doors: AI, Build, Play. Each opens to its sections. The group you're in
@@ -106,6 +106,20 @@ export function SectionsNav() {
           </div>
         );
       })}
+
+      <div className="mt-4 border-t border-neutral-800 pt-3">
+        <Link
+          href="/ideas"
+          aria-current={pathname.startsWith("/ideas") ? "page" : undefined}
+          className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+            pathname.startsWith("/ideas")
+              ? "bg-amber-400/10 font-bold text-amber-300"
+              : "text-neutral-300 hover:bg-neutral-800"
+          }`}
+        >
+          <Lightbulb size={16} aria-hidden /> Ideas
+        </Link>
+      </div>
     </nav>
   );
 }

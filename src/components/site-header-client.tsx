@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Radio, Compass, Search, LogOut, Plus } from "lucide-react";
+import { Radio, Compass, Search, Plus } from "lucide-react";
 import type { SessionUser } from "@/lib/auth";
 import { ButtonLink } from "./ui";
 import { Wordmark } from "./brand";
+import { UserMenu } from "./user-menu";
 
 const NAV = [
   { href: "/", label: "Feed", Icon: Radio, match: (p: string) => p === "/" || p.startsWith("/wire") },
@@ -69,38 +70,8 @@ export function SiteHeaderClient({ user }: { user: SessionUser | null }) {
           </ButtonLink>
 
           {user ? (
-            <div className="flex items-center gap-1 border-l border-neutral-800 pl-3">
-              <Link
-                href="/me"
-                title={`@${user.github_login}`}
-                aria-current={pathname.startsWith("/me") ? "page" : undefined}
-                className={`rounded-full outline-none ring-offset-2 ring-offset-[#141a16] transition focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                  pathname.startsWith("/me") ? "ring-2 ring-emerald-400" : ""
-                }`}
-              >
-                {user.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={user.avatar_url}
-                    alt={`@${user.github_login}`}
-                    className="h-9 w-9 rounded-full border border-neutral-600 transition hover:border-emerald-400"
-                  />
-                ) : (
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-neutral-600 font-mono text-xs text-neutral-300">
-                    {user.github_login.slice(0, 2)}
-                  </span>
-                )}
-              </Link>
-              <form action="/api/auth/logout" method="post">
-                <button
-                  type="submit"
-                  title="Sign out"
-                  aria-label="Sign out"
-                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-neutral-600 outline-none transition-colors duration-200 hover:bg-neutral-800 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
-                >
-                  <LogOut size={14} aria-hidden />
-                </button>
-              </form>
+            <div className="border-l border-neutral-800 pl-3">
+              <UserMenu user={user} />
             </div>
           ) : (
             <ButtonLink href="/api/auth/login" variant="ghost" className="!min-h-[38px] !rounded-full !px-4">

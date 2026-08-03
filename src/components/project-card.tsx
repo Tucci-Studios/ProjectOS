@@ -2,7 +2,6 @@ import Link from "next/link";
 import { GitBranch, Heart } from "lucide-react";
 import { categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
-import { ProjectMark } from "./project-mark";
 import { BrandMark } from "./brand";
 
 export type ProjectFeedRow = {
@@ -19,48 +18,68 @@ export type ProjectFeedRow = {
   created_at: number;
 };
 
-// Scan order: colored edge + type icon (what IS it) → PROJECT chip → name →
-// one line. Identify the box before reading a word.
+/** Monochrome "PROJECT /" byline, then the name. The headliner. */
+export function ProjectHeadline({
+  baseName,
+  variantName,
+  size = "md",
+}: {
+  baseName: string;
+  variantName?: string | null;
+  size?: "md" | "lg";
+}) {
+  return (
+    <span className="flex flex-wrap items-baseline gap-x-2">
+      <span className="inline-flex items-center gap-1.5">
+        <BrandMark size={15} className="!border-neutral-600 !bg-transparent" mono />
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">Project</span>
+      </span>
+      <span className="text-neutral-700">/</span>
+      <span
+        className={`font-mono font-bold tracking-tight text-white ${size === "lg" ? "text-2xl" : "text-[17px]"}`}
+      >
+        {baseName}
+        {variantName && (
+          <>
+            <span className="text-neutral-600"> // </span>
+            <span className="text-neutral-200">{variantName}</span>
+          </>
+        )}
+      </span>
+    </span>
+  );
+}
+
+/** Right-aligned type tag: icon + word, in the group's color. */
+export function TypeTag({ category }: { category: string }) {
+  const { kind, Icon } = categoryMeta(category);
+  const g = groupOf(category);
+  return (
+    <span
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border ${g.border} ${g.bg} px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] ${g.text}`}
+    >
+      <Icon size={12} strokeWidth={2.25} aria-hidden />
+      {kind}
+    </span>
+  );
+}
+
 export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean }) {
-  const meta = categoryMeta(p.category);
   const g = groupOf(p.category);
   const fullName = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
-      {/* type edge */}
-      <span className="absolute inset-y-0 left-0 w-1" style={{ background: g.hex, opacity: 0.75 }} aria-hidden />
+      <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: g.hex, opacity: 0.7 }} aria-hidden />
 
       <div className="flex items-start gap-4 py-4 pl-5 pr-4">
-        <ProjectMark category={p.category} size={52} />
-
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-400/25 bg-emerald-400/[0.07] py-0.5 pl-1 pr-2">
-              <BrandMark size={16} className="!border-0 !bg-transparent" />
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300/90">Project</span>
-            </span>
-            <span className={`rounded-md border ${g.border} px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${g.text}`}>
-              {meta.kind}
-            </span>
-            {p.parent_display && (
-              <span className="inline-flex items-center gap-1 font-mono text-[10px] text-neutral-500">
-                <GitBranch size={11} aria-hidden /> branch of {p.parent_display}
-              </span>
-            )}
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <ProjectHeadline baseName={p.base_name} variantName={p.variant_name} />
+            <TypeTag category={p.category} />
           </div>
 
-          <h3 className="mt-2 font-mono text-[17px] font-bold leading-tight tracking-tight text-white transition group-hover:text-emerald-300">
-            {p.base_name}
-            {p.variant_name && (
-              <>
-                <span className="text-neutral-500"> // </span>
-                <span className="text-neutral-200">{p.variant_name}</span>
-              </>
-            )}
-          </h3>
-
-          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
 
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
             <span className="text-neutral-400">@{p.github_login}</span>
@@ -68,9 +87,12 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
             <span className="inline-flex items-center gap-1">
               <Heart size={11} aria-hidden /> {p.like_count}
             </span>
-            {p.fork_count > 0 && (
-              <span className="inline-flex items-center gap-1 text-emerald-400">
-                <GitBranch size={11} aria-hidden /> {p.fork_count}
+            <span className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "text-emerald-400" : ""}`}>
+              <GitBranch size={11} aria-hidden /> {p.fork_count} branch{p.fork_count === 1 ? "" : "es"}
+            </span>
+            {p.parent_display && (
+              <span className="inline-flex items-center gap-1 text-neutral-600">
+                branched from <span className="text-neutral-400">{p.parent_display}</span>
               </span>
             )}
           </div>
