@@ -11,8 +11,7 @@ import {
   VizSunburst,
   VizIcicle,
   VizSpine,
-  VizConstellation,
-  VizLeaderboard,
+  VizGalaxy,
 } from "./visuals";
 
 type Entry = { n: number; title: string; sub: string; holds: string; C: (p: { nodes: ReturnType<typeof labLineage> }) => React.ReactNode; mine?: boolean };
@@ -71,17 +70,11 @@ const VISUALS: Entry[] = [
   },
   {
     n: 8,
-    title: "Constellation",
-    sub: "Every branch a star, distance = depth, size = votes",
-    holds: "Gorgeous, works at 400 nodes, tells you shape at a glance. Not something you navigate with.",
-    C: VizConstellation,
-  },
-  {
-    n: 9,
-    title: "Leaderboard",
-    sub: "No tree — ranked list with a path breadcrumb",
-    holds: "Infinite scale, zero drawing. Loses the shape of the family entirely.",
-    C: VizLeaderboard,
+    title: "Galaxy",
+    sub: "The constellation and the leaderboard, linked",
+    holds:
+      "The picture tells you the shape, the list tells you where to go. They share a selection — hover a row and its star lights up, click a star and the list jumps to it and traces the path back to the original. Top 3 get a gold ring in both.",
+    C: VizGalaxy,
   },
 ];
 
