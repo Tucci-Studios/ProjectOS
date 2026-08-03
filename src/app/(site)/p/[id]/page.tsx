@@ -1,9 +1,11 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GitFork, ExternalLink } from "lucide-react";
+import { GitBranch, ExternalLink } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { InstallBlock } from "@/components/install-block";
+import { BranchTree } from "@/components/branch-tree";
+import { ACCENT_HEX } from "@/lib/categories";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage } from "@/lib/queries";
 import { categoryMeta, timeAgo } from "@/lib/categories";
@@ -91,8 +93,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       )}
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <ButtonLink href={`/p/${p.id}/remix`} variant="primary">
-          <GitFork size={16} aria-hidden /> remix this
+        <ButtonLink href={`/p/${p.id}/branch`} variant="primary">
+          <GitBranch size={16} aria-hidden /> branch it
         </ButtonLink>
         <ButtonLink href={`https://github.com/${p.github_repo}`} variant="ghost" external>
           view on GitHub <ExternalLink size={15} aria-hidden />
@@ -101,38 +103,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       <InstallBlock category={p.category} repo={p.github_repo} />
 
-      {/* Lineage */}
+      {/* The tree */}
       <section className="mt-8">
-        <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-          Lineage — {lineage.length} project{lineage.length === 1 ? "" : "s"}
+        <h2 className="mb-3 flex flex-wrap items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+          <GitBranch size={14} aria-hidden /> the tree
+          <span className="font-normal normal-case tracking-normal text-neutral-500">
+            {lineage.length} branch{lineage.length === 1 ? "" : "es"} growing from {p.base_name}
+          </span>
         </h2>
-        <div className="rounded-lg border border-neutral-700 bg-neutral-900/60 p-4">
-          {lineage.map((node) => (
-            <div key={node.id} style={{ paddingLeft: node.depth * 24 }} className="py-1">
-              <span className="font-mono text-xs text-neutral-700">{node.depth > 0 ? "└─ " : "◉ "}</span>
-              <Link
-                href={`/p/${node.id}`}
-                className={`font-mono text-sm ${
-                  node.id === p.id ? "font-bold text-emerald-400" : "text-neutral-300 hover:text-white"
-                }`}
-              >
-                {node.base_name}
-                {node.variant_name && (
-                  <>
-                    <span className="text-emerald-400/60"> // </span>
-                    {node.variant_name}
-                  </>
-                )}
-              </Link>
-              <span className="ml-2 font-mono text-[10px] text-neutral-500">
-                @{node.github_login} · ♥ {node.like_count}
-              </span>
-            </div>
-          ))}
-        </div>
-        <p className="mt-2 font-mono text-[10px] text-neutral-700">
-          (the glowing circuit-tree render of this is coming — this is the data working)
-        </p>
+        <BranchTree nodes={lineage} currentId={p.id} accent={ACCENT_HEX[p.category] ?? "#34d399"} />
       </section>
     </div>
   );

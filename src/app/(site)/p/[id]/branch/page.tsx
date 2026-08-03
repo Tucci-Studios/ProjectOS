@@ -30,7 +30,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
         Fork <span className="text-emerald-400">{display}</span>
       </h1>
       <p className="mb-6 text-[15px] leading-relaxed text-neutral-400">
-        Your remix joins the lineage as{" "}
+        Your branch joins the lineage as{" "}
         <span className="font-mono text-neutral-200">
           {p.base_name}
           <span className="text-emerald-400"> // </span>YourVariant
@@ -79,7 +79,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
           <a href="/api/auth/login" className="text-emerald-400 hover:underline">
             Sign in with GitHub
           </a>{" "}
-          to register your remix.
+          to register your branch.
         </p>
       )}
     </div>

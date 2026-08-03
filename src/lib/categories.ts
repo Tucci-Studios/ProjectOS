@@ -31,6 +31,20 @@ export const CATEGORY_META: CategoryMeta[] = [
 
 export const CATEGORY_SLUGS = CATEGORY_META.map((c) => c.slug);
 
+/** Raw hex per category, for SVG/inline styles that can't use Tailwind classes. */
+export const ACCENT_HEX: Record<string, string> = {
+  "claude-code": "#22d3ee",
+  "claude-skills": "#e879f9",
+  "claude-md": "#fbbf24",
+  codex: "#38bdf8",
+  grok: "#d4d4d8",
+  "local-llms": "#a78bfa",
+  "mcp-servers": "#34d399",
+  apps: "#fb923c",
+  games: "#fb7185",
+  "scripts-tools": "#a3e635",
+};
+
 export function categoryMeta(slug: string): CategoryMeta {
   return (
     CATEGORY_META.find((c) => c.slug === slug) ?? {

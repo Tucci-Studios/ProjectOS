@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GitFork } from "lucide-react";
+import { GitBranch } from "lucide-react";
 import { categoryMeta, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 
@@ -50,7 +50,7 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
             <>
               <span>·</span>
               <span className="inline-flex items-center gap-1">
-                <GitFork size={12} aria-hidden /> remix of <span className="text-neutral-300">{p.parent_display}</span>
+                <GitBranch size={12} aria-hidden /> branched from <span className="text-neutral-300">{p.parent_display}</span>
               </span>
             </>
           )}
@@ -58,7 +58,7 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
             <>
               <span>·</span>
               <span className="text-emerald-400">
-                {p.fork_count} remix{p.fork_count === 1 ? "" : "es"}
+                {p.fork_count} branch{p.fork_count === 1 ? "" : "es"}
               </span>
             </>
           )}

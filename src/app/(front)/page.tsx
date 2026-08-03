@@ -1,27 +1,14 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { GitFork, ArrowRight, Sparkles } from "lucide-react";
+import { GitBranch, ArrowRight, Sparkles } from "lucide-react";
 import { getLineage, getLikedIds } from "@/lib/queries";
 import { getSessionUser } from "@/lib/auth";
-import { CATEGORY_META, CATEGORY_GROUPS, categoryMeta } from "@/lib/categories";
+import { CATEGORY_META, CATEGORY_GROUPS, categoryMeta, ACCENT_HEX } from "@/lib/categories";
 import { MiniTree } from "@/components/mini-tree";
 import { ButtonLink } from "@/components/ui";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 
 export const dynamic = "force-dynamic";
-
-const ACCENT_HEX: Record<string, string> = {
-  "claude-code": "#22d3ee",
-  "claude-skills": "#e879f9",
-  "claude-md": "#fbbf24",
-  codex: "#38bdf8",
-  grok: "#d4d4d8",
-  "local-llms": "#a78bfa",
-  "mcp-servers": "#34d399",
-  apps: "#fb923c",
-  games: "#fb7185",
-  "scripts-tools": "#a3e635",
-};
 
 export default async function FrontPage() {
   const { env } = getCloudflareContext();
@@ -103,15 +90,15 @@ export default async function FrontPage() {
                 </Link>
                 <span>by @{hero.github_login}</span>
                 <span>· {hero.like_count} likes</span>
-                <span>· {hero.fork_count} remix{hero.fork_count === 1 ? "" : "es"}</span>
+                <span>· {hero.fork_count} branch{hero.fork_count === 1 ? "" : "es"}</span>
               </p>
               <p className="mt-4 max-w-xl text-lg leading-relaxed text-neutral-300">{hero.description}</p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <ButtonLink href={`/p/${hero.id}`} variant="primary">
                   open project <ArrowRight size={15} aria-hidden />
                 </ButtonLink>
-                <ButtonLink href={`/p/${hero.id}/remix`} variant="ghost">
-                  <GitFork size={15} aria-hidden /> remix it
+                <ButtonLink href={`/p/${hero.id}/branch`} variant="ghost">
+                  <GitBranch size={15} aria-hidden /> branch it
                 </ButtonLink>
               </div>
             </div>

@@ -77,7 +77,7 @@ ${howToRun || "(exact commands from fresh clone)"}
 (What works, what's half-done, next 3-5 things worth building.)
 
 ## Fork guidance
-(What's safe to rip out, what's fun to remix, what should stay stable.)
+(What's safe to rip out, what's fun to branch, what should stay stable.)
 `;
 
   return (
