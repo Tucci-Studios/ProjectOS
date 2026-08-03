@@ -1,12 +1,13 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GitBranch, ExternalLink } from "lucide-react";
+import { GitBranch, ExternalLink, MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { GetItDialog } from "@/components/get-it-dialog";
 import { ProjectComments, type ProjectComment } from "@/components/project-comments";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
+import { ImagePreview } from "@/components/image-preview";
 import { BranchTree } from "@/components/branch-tree";
 import { ReportButton } from "@/components/report-button";
 import { BackLink } from "@/components/back-link";
@@ -159,14 +160,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </ButtonLink>
       </div>
 
-      {p.image_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={p.image_url}
-          alt={`Screenshot of ${p.base_name}`}
-          className="mt-6 w-full rounded-xl border border-neutral-700 object-cover"
-        />
-      )}
+      {p.image_url && <ImagePreview src={p.image_url} alt={`Screenshot of ${p.base_name}`} />}
 
       {/* What changed vs. parent — only on branches */}
       {p.change_summary && (
@@ -187,26 +181,38 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         signedIn={!!user}
       />
 
-      <Section
-        title="The tree"
-        note={
-          branchCount === 0
-            ? "Nobody has branched this yet — you could be first."
-            : `${branchCount} ${branchCount === 1 ? "version has" : "versions have"} grown from this. Follow any of them to hear when they change.`
-        }
-      >
-        <BranchTree
-          nodes={lineage}
-          currentId={p.id}
-          accent={accentHex(p.category)}
-          following={following}
-          canFollow={!!user}
-        />
-      </Section>
+      <div className="mt-9 grid gap-6 lg:grid-cols-2">
+        <section>
+          <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+            <GitBranch size={13} aria-hidden /> The tree
+          </h2>
+          <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
+            {branchCount === 0
+              ? "Nobody has branched this yet — you could be first."
+              : `${branchCount} ${branchCount === 1 ? "version" : "versions"} grew from this.`}
+          </p>
+          <BranchTree
+            nodes={lineage}
+            currentId={p.id}
+            accent={accentHex(p.category)}
+            following={following}
+            canFollow={!!user}
+          />
+        </section>
 
-      <Section title={`Comments (${commentRows.results.length})`}>
-        <ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />
-      </Section>
+        <section>
+          <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+            <MessageCircle size={13} aria-hidden /> Comments
+            <span className="font-normal normal-case tracking-normal text-neutral-500">
+              {commentRows.results.length}
+            </span>
+          </h2>
+          <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
+            Ask the author, report a bug, or say it worked.
+          </p>
+          <ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />
+        </section>
+      </div>
 
       <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
     </div>
