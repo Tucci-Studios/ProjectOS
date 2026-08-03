@@ -12,7 +12,7 @@ import { timeAgo } from "@/lib/categories";
 export const dynamic = "force-dynamic";
 
 const FEED_COLS = `p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
-  u.github_login,
+  u.github_login, u.avatar_url,
   (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
   (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
   (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name

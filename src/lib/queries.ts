@@ -8,7 +8,7 @@ export async function getProjectFeed(category?: string, sort: "top" | "new" = "n
   const order = sort === "top" ? "like_count DESC, p.created_at DESC" : "p.created_at DESC";
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
-            u.github_login,
+            u.github_login, u.avatar_url,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
             (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status = 'live') AS fork_count,
             (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
@@ -46,7 +46,7 @@ export type LineageNode = {
 export async function getLineage(rootId: string): Promise<LineageNode[]> {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
-    `SELECT p.id, p.base_name, p.variant_name, p.parent_id, u.github_login,
+    `SELECT p.id, p.base_name, p.variant_name, p.parent_id, u.github_login, u.avatar_url,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE p.root_id = ?1 AND p.status = 'live'

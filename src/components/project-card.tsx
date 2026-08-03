@@ -16,6 +16,7 @@ export type ProjectFeedRow = {
   parent_display: string | null;
   fork_count: number;
   created_at: number;
+  avatar_url?: string | null;
 };
 
 /** Monochrome "PROJECT /" byline, then the name. The headliner. */
@@ -80,9 +81,25 @@ export function ProjectCard({ p, vote = 0 }: { p: ProjectFeedRow; vote?: number 
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
-            <span className="text-neutral-400">@{p.github_login}</span>
+            <Link
+              href={`/u/${p.github_login}`}
+              className="relative z-[2] inline-flex items-center gap-1.5 text-neutral-400 transition hover:text-white"
+            >
+              {p.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={p.avatar_url} alt="" className="h-4 w-4 rounded-full border border-neutral-700" />
+              ) : (
+                <span className="flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-800 text-[7px]">
+                  {p.github_login.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+              @{p.github_login}
+            </Link>
             <span>{timeAgo(p.created_at)}</span>
-            <span className="inline-flex items-center gap-1">
+            <span
+              className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "font-bold text-emerald-400" : ""}`}
+              title={`${p.fork_count} branch${p.fork_count === 1 ? "" : "es"}`}
+            >
               <GitBranch size={11} aria-hidden /> {p.fork_count}
             </span>
             {p.parent_display && (

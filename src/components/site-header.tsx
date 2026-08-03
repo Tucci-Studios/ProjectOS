@@ -13,6 +13,21 @@ export async function SiteHeader() {
   ).first<SplashUpdate>();
 
   const unseen = !!user && !!latest && user.last_seen_update !== latest.id;
+  const firstTime = !!user && user.last_seen_update === null;
 
-  return <SiteHeaderClient user={user} latestUpdate={latest ?? null} unseenUpdate={unseen} />;
+  const unread = user
+    ? await env.DB.prepare("SELECT COUNT(*) AS n FROM notifications WHERE user_id = ?1 AND read_at IS NULL")
+        .bind(user.id)
+        .first<{ n: number }>()
+    : null;
+
+  return (
+    <SiteHeaderClient
+      user={user}
+      latestUpdate={latest ?? null}
+      unseenUpdate={unseen}
+      firstTime={firstTime}
+      unreadCount={unread?.n ?? 0}
+    />
+  );
 }
