@@ -121,7 +121,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     : false;
 
   const following = new Set(followRows.results.map((r) => r.project_id));
-  const forkCount = lineage.length - 1;
+  const publishedForks = lineage.length - 1;
+  // GitHub is the truth. Fall back to what we've published only when we haven't
+  // asked GitHub yet, so the number is never invented.
+  const forkCount = forkPicture.syncedAt !== null ? forkPicture.total : publishedForks;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -261,14 +264,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         commentCount={commentRows.results.length}
         tree={
           <>
-            <ForkTree
-              nodes={lineage}
-              currentId={p.id}
-              accent={accentHex(p.category)}
-              following={following}
-              canFollow={!!user}
+            {/* A tree of one is not a tree — only draw it once something is published. */}
+            {publishedForks > 0 && (
+              <ForkTree
+                nodes={lineage}
+                currentId={p.id}
+                accent={accentHex(p.category)}
+                following={following}
+                canFollow={!!user}
+              />
+            )}
+            <ForksPanel
+              projectId={p.id}
+              initial={forkPicture}
+              stale={forksStale}
+              repo={p.github_repo}
+              hasTree={publishedForks > 0}
             />
-            <ForksPanel projectId={p.id} initial={forkPicture} stale={forksStale} repo={p.github_repo} />
           </>
         }
         comments={

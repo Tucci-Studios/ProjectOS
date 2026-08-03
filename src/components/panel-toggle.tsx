@@ -31,15 +31,12 @@ export function PanelToggle({
             </>
           ) : (
             <>
-              <GitFork size={13} aria-hidden /> The tree
+              <GitFork size={13} aria-hidden /> Forks
               <span className="font-normal normal-case tracking-normal">
                 {forkCount === 0 ? (
-                  <span className="text-neutral-500">no forks yet</span>
+                  <span className="text-neutral-500">none yet</span>
                 ) : (
-                  <>
-                    <span className="font-bold text-emerald-400">{forkCount}</span>
-                    <span className="text-neutral-500"> forked from this</span>
-                  </>
+                  <span className="font-bold text-emerald-400">{forkCount.toLocaleString()}</span>
                 )}
               </span>
             </>
@@ -57,7 +54,7 @@ export function PanelToggle({
         >
           {showComments ? (
             <>
-              <GitFork size={14} aria-hidden /> Back to the tree
+              <GitFork size={14} aria-hidden /> Back to forks
             </>
           ) : (
             <>

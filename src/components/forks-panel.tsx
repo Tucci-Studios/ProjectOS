@@ -1,32 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GitFork, ExternalLink, RefreshCw } from "lucide-react";
+import { ExternalLink, RefreshCw, Star } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
 import type { ForkPicture } from "@/lib/forks";
 
 /**
- * The honest gap: GitHub forks that nobody published here.
+ * Every fork of this project, as GitHub knows them.
  *
- * These are deliberately NOT project cards — no votes, no page, no tree node.
- * Someone copying your code on GitHub isn't the same as joining the site, and
- * the page should never blur the two. What it IS good for: showing an author
- * their real reach, and nudging forkers into publishing.
+ * There is no separate "Project OS fork" — a fork is a fork, and this is the
+ * one list. The only difference between entries is whether the person who made
+ * it has published here: published forks sit on the tree above with votes and a
+ * page; the rest are names and links until their owner turns up.
  */
 export function ForksPanel({
   projectId,
   initial,
   stale,
   repo,
+  hasTree,
 }: {
   projectId: string;
   initial: ForkPicture;
   stale: boolean;
   repo: string;
+  hasTree: boolean;
 }) {
   const [picture, setPicture] = useState(initial);
   const [busy, setBusy] = useState(false);
-  const [show, setShow] = useState(6);
+  const [show, setShow] = useState(8);
 
   async function refresh() {
     setBusy(true);
@@ -37,7 +39,13 @@ export function ForksPanel({
         body: JSON.stringify({ projectId }),
       });
       const data = (await res.json()) as ForkPicture & { ok?: boolean };
-      if (data.ok) setPicture({ unpublished: data.unpublished, total: data.total, published: data.published, syncedAt: data.syncedAt });
+      if (data.ok)
+        setPicture({
+          unpublished: data.unpublished,
+          total: data.total,
+          published: data.published,
+          syncedAt: data.syncedAt,
+        });
     } catch {
       /* GitHub being down is not this page's problem */
     } finally {
@@ -52,46 +60,37 @@ export function ForksPanel({
   }, [stale]);
 
   const { unpublished, total, published, syncedAt } = picture;
-  const untracked = Math.max(0, total - published);
 
   return (
-    <div className="mt-5 border-t border-neutral-800 pt-4">
-      <div className="mb-1 flex flex-wrap items-center gap-2">
-        <h3 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
-          <GitFork size={13} aria-hidden /> Forked on GitHub
-        </h3>
-        <span className="font-mono text-[11px] text-neutral-500">
-          {syncedAt === null && !busy ? "not checked yet" : `${total} total`}
+    <div className={hasTree ? "mt-4 border-t border-neutral-800 pt-4" : ""}>
+      <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 px-2 font-mono text-[11px]">
+        <span className="text-neutral-500">
+          {syncedAt === null && !busy ? (
+            "Haven't checked GitHub yet."
+          ) : total === 0 ? (
+            "Nobody has forked this on GitHub."
+          ) : (
+            <>
+              <span className="font-bold text-neutral-200">{total.toLocaleString()}</span> on GitHub
+              {published > 0 && (
+                <>
+                  <span className="text-neutral-700"> · </span>
+                  <span className="font-bold text-emerald-400">{published}</span> published here
+                </>
+              )}
+            </>
+          )}
         </span>
         <button
           onClick={refresh}
           disabled={busy}
           aria-label="Check GitHub again"
-          className="ml-auto flex cursor-pointer items-center gap-1.5 rounded p-1 font-mono text-[11px] text-neutral-600 outline-none transition hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50"
+          className="ml-auto flex cursor-pointer items-center gap-1.5 rounded p-1 text-neutral-600 outline-none transition hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50"
         >
-          <RefreshCw size={12} className={busy ? "animate-spin" : ""} aria-hidden />
+          <RefreshCw size={11} className={busy ? "animate-spin" : ""} aria-hidden />
           {busy ? "checking" : syncedAt ? timeAgo(syncedAt) : "check"}
         </button>
       </div>
-
-      <p className="mb-3 text-[13px] leading-relaxed text-neutral-500">
-        {syncedAt === null ? (
-          <>Haven&apos;t asked GitHub about this one yet.</>
-        ) : total === 0 ? (
-          <>Nobody has forked this on GitHub yet.</>
-        ) : (
-          <>
-            <span className="font-bold text-emerald-400">{published}</span> of these were published here and are on the
-            tree above.{" "}
-            {untracked > 0 && (
-              <>
-                The other <span className="text-neutral-300">{untracked}</span> exist on GitHub but nobody published
-                them, so they have no page, no votes, and no place on the tree.
-              </>
-            )}
-          </>
-        )}
-      </p>
 
       {unpublished.length > 0 && (
         <>
@@ -102,13 +101,19 @@ export function ForksPanel({
                   href={`https://github.com/${f.full_name}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900/30 px-3 py-2 font-mono text-[12px] outline-none transition hover:border-neutral-600 focus-visible:ring-2 focus-visible:ring-emerald-400"
+                  title="Not published on Project OS — this link goes to GitHub"
+                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 font-mono text-[12px] outline-none transition hover:bg-neutral-800/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
                 >
-                  <span className="min-w-0 flex-1 truncate text-neutral-300">{f.full_name}</span>
-                  {f.pushed_at && (
-                    <span className="shrink-0 text-[10px] text-neutral-600">touched {timeAgo(f.pushed_at)}</span>
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full border border-neutral-700" aria-hidden />
+                  <span className="min-w-0 flex-1 truncate text-neutral-400">{f.full_name}</span>
+                  {f.stars > 0 && (
+                    <span className="flex shrink-0 items-center gap-1 text-[10px] text-neutral-600">
+                      <Star size={9} aria-hidden />
+                      {f.stars}
+                    </span>
                   )}
-                  <ExternalLink size={11} className="shrink-0 text-neutral-600" aria-hidden />
+                  {f.pushed_at && <span className="shrink-0 text-[10px] text-neutral-600">{timeAgo(f.pushed_at)}</span>}
+                  <ExternalLink size={10} className="shrink-0 text-neutral-700" aria-hidden />
                 </a>
               </li>
             ))}
@@ -116,20 +121,19 @@ export function ForksPanel({
 
           {show < unpublished.length && (
             <button
-              onClick={() => setShow(show + 20)}
-              className="mt-2 w-full cursor-pointer rounded-lg border border-neutral-800 py-2 font-mono text-[11px] text-neutral-500 transition hover:border-neutral-600 hover:text-neutral-300"
+              onClick={() => setShow(show + 25)}
+              className="mt-1.5 w-full cursor-pointer rounded-lg border border-neutral-800 py-1.5 font-mono text-[11px] text-neutral-500 transition hover:border-neutral-600 hover:text-neutral-300"
             >
-              show {Math.min(20, unpublished.length - show)} more
+              show {Math.min(25, unpublished.length - show)} more of {unpublished.length}
             </button>
           )}
 
-          <p className="mt-3 rounded-lg border border-emerald-400/25 bg-emerald-400/[0.04] px-3 py-2 text-[12px] leading-relaxed text-neutral-400">
-            One of these yours?{" "}
-            <a href="/submit" className="font-bold text-emerald-300 hover:underline">
-              Publish it
+          <p className="mt-2.5 px-2 font-mono text-[11px] leading-relaxed text-neutral-600">
+            These have no page here because nobody claimed them.{" "}
+            <a href="/submit" className="text-emerald-400 hover:underline">
+              Publish yours
             </a>{" "}
-            and it joins the tree — we already know it came from{" "}
-            <span className="font-mono text-neutral-300">{repo}</span>, so there&apos;s nothing to fill in.
+            and it joins the tree — we already know it came from {repo}.
           </p>
         </>
       )}
