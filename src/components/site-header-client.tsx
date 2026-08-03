@@ -10,6 +10,7 @@ import { ButtonLink } from "./ui";
 import { BrandMark } from "./brand";
 import { UpdateSplash, type SplashUpdate } from "./update-splash";
 import { UserMenu } from "./user-menu";
+import { MobileNav } from "./mobile-nav";
 
 export function SiteHeaderClient({
   user,
@@ -32,7 +33,8 @@ export function SiteHeaderClient({
     <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
       <div className="grid h-[60px] w-full grid-cols-[1fr_minmax(0,520px)_1fr] items-center gap-6 px-4">
         {/* Left: brand */}
-        <span className="flex select-none items-center gap-2.5 justify-self-start">
+        <span className="flex min-w-0 select-none items-center gap-2.5 justify-self-start">
+          <MobileNav />
           <BrandMark size={34} />
           <span className="flex flex-col leading-none">
             <span className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
@@ -59,7 +61,14 @@ export function SiteHeaderClient({
           />
         </form>
 
-        <div className="flex items-center justify-end gap-2">
+        <div className="ml-auto flex items-center justify-end gap-1.5 md:ml-0 md:gap-2">
+          <Link
+            href="/search"
+            aria-label="Search"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-neutral-400 outline-none transition hover:bg-neutral-800 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 md:hidden"
+          >
+            <Search size={18} aria-hidden />
+          </Link>
           <ButtonLink href="/submit" variant="primary" className="!min-h-[34px] !rounded-full !px-3 !text-[13px]">
             <Plus size={14} aria-hidden /> <span className="hidden sm:inline">Publish</span>
           </ButtonLink>

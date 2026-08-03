@@ -48,6 +48,7 @@ export function BranchTree({
       {build(nodes).map((n) => (
         <Node key={n.id} node={n} depth={0} currentId={currentId} accent={accent} following={following} canFollow={canFollow} />
       ))}
+      <TreeLegend accent={accent} />
     </div>
   );
 }
@@ -102,6 +103,13 @@ function Node({
         />
 
         <span
+          title={
+            isCurrent
+              ? "You're looking at this one"
+              : kids > 0
+                ? `${kids} branch${kids === 1 ? "" : "es"} came off this`
+                : "Nothing has branched off this yet"
+          }
           className="relative z-[1] mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border"
           style={{ borderColor: accent, background: isCurrent ? accent : "transparent" }}
           aria-hidden
@@ -177,6 +185,30 @@ function Node({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/** The dots mean something — say so, instead of making people guess. */
+function TreeLegend({ accent }: { accent: string }) {
+  const dot = "flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border";
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-neutral-800 px-1.5 pb-1 pt-2.5 font-mono text-[11px] text-neutral-500">
+      <span className="flex items-center gap-1.5">
+        <span className={dot} style={{ borderColor: accent }} aria-hidden />
+        end of the line
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className={dot} style={{ borderColor: accent }} aria-hidden>
+          <span className="h-[3px] w-[3px] rounded-full" style={{ background: accent }} />
+        </span>
+        has branches
+      </span>
+      <span className="flex items-center gap-1.5">
+        <span className={dot} style={{ borderColor: accent, background: accent }} aria-hidden />
+        you are here
+      </span>
+      <span className="text-neutral-600">click a line to fold that thread</span>
     </div>
   );
 }
