@@ -2,7 +2,7 @@
   // Project OS — Cloudflare Workers config (deployed via OpenNext)
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "project-os",
-  "main": ".open-next/worker.js",
+  "main": "worker.ts",
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
@@ -18,5 +18,14 @@
       "database_id": "PLACEHOLDER_RUN_wrangler_d1_create"
     }
   ],
-  "r2_buckets": [{ "binding": "SHOTS", "bucket_name": "project-os-images" }]
+  "r2_buckets": [{ "binding": "SHOTS", "bucket_name": "project-os-images" }],
+  // Keeps the catalogue current without anyone pressing anything. The handler
+  // lives in worker.ts and maps each cron to a job.
+  "triggers": {
+    "crons": [
+      "17 3 * * *",   // discover — new projects on GitHub
+      "37 4 * * *",   // refresh — stars, forks, descriptions, star snapshot
+      "*/20 * * * *"  // forks — rolling fork lists, oldest first
+    ]
+  }
 }

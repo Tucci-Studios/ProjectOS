@@ -82,8 +82,20 @@ export async function syncForks(projectId: string, repo: string): Promise<ForkPi
   if (!data) return null;
 
   const now = Math.floor(Date.now() / 1000);
-  await env.DB.prepare("DELETE FROM github_forks WHERE project_id = ?1").bind(projectId).run();
 
+  // Diff before overwriting. Replacing the list blindly loses the only signal
+  // that tells an author their work is spreading, which is the whole point of
+  // watching in the first place.
+  const { results: before } = await env.DB.prepare(
+    "SELECT full_name FROM github_forks WHERE project_id = ?1",
+  )
+    .bind(projectId)
+    .all<{ full_name: string }>();
+  const known = new Set(before.map((r) => r.full_name));
+  const firstEverSync = known.size === 0;
+  const arrivals = data.forks.filter((f) => !known.has(f.full_name));
+
+  await env.DB.prepare("DELETE FROM github_forks WHERE project_id = ?1").bind(projectId).run();
   for (const f of data.forks) {
     await env.DB.prepare(
       "INSERT OR REPLACE INTO github_forks (project_id, full_name, owner_login, stars, pushed_at) VALUES (?1, ?2, ?3, ?4, ?5)",
@@ -98,5 +110,40 @@ export async function syncForks(projectId: string, repo: string): Promise<ForkPi
     .bind(projectId, data.total, now)
     .run();
 
+  // Everything looks new the first time we look, so that run stays quiet.
+  if (!firstEverSync && arrivals.length > 0) await announceForks(projectId, arrivals.length, now);
+
   return getForkPicture(projectId, repo);
+}
+
+/** Tell the people following a project that it just got forked again. */
+async function announceForks(projectId: string, count: number, now: number) {
+  const { env } = getCloudflareContext();
+  const project = await env.DB.prepare(
+    `SELECT owner_id, CASE WHEN variant_name IS NULL THEN base_name
+                           ELSE base_name || ' // ' || variant_name END AS display
+     FROM projects WHERE id = ?1`,
+  )
+    .bind(projectId)
+    .first<{ owner_id: string; display: string }>();
+  if (!project) return;
+
+  const body =
+    count === 1
+      ? `${project.display} was forked on GitHub`
+      : `${project.display} picked up ${count} new forks on GitHub`;
+
+  // The owner hears about it even if they never followed their own project.
+  await env.DB.prepare(
+    `INSERT INTO notifications (id, user_id, kind, body, href, created_at)
+     SELECT 'n_' || lower(hex(randomblob(4))), u.user_id, 'fork', ?1, ?2, ?3
+     FROM (
+       SELECT user_id FROM follows WHERE project_id = ?4
+       UNION
+       SELECT ?5 AS user_id
+     ) u
+     WHERE u.user_id IN (SELECT id FROM users WHERE is_shadow = 0)`,
+  )
+    .bind(body, `/p/${projectId}`, now, projectId, project.owner_id)
+    .run();
 }
