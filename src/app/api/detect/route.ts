@@ -2,6 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 import { getRepo } from "@/lib/github";
+import { checkRate } from "@/lib/rate-limit";
 
 const REPO_RE = /^[\w.-]+\/[\w.-]+$/;
 
@@ -27,6 +28,11 @@ export async function GET(request: Request) {
   const repo = raw.trim().replace(/^https:\/\/github\.com\//, "").replace(/\/+$/, "");
   if (!REPO_RE.test(repo))
     return NextResponse.json({ kind: "unknown", message: 'Enter a repo like "owner/repo".' } satisfies Detection);
+
+  // Every miss here costs a GitHub request from an hourly budget the whole site
+  // shares, and this fires while someone types. Leash it.
+  const rate = await checkRate(user.id, "detect");
+  if (!rate.ok) return NextResponse.json({ kind: "unknown", message: rate.message } satisfies Detection);
 
   const { env } = getCloudflareContext();
 

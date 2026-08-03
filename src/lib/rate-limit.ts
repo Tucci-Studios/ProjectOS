@@ -7,6 +7,7 @@ const LIMITS: Record<string, { max: number; windowS: number; label: string }> = 
   post: { max: 15, windowS: 3600, label: "posts" },
   comment: { max: 40, windowS: 3600, label: "comments" },
   update: { max: 20, windowS: 3600, label: "updates" },
+  detect: { max: 30, windowS: 600, label: "repo checks" },
   idea: { max: 5, windowS: 3600, label: "ideas" },
   report: { max: 20, windowS: 3600, label: "reports" },
 };

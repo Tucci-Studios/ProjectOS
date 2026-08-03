@@ -1,8 +1,25 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+
 const GH = "https://api.github.com";
-const HEADERS = {
-  Accept: "application/vnd.github+json",
-  "User-Agent": "project-os",
-};
+
+/**
+ * GitHub allows 60 requests an hour without a token and 5,000 with one. The
+ * token needs NO scopes — it only raises the ceiling on public reads — so it
+ * costs nothing in access and buys ~83x the headroom.
+ */
+function headers(): Record<string, string> {
+  const h: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "project-os",
+  };
+  try {
+    const token = (getCloudflareContext().env as { GITHUB_TOKEN?: string }).GITHUB_TOKEN;
+    if (token) h.Authorization = `Bearer ${token}`;
+  } catch {
+    // No Cloudflare context (scripts, tests) — fall back to the low ceiling.
+  }
+  return h;
+}
 
 export type RepoInfo = {
   full_name: string;
@@ -29,11 +46,9 @@ export type ForkInfo = {
  * nobody told it about.
  */
 export async function listForks(repo: string, max = 100): Promise<{ forks: ForkInfo[]; total: number } | null> {
-  const info = await getRepo(repo);
-  if (!info) return null;
-
-  const res = await fetch(`${GH}/repos/${repo}/forks?sort=newest&per_page=${Math.min(100, max)}`, {
-    headers: HEADERS,
+  const perPage = Math.min(100, max);
+  const res = await fetch(`${GH}/repos/${repo}/forks?sort=newest&per_page=${perPage}`, {
+    headers: headers(),
   });
   if (!res.ok) return null;
 
@@ -45,8 +60,14 @@ export async function listForks(repo: string, max = 100): Promise<{ forks: ForkI
   }[];
   if (!Array.isArray(raw)) return null;
 
+  // The forks endpoint doesn't report a total. If we got a short page, we've
+  // seen them all and can count them ourselves; only a full page means there
+  // may be more, and only then is a second request worth spending.
+  let total = raw.length;
+  if (raw.length === perPage) total = (await getRepo(repo))?.forks_count ?? raw.length;
+
   return {
-    total: info.forks_count ?? raw.length,
+    total,
     forks: raw.map((f) => ({
       full_name: f.full_name,
       owner_login: f.owner.login,
@@ -57,14 +78,14 @@ export async function listForks(repo: string, max = 100): Promise<{ forks: ForkI
 }
 
 export async function getRepo(repo: string): Promise<RepoInfo | null> {
-  const res = await fetch(`${GH}/repos/${repo}`, { headers: HEADERS });
+  const res = await fetch(`${GH}/repos/${repo}`, { headers: headers() });
   if (!res.ok) return null;
   return (await res.json()) as RepoInfo;
 }
 
 /** Fetch a file's text content from the repo's default branch, or null if missing. */
 export async function getFileText(repo: string, path: string): Promise<string | null> {
-  const res = await fetch(`${GH}/repos/${repo}/contents/${path}`, { headers: HEADERS });
+  const res = await fetch(`${GH}/repos/${repo}/contents/${path}`, { headers: headers() });
   if (!res.ok) return null;
   const body = (await res.json()) as { content?: string; encoding?: string };
   if (!body.content || body.encoding !== "base64") return null;
