@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Radio, Compass, Search, Plus } from "lucide-react";
 import type { SessionUser } from "@/lib/auth";
 import { ButtonLink } from "./ui";
-import { Wordmark } from "./brand";
+import { BrandMark } from "./brand";
+import { UpdateSplash, type SplashUpdate } from "./update-splash";
 import { UserMenu } from "./user-menu";
 
 const NAV = [
@@ -18,15 +21,37 @@ const NAV = [
   },
 ];
 
-export function SiteHeaderClient({ user }: { user: SessionUser | null }) {
+export function SiteHeaderClient({
+  user,
+  latestUpdate,
+  unseenUpdate,
+}: {
+  user: SessionUser | null;
+  latestUpdate?: SplashUpdate | null;
+  unseenUpdate?: boolean;
+}) {
   const pathname = usePathname();
+  const [splashTrigger, setSplashTrigger] = useState(0);
 
   return (
+    <>
     <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
       <div className="mx-auto flex h-[60px] max-w-6xl items-center px-5">
         {/* Left: brand */}
-        <span aria-label="Project OS — Project Open Source" className="cursor-default select-none">
-          <Wordmark />
+        <span className="flex select-none items-center gap-2.5">
+          <BrandMark size={34} />
+          <span className="flex flex-col leading-none">
+            <span className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
+              PROJECT<span className="text-emerald-400">_</span>OS
+            </span>
+            <button
+              onClick={() => setSplashTrigger((t) => t + 1)}
+              title="What's new"
+              className="mt-[3px] w-fit cursor-pointer rounded font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-500 outline-none transition-colors duration-200 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+            >
+              open source
+            </button>
+          </span>
         </span>
 
         {/* Center: the two places you go */}
@@ -78,5 +103,7 @@ export function SiteHeaderClient({ user }: { user: SessionUser | null }) {
         </div>
       </div>
     </header>
+    {latestUpdate && <UpdateSplash update={latestUpdate} unseen={!!unseenUpdate} trigger={splashTrigger} />}
+    </>
   );
 }

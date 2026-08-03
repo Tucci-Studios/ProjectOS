@@ -51,13 +51,13 @@ export function ProjectHeadline({
 }
 
 /** Minimal group symbol — AI, Build, or Play — sitting quietly on the right. */
-export function GroupGlyph({ category, size = 30 }: { category: string; size?: number }) {
+export function GroupGlyph({ category, size = 20 }: { category: string; size?: number }) {
   const g = groupOf(category);
   return (
     <span
       title={`${g.label} — ${g.blurb}`}
       aria-label={g.label}
-      className="flex shrink-0 items-center justify-center opacity-80 transition-opacity duration-200 group-hover:opacity-100"
+      className="flex shrink-0 items-center justify-center opacity-60 transition-opacity duration-200 group-hover:opacity-100"
     >
       <g.Icon size={size} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
     </span>
@@ -93,8 +93,8 @@ export function ProjectCard({ p, vote = 0 }: { p: ProjectFeedRow; vote?: number 
           </div>
         </div>
 
-        <div className="relative z-[2] shrink-0 self-start pt-0.5">
-          <GroupGlyph category={p.category} size={32} />
+        <div className="relative z-[2] shrink-0 self-start pt-1">
+          <GroupGlyph category={p.category} size={20} />
         </div>
       </div>
 

@@ -1,10 +1,16 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
+import { checkRate } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "Sign in to post." }, { status: 401 });
+
+  const rate = await checkRate(user.id, "post");
+  if (!rate.ok)
+    return NextResponse.json({ error: rate.message }, { status: 429, headers: { "Retry-After": String(rate.retryAfterS) } });
+
 
   let body: { title?: unknown; body?: unknown; kind?: unknown; projectId?: unknown; category?: unknown };
   try {

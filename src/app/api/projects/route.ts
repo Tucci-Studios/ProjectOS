@@ -1,6 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
+import { checkRate } from "@/lib/rate-limit";
 import { validateManifest, type Manifest } from "@/lib/manifest";
 import { getRepo, getFileText } from "@/lib/github";
 
@@ -13,6 +14,10 @@ function bad(errors: string[], status = 400) {
 export async function POST(request: Request) {
   const user = await getSessionUser();
   if (!user) return bad(["You must be signed in to publish."], 401);
+
+  const rate = await checkRate(user.id, "publish");
+  if (!rate.ok) return bad([rate.message], 429);
+
 
   let body: { repo?: unknown; acceptTos?: unknown };
   try {
