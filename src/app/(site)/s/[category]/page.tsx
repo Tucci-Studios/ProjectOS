@@ -4,7 +4,23 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getSessionUser } from "@/lib/auth";
 import { getProjectFeed, getLikedIds } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
+import { Boxes } from "lucide-react";
 import { CATEGORY_META, categoryMeta, timeAgo } from "@/lib/categories";
+import { PageHeader } from "@/components/page-header";
+
+// One plain-English line per section, so a newcomer knows what belongs here.
+const SECTION_PURPOSE: Record<string, string> = {
+  "claude-code": "Full projects built with Claude Code — clone one and keep building where someone else left off.",
+  "claude-skills": "Drop-in skills that teach Claude a new trick. Install one into your ~/.claude/skills folder in seconds.",
+  "claude-md": "CLAUDE.md files — the instructions that shape how Claude works on your project. Steal a good one.",
+  codex: "Projects, configs, and prompt setups built around Codex.",
+  grok: "Projects built on Grok and the xAI API.",
+  "local-llms": "Everything for models you run on your own machine — stacks, UIs, and tooling.",
+  "mcp-servers": "MCP servers connect Claude to your tools and data. Add one with a single command.",
+  apps: "Desktop and mobile apps you build from source. No binaries hosted here.",
+  games: "Games to play, read, and branch into your own version.",
+  "scripts-tools": "Small scripts and command-line tools that do one thing well.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -126,17 +142,30 @@ export default async function SectionPage({
     );
   }
 
+  const TAB_PURPOSE: Record<string, string> = {
+    projects: SECTION_PURPOSE[category] ?? `Everything published under ${meta.label}.`,
+    tutorials: `Step-by-step guides for ${meta.label}, written by the community.`,
+    requests: `People stuck on ${meta.label} things. Answer one by writing a tutorial.`,
+  };
+
   return (
     <div>
-      <h1 className="mb-1 flex items-center gap-3 font-mono text-2xl font-bold tracking-tight text-white">
-        <span className={`h-2.5 w-2.5 rounded-full ${meta.dot} shadow-[0_0_8px_currentColor]`} />
-        {meta.label}
-      </h1>
-      <p className={`mb-4 font-mono text-sm ${meta.text}`}>s/{meta.slug}</p>
-      <div className="mb-5 flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
-        {tabLink("projects", "projects")}
-        {tabLink("tutorials", "tutorials")}
-        {tabLink("requests", "help wanted")}
+      <PageHeader
+        crumbs={[
+          { label: "Home", href: "/" },
+          { label: "Projects", href: "/projects" },
+          { label: meta.group },
+          { label: meta.label },
+        ]}
+        title={meta.label}
+        purpose={TAB_PURPOSE[tab]}
+        accent={meta.text}
+        Icon={Boxes}
+      />
+      <div className="mb-5 inline-flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
+        {tabLink("projects", "Projects")}
+        {tabLink("tutorials", "Tutorials")}
+        {tabLink("requests", "Help wanted")}
       </div>
       {content}
     </div>

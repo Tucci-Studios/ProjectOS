@@ -55,8 +55,19 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     : null;
   const lineage = await getLineage(p.root_id);
 
+  const crumbLabel = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
+
   return (
     <div className="max-w-3xl">
+      <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center gap-1 font-mono text-xs text-neutral-500">
+        <Link href="/" className="rounded px-1 py-0.5 hover:text-neutral-200">Home</Link>
+        <span className="text-neutral-700">/</span>
+        <Link href="/projects" className="rounded px-1 py-0.5 hover:text-neutral-200">Projects</Link>
+        <span className="text-neutral-700">/</span>
+        <Link href={`/s/${meta.slug}`} className={`rounded px-1 py-0.5 hover:opacity-80 ${meta.text}`}>{meta.label}</Link>
+        <span className="text-neutral-700">/</span>
+        <span className="px-1 py-0.5 text-neutral-300">{crumbLabel}</span>
+      </nav>
       <div className="flex items-start gap-3">
         <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={!!likedRow} />
         <div className="min-w-0 flex-1">

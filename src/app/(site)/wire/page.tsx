@@ -1,6 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
+import { Radio } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
+import { PageHeader } from "@/components/page-header";
+import { ButtonLink } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -31,18 +34,18 @@ export default async function WirePage() {
 
   return (
     <div className="max-w-3xl">
-      <div className="mb-1 flex items-center justify-between">
-        <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
-          Feed <span className="font-normal text-neutral-500">// the_wire</span>
-        </h1>
-        <Link
-          href="/wire/new"
-          className="rounded-lg border border-emerald-400/50 px-4 py-2 font-mono text-sm font-semibold text-emerald-400 transition hover:bg-emerald-400/10 hover:shadow-[0_0_16px_rgba(52,211,153,0.25)]"
-        >
-          + new post
-        </Link>
-      </div>
-      <p className="mb-5 font-mono text-sm text-neutral-500">posts, tips, devlogs, tutorials — the feed IS the community</p>
+      <PageHeader
+        crumbs={[{ label: "Home", href: "/" }, { label: "Community feed" }]}
+        title="Community feed"
+        purpose="Devlogs, tips, questions, and tutorials from people building here. Post an update, ask for help, or share what you learned."
+        Icon={Radio}
+        accent="text-sky-400"
+        action={
+          <ButtonLink href="/wire/new" variant="outline">
+            + New post
+          </ButtonLink>
+        }
+      />
       <div className="space-y-3">
         {results.map((post) => (
           <article

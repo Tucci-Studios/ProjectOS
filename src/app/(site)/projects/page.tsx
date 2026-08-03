@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Boxes } from "lucide-react";
+import { PageHeader } from "@/components/page-header";
 import { getSessionUser } from "@/lib/auth";
 import { getProjectFeed, getLikedIds } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
@@ -30,15 +32,18 @@ export default async function ProjectsPage({
 
   return (
     <div>
-      <div className="mb-5 flex items-center justify-between">
-        <h1 className="font-mono text-2xl font-bold tracking-tight text-white">
-          {sort === "top" ? "Top on Project OS" : "Newest"}
-        </h1>
-        <div className="flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
-          {tab("top", "▲ top")}
-          {tab("new", "◷ new")}
-        </div>
-      </div>
+      <PageHeader
+        crumbs={[{ label: "Home", href: "/" }, { label: "All projects" }]}
+        title="All projects"
+        purpose="Everything published on Project OS, across every section. Sort by most liked or newest."
+        Icon={Boxes}
+        action={
+          <div className="flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
+            {tab("top", "Most liked")}
+            {tab("new", "Newest")}
+          </div>
+        }
+      />
       <div className="space-y-3">
         {feed.map((p, i) => (
           <div key={p.id} className="flex items-center gap-3">

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { getSessionUser } from "@/lib/auth";
 import { getLikedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
+import { Search as SearchIcon } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
+import { PageHeader } from "@/components/page-header";
 
 export const dynamic = "force-dynamic";
 
@@ -42,9 +44,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div>
-      <h1 className="mb-5 font-mono text-2xl font-bold tracking-tight text-white">
-        Search: <span className="text-emerald-400">{query}</span>
-      </h1>
+      <PageHeader
+        crumbs={[{ label: "Home", href: "/" }, { label: "Search" }]}
+        title={`Results for "${query}"`}
+        purpose="Matching projects and feed posts."
+        Icon={SearchIcon}
+      />
       <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.25em] text-neutral-500">
         projects ({projects.length})
       </h2>
