@@ -184,6 +184,18 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       <div className="mt-9 grid gap-6 lg:grid-cols-2">
         <section>
           <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+            <MessageCircle size={13} aria-hidden /> Comments
+            <span className="font-normal normal-case tracking-normal text-neutral-500">
+              {commentRows.results.length}
+            </span>
+          </h2>
+          <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
+            Ask the author, report a bug, or say it worked.
+          </p>
+          <ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />
+        </section>
+        <section>
+          <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
             <GitBranch size={13} aria-hidden /> The tree
           </h2>
           <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
@@ -200,18 +212,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           />
         </section>
 
-        <section>
-          <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
-            <MessageCircle size={13} aria-hidden /> Comments
-            <span className="font-normal normal-case tracking-normal text-neutral-500">
-              {commentRows.results.length}
-            </span>
-          </h2>
-          <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
-            Ask the author, report a bug, or say it worked.
-          </p>
-          <ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />
-        </section>
       </div>
 
       <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>

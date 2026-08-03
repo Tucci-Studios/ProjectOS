@@ -1,8 +1,9 @@
 // Voting runs in fixed cycles. Whatever is top-voted when a cycle closes gets
 // reviewed and merged. Cycle 1 starts at the site epoch; each lasts 14 days.
 
-const EPOCH = 1785974400; // 2026-08-02
+const EPOCH = 1784764800; // backdated so we are in round 2
 const CYCLE_DAYS = 14;
+// Nudged back one round so the demo shows a round-1 winner already in progress.
 const CYCLE_S = CYCLE_DAYS * 86400;
 
 export function currentCycle(now = Math.floor(Date.now() / 1000)) {
