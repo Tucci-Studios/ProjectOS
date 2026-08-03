@@ -13,7 +13,7 @@ export default async function ExplorePage() {
   const [{ items, nextCursor }, votes] = await Promise.all([getStream(), getUserVotes(user?.id)]);
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto w-full max-w-4xl">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-800 pb-5">
         <div>
           <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">

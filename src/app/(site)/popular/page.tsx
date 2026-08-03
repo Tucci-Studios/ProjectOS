@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Flame, Plus } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes } from "@/lib/queries";
+import { getUserVotes, getFollowedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ButtonLink } from "@/components/ui";
 
@@ -14,7 +14,7 @@ export default async function PopularPage() {
   const user = await getSessionUser();
   const { env } = getCloudflareContext();
 
-  const [{ results: top }, votes] = await Promise.all([
+  const [{ results: top }, votes, follows] = await Promise.all([
     env.DB.prepare(
       `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
               u.github_login, u.avatar_url,
@@ -29,10 +29,11 @@ export default async function PopularPage() {
        LIMIT ${TOP_N}`,
     ).all<ProjectFeedRow>(),
     getUserVotes(user?.id),
+    getFollowedIds(user?.id),
   ]);
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto w-full max-w-4xl">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-800 pb-5">
         <div>
           <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
@@ -67,7 +68,7 @@ export default async function PopularPage() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0 flex-1">
-                <ProjectCard p={p} vote={votes.get(p.id) ?? 0} />
+                <ProjectCard p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} />
               </div>
             </li>
           ))}

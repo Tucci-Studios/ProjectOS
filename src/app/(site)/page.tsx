@@ -1,8 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { House, Compass, Plus } from "lucide-react";
+import { Rss, Compass, Plus } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes } from "@/lib/queries";
+import { getUserVotes, getFollowedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ButtonLink } from "@/components/ui";
 
@@ -22,7 +22,7 @@ export default async function FeedPage() {
                  ELSE pp.base_name || ' // ' || pp.variant_name END
      FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;
 
-  const [followed, votes] = user
+  const [followed, votes, follows] = user
     ? await Promise.all([
         env.DB.prepare(
           `SELECT ${FEED_COLS} FROM projects p
@@ -35,15 +35,16 @@ export default async function FeedPage() {
            ORDER BY p.created_at DESC LIMIT 30`,
         ).bind(user.id).all<ProjectFeedRow>().then((r) => r.results),
         getUserVotes(user.id),
+        getFollowedIds(user.id),
       ])
-    : [[], new Map<string, number>()];
+    : [[], new Map<string, number>(), new Set<string>()];
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto w-full max-w-4xl">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-800 pb-5">
         <div>
           <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
-            <House size={22} className="text-emerald-400" aria-hidden /> Feed
+            <Rss size={22} className="text-emerald-400" aria-hidden /> Feed
           </h1>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
             Projects you follow, and every new branch that grows off them.
@@ -69,7 +70,7 @@ export default async function FeedPage() {
       ) : (
         <div className="stagger space-y-3">
           {followed.map((p) => (
-            <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} />
+            <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} />
           ))}
         </div>
       )}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GitBranch } from "lucide-react";
 import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
+import { FollowButton } from "./follow-button";
 import { BrandMark } from "./brand";
 
 export type ProjectFeedRow = {
@@ -65,7 +66,17 @@ export function GroupGlyph({ category, size = 20 }: { category: string; size?: n
   );
 }
 
-export function ProjectCard({ p, vote = 0 }: { p: ProjectFeedRow; vote?: number }) {
+export function ProjectCard({
+  p,
+  vote = 0,
+  following,
+  canFollow = false,
+}: {
+  p: ProjectFeedRow;
+  vote?: number;
+  following?: boolean;
+  canFollow?: boolean;
+}) {
   const fullName = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
   return (
@@ -110,8 +121,9 @@ export function ProjectCard({ p, vote = 0 }: { p: ProjectFeedRow; vote?: number 
           </div>
         </div>
 
-        <div className="relative z-[2] shrink-0 self-start pt-1">
+        <div className="relative z-[2] flex shrink-0 flex-col items-end gap-2 self-start pt-1">
           <GroupGlyph category={p.category} size={20} />
+          {canFollow && <FollowButton projectId={p.id} initialFollowing={!!following} size="sm" />}
         </div>
       </div>
 

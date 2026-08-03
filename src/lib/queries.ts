@@ -32,12 +32,24 @@ export async function getUserVotes(userId: string | undefined): Promise<Map<stri
   return new Map(results.map((r) => [r.project_id, r.value]));
 }
 
+/** Project ids this user follows. */
+export async function getFollowedIds(userId: string | undefined): Promise<Set<string>> {
+  if (!userId) return new Set();
+  const { env } = getCloudflareContext();
+  const { results } = await env.DB.prepare("SELECT project_id FROM follows WHERE user_id = ?1")
+    .bind(userId)
+    .all<{ project_id: string }>();
+  return new Set(results.map((r) => r.project_id));
+}
+
 /** Whole lineage for a root, ordered for indented tree rendering (DFS). */
 export type LineageNode = {
   id: string;
   base_name: string;
   variant_name: string | null;
   parent_id: string | null;
+  change_summary: string | null;
+  child_count: number;
   github_login: string;
   like_count: number;
   depth: number;
@@ -46,8 +58,9 @@ export type LineageNode = {
 export async function getLineage(rootId: string): Promise<LineageNode[]> {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
-    `SELECT p.id, p.base_name, p.variant_name, p.parent_id, u.github_login, u.avatar_url,
-            (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count
+    `SELECT p.id, p.base_name, p.variant_name, p.parent_id, p.change_summary, u.github_login, u.avatar_url,
+            (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
+            (SELECT COUNT(*) FROM projects c WHERE c.parent_id = p.id AND c.status='live') AS child_count
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE p.root_id = ?1 AND p.status = 'live'
      ORDER BY p.created_at ASC`,
