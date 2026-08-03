@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { User, Settings, LogOut, Lightbulb, ChevronDown } from "lucide-react";
+import { User, Settings, LogOut, Lightbulb, ChevronDown, ShieldAlert } from "lucide-react";
 import type { SessionUser } from "@/lib/auth";
 
 // Sign-out lives behind a deliberate open-then-click, so it can't be hit by
@@ -73,6 +73,11 @@ export function UserMenu({ user }: { user: SessionUser }) {
             <Link href="/settings" role="menuitem" onClick={() => setOpen(false)} className={item}>
               <Settings size={15} aria-hidden /> Settings
             </Link>
+            {user.role === "admin" && (
+              <Link href="/mod" role="menuitem" onClick={() => setOpen(false)} className={item}>
+                <ShieldAlert size={15} aria-hidden /> Moderation
+              </Link>
+            )}
           </div>
 
           <div className="mt-1.5 border-t border-neutral-800 pt-1.5">

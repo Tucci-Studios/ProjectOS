@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Trash2 } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
 
 export type ProjectComment = {
@@ -18,10 +18,12 @@ export function ProjectComments({
   projectId,
   comments,
   signedIn,
+  viewerLogin,
 }: {
   projectId: string;
   comments: ProjectComment[];
   signedIn: boolean;
+  viewerLogin?: string;
 }) {
   const router = useRouter();
   const [body, setBody] = useState("");
@@ -104,6 +106,23 @@ export function ProjectComments({
                   @{c.github_login}
                 </Link>
                 <span className="font-mono text-[11px] text-neutral-500">{timeAgo(c.created_at)}</span>
+                {viewerLogin === c.github_login && (
+                  <button
+                    onClick={async () => {
+                      await fetch("/api/project-comments/manage", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ commentId: c.id, action: "delete" }),
+                      });
+                      router.refresh();
+                    }}
+                    aria-label="Delete comment"
+                    title="Delete"
+                    className="ml-auto flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-neutral-600 transition hover:bg-neutral-800 hover:text-rose-300"
+                  >
+                    <Trash2 size={12} aria-hidden />
+                  </button>
+                )}
               </div>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-neutral-300">{c.body_md}</p>
             </div>

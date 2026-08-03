@@ -47,10 +47,10 @@ export function SectionsNav() {
       </div>
 
       <Link
-        href="/projects"
-        aria-current={pathname === "/projects" ? "page" : undefined}
+        href="/popular"
+        aria-current={pathname === "/popular" ? "page" : undefined}
         className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-          pathname === "/projects"
+          pathname === "/popular"
             ? "bg-emerald-400/10 font-bold text-emerald-300"
             : "text-neutral-200 hover:bg-neutral-800"
         }`}

@@ -154,7 +154,7 @@ export default async function SectionPage({
       <PageHeader
         crumbs={[
           { label: "Home", href: "/" },
-          { label: "Projects", href: "/projects" },
+          { label: "Projects", href: "/popular" },
           { label: g.label },
           { label: meta.label },
         ]}

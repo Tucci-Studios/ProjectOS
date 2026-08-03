@@ -1,10 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { Flame, Plus } from "lucide-react";
+import { Flame } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { getUserVotes, getFollowedIds, getBadgesFor } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
-import { ButtonLink } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -51,15 +50,16 @@ export default async function PopularPage() {
             .
           </p>
         </div>
-        <ButtonLink href={user ? "/submit" : "/api/auth/login"} variant="primary">
-          <Plus size={16} aria-hidden /> Publish
-        </ButtonLink>
       </header>
 
       {top.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
-          Nothing published yet. Be the first.
-        </p>
+        <div className="rounded-xl border border-dashed border-neutral-700 p-10 text-center">
+          <p className="font-mono text-base font-bold text-white">Nothing here yet</p>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-neutral-400">
+            Popular fills up as people vote. Publish something and it lands here the moment it gets its first vote —
+            or open Explore to see everything as it arrives.
+          </p>
+        </div>
       ) : (
         <ol className="space-y-3">
           {top.map((p, i) => (

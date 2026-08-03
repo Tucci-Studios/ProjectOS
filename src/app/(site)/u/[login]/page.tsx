@@ -33,7 +33,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
     .first<{ id: string; github_login: string; display_name: string | null; avatar_url: string | null; role: string; created_at: number }>();
   if (!person) notFound();
 
-  const [projects, posts, stats, ideasShipped, votes, badges] = await Promise.all([
+  const [projects, posts, stats, ideasShipped, votes, badges, activity] = await Promise.all([
     env.DB.prepare(
       `SELECT ${FEED_COLS} FROM projects p JOIN users u ON u.id = p.owner_id
        WHERE p.owner_id = ?1 AND p.status='live' ORDER BY like_count DESC, p.created_at DESC`,
@@ -54,6 +54,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
       .first<{ n: number }>(),
     getUserVotes(viewer?.id),
     getBadges(person.id),
+    env.DB.prepare(
+      `SELECT MAX(t) AS last_seen FROM (
+         SELECT MAX(created_at) AS t FROM projects WHERE owner_id = ?1 AND status='live'
+         UNION ALL SELECT MAX(created_at) FROM posts WHERE author_id = ?1 AND status='live'
+         UNION ALL SELECT MAX(created_at) FROM project_comments WHERE author_id = ?1 AND status='live'
+       )`,
+    ).bind(person.id).first<{ last_seen: number | null }>(),
   ]);
 
   const isYou = viewer?.id === person.id;
@@ -83,7 +90,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
             </h1>
             {person.display_name && <p className="text-sm text-neutral-400">{person.display_name}</p>}
             <p className="mt-1 font-mono text-[11px] text-neutral-500">
-              on Project OS since {new Date(person.created_at * 1000).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+              on Project OS since{" "}
+              {new Date(person.created_at * 1000).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+              {activity?.last_seen ? ` · last active ${timeAgo(activity.last_seen)}` : ""}
             </p>
 
             <div className="mt-3 flex flex-wrap items-center gap-4 font-mono text-[13px]">

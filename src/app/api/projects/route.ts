@@ -160,5 +160,33 @@ export async function POST(request: Request) {
       .run();
   }
 
+  // Tell the people who asked to hear about this lineage.
+  if (parentId) {
+    const branchName = manifest.variant ? `${manifest.name} // ${manifest.variant}` : manifest.name;
+    const { results: watchers } = await env.DB.prepare(
+      `SELECT DISTINCT f.user_id FROM follows f
+       WHERE f.project_id IN (?1, COALESCE(?2, ?1))
+       UNION
+       SELECT owner_id AS user_id FROM projects WHERE id = ?1`,
+    )
+      .bind(parentId, rootId)
+      .all<{ user_id: string }>();
+
+    for (const w of watchers) {
+      if (w.user_id === user.id) continue;
+      await env.DB.prepare(
+        "INSERT INTO notifications (id, user_id, kind, body, href, created_at) VALUES (?1, ?2, 'branch', ?3, ?4, ?5)",
+      )
+        .bind(
+          `n_${crypto.randomUUID().slice(0, 8)}`,
+          w.user_id,
+          `@${user.github_login} branched something you follow — ${branchName}`,
+          `/p/${id}`,
+          now,
+        )
+        .run();
+    }
+  }
+
   return NextResponse.json({ ok: true, id });
 }

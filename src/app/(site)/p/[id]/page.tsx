@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui";
 import { GetItDialog } from "@/components/get-it-dialog";
 import { ProjectComments, type ProjectComment } from "@/components/project-comments";
 import { PanelToggle } from "@/components/panel-toggle";
+import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
 import { ImagePreview } from "@/components/image-preview";
@@ -176,6 +177,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </ButtonLink>
       </div>
 
+      {user?.id === p.owner_id && (
+        <OwnerControls
+          projectId={p.id}
+          initialDescription={p.description}
+          initialChangeSummary={p.change_summary}
+          initialImages={imageRows.results.map((r) => r.url)}
+          isBranch={!!p.parent_id}
+        />
+      )}
+
       <ImagePreview
         images={imageRows.results.length > 0 ? imageRows.results.map((r) => r.url) : p.image_url ? [p.image_url] : []}
         alt={`Screenshot of ${p.base_name}`}
@@ -202,7 +213,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             canFollow={!!user}
           />
         }
-        comments={<ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />}
+        comments={
+          <ProjectComments
+            projectId={p.id}
+            comments={commentRows.results}
+            signedIn={!!user}
+            viewerLogin={user?.github_login}
+          />
+        }
       />
 
       <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>

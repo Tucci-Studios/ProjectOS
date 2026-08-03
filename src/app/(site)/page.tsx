@@ -1,6 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { Rss, Compass, Plus } from "lucide-react";
+import { Rss, Compass } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { getUserVotes, getFollowedIds, getBadgesFor } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
@@ -54,9 +54,6 @@ export default async function FeedPage() {
             Projects you follow, and every new branch that grows off them.
           </p>
         </div>
-        <ButtonLink href={user ? "/submit" : "/api/auth/login"} variant="primary">
-          <Plus size={16} aria-hidden /> Publish
-        </ButtonLink>
       </header>
 
       {!user ? (
