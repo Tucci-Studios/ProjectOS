@@ -44,9 +44,12 @@ export function NewIdeaForm() {
   return (
     <form onSubmit={submit} className="space-y-5">
       <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/40 p-4 text-sm leading-relaxed text-neutral-400">
-        <span className="text-neutral-200">The strongest proposals are already built.</span> Branch Project OS, make
-        your change, deploy it (Cloudflare Pages and Vercel both do free preview deploys), and paste the link below.
-        People vote on what they can actually try.
+        <span className="text-neutral-200">The strongest proposals are already built.</span> Need the site&apos;s
+        code?{" "}
+        <a href="/ideas/build" className="text-emerald-400 hover:underline">
+          Grab a copy and run it locally
+        </a>
+        , make your change, deploy it, and paste the links below. People vote on what they can actually try.
       </div>
 
       <label className="block">

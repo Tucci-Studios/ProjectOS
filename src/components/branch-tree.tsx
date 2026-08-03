@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { GitBranch, ChevronDown, ChevronRight } from "lucide-react";
+import { GitBranch, Plus } from "lucide-react";
 import type { LineageNode } from "@/lib/queries";
 import { FollowButton } from "./follow-button";
 
 /**
- * Branches nest inside their parent, the way threaded replies do: one vertical
- * line per level, and everything under that line belongs to the branch above
- * it. No crossing guides, no ambiguity about which line means what.
+ * Reddit's threadline model: every reply block hangs off a vertical line that
+ * starts under its parent's avatar. The line itself is the control — hover
+ * highlights it, clicking collapses the whole thread beneath it. Collapsed
+ * threads become a single [+] row you can click to bring back.
  */
 type TreeNode = LineageNode & { children: TreeNode[] };
 
@@ -22,6 +23,10 @@ function build(nodes: LineageNode[]): TreeNode[] {
     else roots.push(n);
   }
   return roots;
+}
+
+function countAll(n: TreeNode): number {
+  return n.children.reduce((sum, c) => sum + 1 + countAll(c), 0);
 }
 
 export function BranchTree({
@@ -38,18 +43,16 @@ export function BranchTree({
   canFollow?: boolean;
 }) {
   if (nodes.length === 0) return null;
-  const roots = build(nodes);
-
   return (
-    <div className="rounded-xl border border-neutral-700 bg-neutral-900/40 p-3">
-      {roots.map((n) => (
-        <Branch key={n.id} node={n} depth={0} currentId={currentId} accent={accent} following={following} canFollow={canFollow} />
+    <div className="rounded-xl border border-neutral-700 bg-neutral-900/40 px-3 py-2">
+      {build(nodes).map((n) => (
+        <Node key={n.id} node={n} depth={0} currentId={currentId} accent={accent} following={following} canFollow={canFollow} />
       ))}
     </div>
   );
 }
 
-function Branch({
+function Node({
   node,
   depth,
   currentId,
@@ -64,49 +67,59 @@ function Branch({
   following?: Set<string>;
   canFollow: boolean;
 }) {
-  // Deep levels start closed so the top of the tree stays readable.
-  const [open, setOpen] = useState(depth < 2);
+  const [collapsed, setCollapsed] = useState(false);
+  const [lineHot, setLineHot] = useState(false);
   const isCurrent = node.id === currentId;
   const isRoot = depth === 0;
   const kids = node.children.length;
+  const hidden = countAll(node);
+
+  if (collapsed) {
+    return (
+      <div className="py-1">
+        <button
+          onClick={() => setCollapsed(false)}
+          className="flex min-h-[30px] cursor-pointer items-center gap-2 rounded-md px-1.5 font-mono text-[12px] text-neutral-500 outline-none transition hover:bg-neutral-800 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-emerald-400"
+        >
+          <span className="flex h-4 w-4 items-center justify-center rounded border border-neutral-600 text-neutral-400">
+            <Plus size={10} aria-hidden />
+          </span>
+          <span className="text-neutral-300">{isRoot ? node.base_name : node.variant_name}</span>
+          <span>· {hidden} hidden</span>
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <div
-        className={`group relative flex items-start gap-2 rounded-lg py-2.5 pl-2 pr-2 transition-colors ${
-          isCurrent ? "bg-neutral-800/80" : "hover:bg-neutral-800/40"
-        }`}
-      >
+    <div className="py-0.5">
+      {/* the branch itself */}
+      <div className={`group relative flex items-start gap-2.5 rounded-lg px-1.5 py-2 ${isCurrent ? "bg-neutral-800/70" : ""}`}>
         <Link
           href={`/p/${node.id}`}
           aria-label={`Open ${node.base_name}${node.variant_name ? ` // ${node.variant_name}` : ""}`}
-          className="absolute inset-0 z-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
+          className="absolute inset-0 z-0 rounded-lg outline-none transition hover:bg-neutral-800/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
         />
 
-        {/* expander, only where there's something to expand */}
-        {kids > 0 ? (
-          <button
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
-            aria-label={open ? `Hide branches of ${node.variant_name ?? node.base_name}` : `Show branches of ${node.variant_name ?? node.base_name}`}
-            className="relative z-[2] mt-0.5 flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded text-neutral-500 transition hover:bg-neutral-700 hover:text-white"
-          >
-            <ChevronRight size={14} aria-hidden className={`transition-transform duration-200 ${open ? "rotate-90" : ""}`} />
-          </button>
-        ) : (
-          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center" aria-hidden>
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: accent, opacity: 0.5 }} />
-          </span>
-        )}
+        <span
+          className="relative z-[1] mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border"
+          style={{ borderColor: accent, background: isCurrent ? accent : "transparent" }}
+          aria-hidden
+        >
+          {kids > 0 && <span className="h-1 w-1 rounded-full" style={{ background: isCurrent ? "#161d18" : accent }} />}
+        </span>
 
-        <span className="min-w-0 flex-1">
-          <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <span className="relative z-[1] min-w-0 flex-1 pointer-events-none">
+          <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <span className={`font-mono text-sm ${isCurrent ? "font-bold text-white" : "text-neutral-100"}`}>
               {isRoot ? node.base_name : node.variant_name}
             </span>
+            <span className="font-mono text-[11px] text-neutral-500">
+              @{node.github_login} · {node.like_count} vote{Math.abs(node.like_count) === 1 ? "" : "s"}
+            </span>
             {isRoot && (
               <span className="rounded border border-neutral-600 px-1.5 py-px font-mono text-[9px] uppercase tracking-widest text-neutral-400">
-                the original
+                original
               </span>
             )}
             {isCurrent && (
@@ -114,18 +127,9 @@ function Branch({
                 you are here
               </span>
             )}
-            {kids > 0 && (
-              <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-400">
-                <GitBranch size={10} aria-hidden /> {kids} branch{kids === 1 ? "" : "es"} off this
-              </span>
-            )}
           </span>
-
           <span className="mt-0.5 block text-[13px] leading-snug text-neutral-400">
             {node.change_summary ?? (isRoot ? "Where this all started." : "No summary given.")}
-          </span>
-          <span className="mt-1 block font-mono text-[11px] text-neutral-500">
-            @{node.github_login} · {node.like_count} vote{Math.abs(node.like_count) === 1 ? "" : "s"}
           </span>
         </span>
 
@@ -136,38 +140,42 @@ function Branch({
         )}
       </div>
 
-      {/* children live inside their parent's line */}
+      {/* children hang off a clickable threadline */}
       {kids > 0 && (
-        <div
-          className="grid transition-[grid-template-rows] duration-200 ease-out"
-          style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
-        >
-          <div className="overflow-hidden">
-            <div className="ml-[15px] border-l pl-3" style={{ borderColor: accent, borderLeftWidth: 1.5, opacity: 0.95 }}>
-              {node.children.map((c) => (
-                <Branch
-                  key={c.id}
-                  node={c}
-                  depth={depth + 1}
-                  currentId={currentId}
-                  accent={accent}
-                  following={following}
-                  canFollow={canFollow}
-                />
-              ))}
-            </div>
+        <div className="flex">
+          <button
+            onClick={() => setCollapsed(true)}
+            onMouseEnter={() => setLineHot(true)}
+            onMouseLeave={() => setLineHot(false)}
+            aria-label={`Collapse ${kids} branch${kids === 1 ? "" : "es"} of ${node.variant_name ?? node.base_name}`}
+            title="Collapse this thread"
+            className="group/line relative flex w-[17px] shrink-0 cursor-pointer justify-center outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+          >
+            <span
+              className="h-full w-px transition-all duration-150"
+              style={{
+                background: accent,
+                opacity: lineHot ? 1 : 0.35,
+                width: lineHot ? 2 : 1,
+              }}
+              aria-hidden
+            />
+          </button>
+
+          <div className="min-w-0 flex-1">
+            {node.children.map((c) => (
+              <Node
+                key={c.id}
+                node={c}
+                depth={depth + 1}
+                currentId={currentId}
+                accent={accent}
+                following={following}
+                canFollow={canFollow}
+              />
+            ))}
           </div>
         </div>
-      )}
-
-      {kids > 0 && !open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="ml-[15px] flex cursor-pointer items-center gap-1.5 border-l pl-3 py-1.5 font-mono text-[11px] text-neutral-500 transition hover:text-emerald-300"
-          style={{ borderColor: accent, borderLeftWidth: 1.5, opacity: 0.6 }}
-        >
-          <ChevronDown size={12} aria-hidden /> show {kids} branch{kids === 1 ? "" : "es"}
-        </button>
       )}
     </div>
   );

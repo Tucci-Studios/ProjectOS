@@ -3,7 +3,16 @@ import { Crown, Lightbulb, GitBranch } from "lucide-react";
 // Badges are counts you earned, never titles handed out.
 export type Badges = { numberOne: number; ideasShipped: number; biggestTree: number };
 
-export function UserBadges({ badges, size = "sm" }: { badges: Badges; size?: "sm" | "md" }) {
+export function UserBadges({
+  badges,
+  size = "sm",
+  showTree = false,
+}: {
+  badges: Badges;
+  size?: "sm" | "md";
+  /** Tree size is a profile-page stat, not something to crowd a byline with. */
+  showTree?: boolean;
+}) {
   const items = [
     badges.numberOne > 0 && {
       key: "no1",
@@ -19,7 +28,7 @@ export function UserBadges({ badges, size = "sm" }: { badges: Badges; size?: "sm
       cls: "border-fuchsia-400/40 bg-fuchsia-400/10 text-fuchsia-300",
       title: `${badges.ideasShipped} idea${badges.ideasShipped === 1 ? "" : "s"} shipped into Project OS`,
     },
-    badges.biggestTree > 1 && {
+    showTree && badges.biggestTree > 1 && {
       key: "tree",
       Icon: GitBranch,
       count: badges.biggestTree,

@@ -73,7 +73,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
       </ol>
 
       {user ? (
-        <SubmitForm needsTos={!user.tos_accepted_at} />
+        <SubmitForm needsTos={!user.tos_accepted_at} branchOf={display} />
       ) : (
         <p className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-6 text-center font-mono text-sm text-neutral-300">
           <a href="/api/auth/login" className="text-emerald-400 hover:underline">

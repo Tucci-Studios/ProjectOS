@@ -19,7 +19,13 @@ export async function POST(request: Request) {
   if (!rate.ok) return bad([rate.message], 429);
 
 
-  let body: { repo?: unknown; acceptTos?: unknown };
+  let body: {
+    repo?: unknown;
+    acceptTos?: unknown;
+    description?: unknown;
+    images?: unknown;
+    changeSummary?: unknown;
+  };
   try {
     body = (await request.json()) as typeof body;
   } catch {
@@ -59,6 +65,28 @@ export async function POST(request: Request) {
   } catch {
     return bad(["project.json is not valid JSON."]);
   }
+  // Anything typed in the form wins over the manifest — the form is the human's
+  // last word, and most people fill it in there rather than editing JSON.
+  const typedDescription = typeof body.description === "string" ? body.description.trim() : "";
+  if (typedDescription.length >= 20) manifest.description = typedDescription.slice(0, 500);
+
+  const typedSummary = typeof body.changeSummary === "string" ? body.changeSummary.trim() : "";
+  if (typedSummary && manifest.lineage) manifest.lineage.changeSummary = typedSummary.slice(0, 280);
+
+  const typedImages = Array.isArray(body.images)
+    ? body.images
+        .filter((u): u is string => typeof u === "string" && u.trim().length > 0)
+        .map((u) => u.trim())
+        .filter((u) => {
+          try {
+            return new URL(u).protocol === "https:";
+          } catch {
+            return false;
+          }
+        })
+        .slice(0, 6)
+    : [];
+
   const errors = validateManifest(manifest);
   if (errors.length) return bad(errors);
 
@@ -105,6 +133,7 @@ export async function POST(request: Request) {
       now,
       // First screenshot doubles as the card image; repo-relative paths resolve on GitHub.
       (() => {
+        if (typedImages[0]) return typedImages[0];
         const shot = manifest.screenshots?.[0];
         if (!shot) return null;
         return /^https?:\/\//.test(shot)
@@ -113,6 +142,17 @@ export async function POST(request: Request) {
       })(),
     )
     .run();
+
+  const gallery = typedImages.length > 0
+    ? typedImages
+    : (manifest.screenshots ?? []).map((shot) =>
+        /^https?:\/\//.test(shot) ? shot : `https://raw.githubusercontent.com/${repo}/HEAD/${shot.replace(/^\.?\//, "")}`,
+      );
+  for (const [i, url] of gallery.entries()) {
+    await env.DB.prepare("INSERT OR REPLACE INTO project_images (project_id, url, position) VALUES (?1, ?2, ?3)")
+      .bind(id, url, i)
+      .run();
+  }
 
   return NextResponse.json({ ok: true, id });
 }

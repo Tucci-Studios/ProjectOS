@@ -1,11 +1,12 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Boxes, Megaphone, GitBranch, Heart, ExternalLink, Lightbulb } from "lucide-react";
+import { Boxes, Megaphone, GitBranch, Heart, ExternalLink } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes } from "@/lib/queries";
+import { getUserVotes, getBadges } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ReportButton } from "@/components/report-button";
+import { UserBadges } from "@/components/user-badges";
 import { ButtonLink } from "@/components/ui";
 import { timeAgo } from "@/lib/categories";
 
@@ -31,7 +32,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
     .first<{ id: string; github_login: string; display_name: string | null; avatar_url: string | null; role: string; created_at: number }>();
   if (!person) notFound();
 
-  const [projects, posts, stats, ideasShipped, votes] = await Promise.all([
+  const [projects, posts, stats, ideasShipped, votes, badges] = await Promise.all([
     env.DB.prepare(
       `SELECT ${FEED_COLS} FROM projects p JOIN users u ON u.id = p.owner_id
        WHERE p.owner_id = ?1 AND p.status='live' ORDER BY like_count DESC, p.created_at DESC`,
@@ -51,6 +52,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
       .bind(person.id)
       .first<{ n: number }>(),
     getUserVotes(viewer?.id),
+    getBadges(person.id),
   ]);
 
   const isYou = viewer?.id === person.id;
@@ -76,14 +78,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
           <div className="min-w-0 flex-1">
             <h1 className="flex flex-wrap items-center gap-2 font-mono text-2xl font-bold tracking-tight text-white">
               @{person.github_login}
-              {(ideasShipped?.n ?? 0) > 0 && (
-                <span
-                  title={`${ideasShipped!.n} idea${ideasShipped!.n === 1 ? "" : "s"} shipped into Project OS`}
-                  className="inline-flex items-center gap-1 rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 font-mono text-[11px] font-bold text-amber-300"
-                >
-                  <Lightbulb size={11} aria-hidden /> {ideasShipped!.n}
-                </span>
-              )}
+              <UserBadges badges={badges} size="md" showTree />
             </h1>
             {person.display_name && <p className="text-sm text-neutral-400">{person.display_name}</p>}
             <p className="mt-1 font-mono text-[11px] text-neutral-500">

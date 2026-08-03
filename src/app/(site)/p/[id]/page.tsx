@@ -121,8 +121,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             >
               {p.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.avatar_url} alt="" className="h-4 w-4 rounded-full border border-neutral-700" />
-              ) : null}
+                <img src={p.avatar_url} alt="" className="h-5 w-5 rounded-full border border-neutral-700" />
+              ) : (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full border border-neutral-700 bg-neutral-800 font-mono text-[8px] text-neutral-400">
+                  {p.github_login.slice(0, 2).toUpperCase()}
+                </span>
+              )}
               @{p.github_login}
             </Link>
             {badges && <UserBadges badges={badges} />}

@@ -61,9 +61,14 @@ export default async function IdeasPage() {
         purpose="Project OS is built on itself. Branch it, build your change, deploy it, and post it here — everyone tries the real thing and votes. When a round closes, the winner goes to a community security check, then ships."
         Icon={Lightbulb}
         action={
-          <ButtonLink href={user ? "/ideas/new" : "/api/auth/login"} variant="primary">
-            <Plus size={16} aria-hidden /> Submit a change
-          </ButtonLink>
+          <div className="flex flex-wrap gap-2.5">
+            <ButtonLink href="/ideas/build" variant="ghost">
+              <Code2 size={15} aria-hidden /> Get the code
+            </ButtonLink>
+            <ButtonLink href={user ? "/ideas/new" : "/api/auth/login"} variant="primary">
+              <Plus size={16} aria-hidden /> Submit a change
+            </ButtonLink>
+          </div>
         }
       />
 
