@@ -9,7 +9,7 @@ export async function getProjectFeed(category?: string, sort: "top" | "new" = "n
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
             u.github_login,
-            (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id) AS like_count,
+            (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
             (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status = 'live') AS fork_count,
             (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                          ELSE pp.base_name || ' // ' || pp.variant_name END
@@ -22,14 +22,14 @@ export async function getProjectFeed(category?: string, sort: "top" | "new" = "n
   return results;
 }
 
-/** Project ids the user has liked (for initial button state). */
-export async function getLikedIds(userId: string | undefined): Promise<Set<string>> {
-  if (!userId) return new Set();
+/** How this user voted on each project: 1 up, -1 down, absent = no vote. */
+export async function getUserVotes(userId: string | undefined): Promise<Map<string, number>> {
+  if (!userId) return new Map();
   const { env } = getCloudflareContext();
-  const { results } = await env.DB.prepare("SELECT project_id FROM likes WHERE user_id = ?1")
+  const { results } = await env.DB.prepare("SELECT project_id, value FROM likes WHERE user_id = ?1")
     .bind(userId)
-    .all<{ project_id: string }>();
-  return new Set(results.map((r) => r.project_id));
+    .all<{ project_id: string; value: number }>();
+  return new Map(results.map((r) => [r.project_id, r.value]));
 }
 
 /** Whole lineage for a root, ordered for indented tree rendering (DFS). */
@@ -47,7 +47,7 @@ export async function getLineage(rootId: string): Promise<LineageNode[]> {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.parent_id, u.github_login,
-            (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id) AS like_count
+            (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE p.root_id = ?1 AND p.status = 'live'
      ORDER BY p.created_at ASC`,

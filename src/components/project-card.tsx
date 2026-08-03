@@ -31,7 +31,7 @@ export function ProjectHeadline({
   return (
     <span className="flex flex-wrap items-baseline gap-x-2">
       <span className="inline-flex items-center gap-1.5">
-        <BrandMark size={15} className="!border-neutral-600 !bg-transparent" mono />
+        <BrandMark size={16} className="!border-neutral-600 !bg-transparent" />
         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400">Project</span>
       </span>
       <span className="text-neutral-700">/</span>
@@ -51,27 +51,27 @@ export function ProjectHeadline({
 }
 
 /** Minimal group symbol — AI, Build, or Play — sitting quietly on the right. */
-export function GroupGlyph({ category, size = 22 }: { category: string; size?: number }) {
+export function GroupGlyph({ category, size = 30 }: { category: string; size?: number }) {
   const g = groupOf(category);
   return (
     <span
       title={`${g.label} — ${g.blurb}`}
       aria-label={g.label}
-      className="flex shrink-0 items-center justify-center opacity-70 transition-opacity duration-200 group-hover:opacity-100"
+      className="flex shrink-0 items-center justify-center opacity-80 transition-opacity duration-200 group-hover:opacity-100"
     >
       <g.Icon size={size} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
     </span>
   );
 }
 
-export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean }) {
+export function ProjectCard({ p, vote = 0 }: { p: ProjectFeedRow; vote?: number }) {
   const fullName = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
       <div className="flex items-start gap-3 px-4 py-4">
-        <div className="relative z-[2] shrink-0 pt-0.5">
-          <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={liked} />
+        <div className="relative z-[2] flex shrink-0 self-center">
+          <LikeButton projectId={p.id} initialCount={p.like_count} initialVote={vote} />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -93,7 +93,9 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
           </div>
         </div>
 
-        <GroupGlyph category={p.category} />
+        <div className="relative z-[2] shrink-0 self-start pt-0.5">
+          <GroupGlyph category={p.category} size={32} />
+        </div>
       </div>
 
       <Link

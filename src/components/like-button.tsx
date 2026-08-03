@@ -1,25 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
-// Minimal vote control: a chevron over a count. No box, no chrome — it only
-// gains a background on hover so the card stays quiet.
+// Big targets, always-visible up arrow so the number reads as "votes".
+// The down arrow sits quiet until you hover, then lights up.
 export function LikeButton({
   projectId,
   initialCount,
-  initialLiked,
+  initialVote = 0,
 }: {
   projectId: string;
   initialCount: number;
-  initialLiked: boolean;
+  initialVote?: number;
 }) {
   const [count, setCount] = useState(initialCount);
-  const [liked, setLiked] = useState(initialLiked);
+  const [vote, setVote] = useState(initialVote);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function toggle() {
+  async function cast(direction: "up" | "down") {
     if (busy) return;
     setBusy(true);
     setError(null);
@@ -27,11 +27,11 @@ export function LikeButton({
       const res = await fetch("/api/likes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId }),
+        body: JSON.stringify({ projectId, direction }),
       });
-      const data = (await res.json()) as { liked?: boolean; count?: number; error?: string };
+      const data = (await res.json()) as { vote?: number; count?: number; error?: string };
       if (res.ok && data.count !== undefined) {
-        setLiked(!!data.liked);
+        setVote(data.vote ?? 0);
         setCount(data.count);
       } else {
         setError(data.error ?? "Failed.");
@@ -42,27 +42,55 @@ export function LikeButton({
     }
   }
 
+  const btn =
+    "flex h-11 w-12 cursor-pointer items-center justify-center rounded-lg outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-wait";
+
   return (
-    <div className="flex flex-col items-center">
+    <div className="group/vote relative flex flex-col items-center">
       <button
-        onClick={toggle}
+        onClick={() => cast("up")}
         disabled={busy}
-        aria-pressed={liked}
-        aria-label={liked ? "Remove vote" : "Vote"}
-        title={error ?? (liked ? "Remove vote" : "Vote")}
-        className={`group/vote flex min-h-[52px] w-11 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-wait ${
-          liked ? "text-emerald-400" : "text-neutral-500 hover:bg-neutral-800/70 hover:text-emerald-300"
+        aria-label={vote === 1 ? "Remove upvote" : "Upvote"}
+        aria-pressed={vote === 1}
+        title={vote === 1 ? "Remove upvote" : "Upvote"}
+        className={`${btn} ${
+          vote === 1
+            ? "text-emerald-400"
+            : "text-neutral-500 hover:bg-neutral-800 hover:text-emerald-300"
         }`}
       >
-        <ChevronUp
-          size={20}
-          strokeWidth={liked ? 3 : 2.25}
-          aria-hidden
-          className="transition-transform duration-200 group-hover/vote:-translate-y-0.5"
-        />
-        <span className={`font-mono text-[13px] leading-none ${liked ? "font-bold" : "font-medium"}`}>{count}</span>
+        <ChevronUp size={26} strokeWidth={vote === 1 ? 3 : 2.25} aria-hidden />
       </button>
-      {error && <span className="mt-1 max-w-[84px] text-center font-mono text-[10px] text-rose-400">{error}</span>}
+
+      <span
+        title={error ?? `${count} vote${Math.abs(count) === 1 ? "" : "s"}`}
+        className={`-my-1 select-none font-mono text-[17px] font-bold leading-none tabular-nums transition-colors duration-200 ${
+          vote === 1 ? "text-emerald-400" : vote === -1 ? "text-rose-400" : "text-neutral-200"
+        }`}
+      >
+        {count}
+      </span>
+
+      <button
+        onClick={() => cast("down")}
+        disabled={busy}
+        aria-label={vote === -1 ? "Remove downvote" : "Downvote"}
+        aria-pressed={vote === -1}
+        title={vote === -1 ? "Remove downvote" : "Downvote"}
+        className={`${btn} ${
+          vote === -1
+            ? "text-rose-400 opacity-100"
+            : "text-neutral-600 opacity-40 hover:bg-neutral-800 hover:text-rose-300 hover:opacity-100 group-hover/vote:opacity-100 group-focus-within/vote:opacity-100"
+        }`}
+      >
+        <ChevronDown size={26} strokeWidth={vote === -1 ? 3 : 2.25} aria-hidden />
+      </button>
+
+      {error && (
+        <span className="absolute -bottom-7 w-24 text-center font-mono text-[10px] leading-tight text-rose-400">
+          {error}
+        </span>
+      )}
     </div>
   );
 }

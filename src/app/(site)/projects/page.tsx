@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Boxes } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { getSessionUser } from "@/lib/auth";
-import { getProjectFeed, getLikedIds } from "@/lib/queries";
+import { getProjectFeed, getUserVotes } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,7 @@ export default async function ProjectsPage({
   const { sort: sortParam } = await searchParams;
   const sort = sortParam === "new" ? "new" : "top";
   const user = await getSessionUser();
-  const [feed, liked] = await Promise.all([getProjectFeed(undefined, sort), getLikedIds(user?.id)]);
+  const [feed, votes] = await Promise.all([getProjectFeed(undefined, sort), getUserVotes(user?.id)]);
 
   const tab = (key: string, label: string) => (
     <Link
@@ -57,7 +57,7 @@ export default async function ProjectsPage({
               </span>
             )}
             <div className="min-w-0 flex-1">
-              <ProjectCard p={p} liked={liked.has(p.id)} />
+              <ProjectCard p={p} vote={votes.get(p.id) ?? 0} />
             </div>
           </div>
         ))}

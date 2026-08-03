@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { User, Boxes, Heart, MessageCircle, Megaphone, Plus } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getLikedIds } from "@/lib/queries";
+import { getUserVotes } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 
 const FEED_COLS = `p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
   u.github_login,
-  (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id) AS like_count,
+  (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
   (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
   (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                ELSE pp.base_name || ' // ' || pp.variant_name END
@@ -43,7 +43,7 @@ export default async function MyStuffPage() {
   }
 
   const { env } = getCloudflareContext();
-  const [myProjects, myPosts, repliesToMe, myLikes, likedIds] = await Promise.all([
+  const [myProjects, myPosts, repliesToMe, myLikes, votes] = await Promise.all([
     env.DB.prepare(
       `SELECT ${FEED_COLS} FROM projects p JOIN users u ON u.id = p.owner_id
        WHERE p.owner_id = ?1 AND p.status='live' ORDER BY p.created_at DESC`,
@@ -67,7 +67,7 @@ export default async function MyStuffPage() {
        JOIN users u ON u.id = p.owner_id
        WHERE l.user_id = ?1 AND p.status='live' ORDER BY l.created_at DESC`,
     ).bind(user.id).all<ProjectFeedRow>().then((r) => r.results),
-    getLikedIds(user.id),
+    getUserVotes(user.id),
   ]);
 
   return (
@@ -114,7 +114,7 @@ export default async function MyStuffPage() {
         ) : (
           <div className="space-y-3">
             {myProjects.map((p) => (
-              <ProjectCard key={p.id} p={p} liked={likedIds.has(p.id)} />
+              <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} />
             ))}
           </div>
         )}
@@ -154,7 +154,7 @@ export default async function MyStuffPage() {
         ) : (
           <div className="space-y-3">
             {myLikes.map((p) => (
-              <ProjectCard key={p.id} p={p} liked={likedIds.has(p.id)} />
+              <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} />
             ))}
           </div>
         )}

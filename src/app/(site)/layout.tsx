@@ -1,9 +1,14 @@
 import { SiteHeader } from "@/components/site-header";
+import { TermsGate } from "@/components/terms-gate";
+import { getSessionUser } from "@/lib/auth";
 import { SectionsNav } from "@/components/sections-nav";
 
 export const dynamic = "force-dynamic";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+  const user = await getSessionUser();
+  if (user && !user.tos_accepted_at) return <TermsGate login={user.github_login} />;
+
   return (
     <div className="min-h-screen bg-[#161d18] text-neutral-200">
       <SiteHeader />

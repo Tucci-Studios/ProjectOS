@@ -35,8 +35,8 @@ export default async function FeedPage() {
   const [featured, { results: posts }] = await Promise.all([
     env.DB.prepare(
       `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, u.github_login,
-              (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id AND l.created_at > ?1) AS week_likes,
-              (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id) AS like_count,
+              (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id AND l.created_at > ?1) AS week_likes,
+              (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
               (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count
        FROM projects p JOIN users u ON u.id = p.owner_id
        WHERE p.status='live' ORDER BY week_likes DESC, like_count DESC LIMIT 1`,

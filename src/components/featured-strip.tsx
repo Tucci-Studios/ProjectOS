@@ -40,7 +40,7 @@ export function FeaturedStrip({ p }: { p: FeaturedProject }) {
         <div className="min-w-0 flex-1">
           <span className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-400/25 bg-emerald-400/[0.07] py-0.5 pl-1 pr-2">
-              <BrandMark size={16} className="!border-0 !bg-transparent" />
+              <BrandMark size={16} className="!border-neutral-600 !bg-transparent" />
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300/90">Project</span>
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-md border border-neutral-700 bg-neutral-800/60 px-2 py-1 font-mono text-[11px] text-neutral-300">

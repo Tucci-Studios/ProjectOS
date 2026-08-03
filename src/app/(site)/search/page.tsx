@@ -1,7 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { getSessionUser } from "@/lib/auth";
-import { getLikedIds } from "@/lib/queries";
+import { getUserVotes } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { Search as SearchIcon } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
@@ -20,11 +20,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   const { env } = getCloudflareContext();
   const like = `%${query}%`;
-  const [projects, liked, posts] = await Promise.all([
+  const [projects, votes, posts] = await Promise.all([
     env.DB.prepare(
       `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
               u.github_login,
-              (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id) AS like_count,
+              (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
               (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
               (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                            ELSE pp.base_name || ' // ' || pp.variant_name END
@@ -33,7 +33,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
        WHERE p.status='live' AND (p.base_name LIKE ?1 OR p.variant_name LIKE ?1 OR p.description LIKE ?1)
        ORDER BY like_count DESC LIMIT 25`,
     ).bind(like).all<ProjectFeedRow>().then((r) => r.results),
-    getLikedIds(user?.id),
+    getUserVotes(user?.id),
     env.DB.prepare(
       `SELECT po.id, po.title, po.kind, po.created_at, u.github_login
        FROM posts po JOIN users u ON u.id = po.author_id
@@ -58,7 +58,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       ) : (
         <div className="mb-8 space-y-3">
           {projects.map((p) => (
-            <ProjectCard key={p.id} p={p} liked={liked.has(p.id)} />
+            <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} />
           ))}
         </div>
       )}

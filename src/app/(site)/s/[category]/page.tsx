@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getSessionUser } from "@/lib/auth";
-import { getProjectFeed, getLikedIds } from "@/lib/queries";
+import { getProjectFeed, getUserVotes } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
 import { Boxes } from "lucide-react";
 import { CATEGORY_META, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
@@ -79,14 +79,14 @@ export default async function SectionPage({
 
   let content: React.ReactNode;
   if (tab === "projects") {
-    const [feed, liked] = await Promise.all([getProjectFeed(category, "top"), getLikedIds(user?.id)]);
+    const [feed, votes] = await Promise.all([getProjectFeed(category, "top"), getUserVotes(user?.id)]);
     content =
       feed.length === 0 ? (
         <Empty text="Nothing here yet. Be the first — hit + publish." />
       ) : (
         <div className="space-y-3">
           {feed.map((p) => (
-            <ProjectCard key={p.id} p={p} liked={liked.has(p.id)} />
+            <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} />
           ))}
         </div>
       );

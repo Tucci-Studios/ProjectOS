@@ -37,7 +37,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const p = await env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.license,
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at, u.github_login,
-            (SELECT COUNT(*) FROM likes l WHERE l.project_id = p.id) AS like_count,
+            (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
             rs.stars, rs.release_downloads
      FROM projects p
      JOIN users u ON u.id = p.owner_id
@@ -50,8 +50,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
   const meta = categoryMeta(p.category);
   const g = groupOf(p.category);
-  const likedRow = user
-    ? await env.DB.prepare("SELECT 1 FROM likes WHERE user_id = ?1 AND project_id = ?2").bind(user.id, p.id).first()
+  const myVote = user
+    ? await env.DB.prepare("SELECT value FROM likes WHERE user_id = ?1 AND project_id = ?2").bind(user.id, p.id).first<{ value: number }>()
     : null;
   const lineage = await getLineage(p.root_id);
 
@@ -69,7 +69,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <span className="px-1 py-0.5 text-neutral-300">{crumbLabel}</span>
       </nav>
       <div className="flex items-start gap-3">
-        <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={!!likedRow} />
+        <LikeButton projectId={p.id} initialCount={p.like_count} initialVote={myVote?.value ?? 0} />
         <div className="min-w-0 flex-1">
           <h1 className="font-mono text-3xl font-bold tracking-tight text-white">
             {p.base_name}
