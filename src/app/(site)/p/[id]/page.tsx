@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui";
 import { GetItDialog } from "@/components/get-it-dialog";
 import { ProjectComments, type ProjectComment } from "@/components/project-comments";
 import { PanelToggle } from "@/components/panel-toggle";
+import { ProjectUpdates, type ProjectUpdate } from "@/components/project-updates";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
@@ -62,7 +63,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const meta = categoryMeta(p.category);
   const g = groupOf(p.category);
 
-  const [myVote, lineage, followRows, parent, followerRow, commentRows, imageRows, badges] = await Promise.all([
+  const [myVote, lineage, followRows, parent, followerRow, commentRows, imageRows, badges, updateRows] = await Promise.all([
     user
       ? env.DB.prepare("SELECT value FROM likes WHERE user_id = ?1 AND project_id = ?2")
           .bind(user.id, p.id)
@@ -91,6 +92,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       const owner = await env.DB.prepare("SELECT owner_id FROM projects WHERE id = ?1").bind(id).first<{ owner_id: string }>();
       return owner ? getBadges(owner.owner_id) : null;
     })(),
+    env.DB.prepare(
+      `SELECT pu.id, pu.version, pu.body_md, pu.created_at, u.github_login, u.avatar_url
+       FROM project_updates pu JOIN users u ON u.id = pu.author_id
+       WHERE pu.project_id = ?1 AND pu.status='live' ORDER BY pu.created_at DESC LIMIT 50`,
+    ).bind(id).all<ProjectUpdate>(),
   ]);
 
   const following = new Set(followRows.results.map((r) => r.project_id));
@@ -199,6 +205,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-300">{p.change_summary}</p>
         </div>
       )}
+
+      <div className="mt-7 border-t border-neutral-800 pt-6">
+        <ProjectUpdates
+          projectId={p.id}
+          updates={updateRows.results}
+          isOwner={user?.id === p.owner_id}
+        />
+      </div>
 
       {/* Stats strip */}
       <PanelToggle

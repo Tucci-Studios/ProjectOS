@@ -6,6 +6,7 @@ const LIMITS: Record<string, { max: number; windowS: number; label: string }> = 
   publish: { max: 10, windowS: 3600, label: "projects published" },
   post: { max: 15, windowS: 3600, label: "posts" },
   comment: { max: 40, windowS: 3600, label: "comments" },
+  update: { max: 20, windowS: 3600, label: "updates" },
   idea: { max: 5, windowS: 3600, label: "ideas" },
   report: { max: 20, windowS: 3600, label: "reports" },
 };
