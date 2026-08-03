@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { FlaskConical, GitFork, Star } from "lucide-react";
 import { labLineage, SHAPES, LAB_PROJECT, type LabShape } from "@/lib/lab-data";
 import { Orbit } from "./orbit";
-import { Growth } from "./growth";
 
 /**
  * The lab is a shelf of views onto one fake project. Add one by appending to
@@ -22,15 +21,8 @@ const VIEWS: View[] = [
     key: "orbit",
     label: "Orbit",
     blurb:
-      "Every generation is a ring around the original, turning slowly and alternating direction. Hover to hold it still; click any fork to trace its path home.",
+      "The lineage as a living system: generations turn, forks breathe on their own rhythm, and light runs down the branches. Nothing to press — hover to settle it, click a fork to trace it home.",
     Panel: ({ nodes }) => <Orbit nodes={nodes} />,
-  },
-  {
-    key: "growth",
-    label: "Growth",
-    blurb:
-      "Press play and watch the lineage actually happen, in the order it was made. Scrub back through it, or stop on the day a particular fork appeared.",
-    Panel: ({ nodes }) => <Growth nodes={nodes} />,
   },
 ];
 
