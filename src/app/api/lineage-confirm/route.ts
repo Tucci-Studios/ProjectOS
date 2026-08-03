@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 
 /**
- * A claimed branch says "this came from your project" but GitHub has no fork
+ * A claimed fork says "this came from your project" but GitHub has no fork
  * edge to prove it. Only the PARENT's owner can settle that — confirm it and
  * the claim becomes real, deny it and the edge is cut.
  */
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       parent_owner_id: string | null;
     }>();
 
-  if (!child || !child.parent_id) return NextResponse.json({ error: "No such branch." }, { status: 404 });
+  if (!child || !child.parent_id) return NextResponse.json({ error: "No such fork." }, { status: 404 });
   if (child.lineage_source !== "declared")
     return NextResponse.json({ error: "Nothing to confirm — this lineage isn't a claim." }, { status: 400 });
   if (child.parent_owner_id !== user.id && user.role !== "admin")
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   }
 
   await env.DB.prepare(
-    "INSERT INTO notifications (id, user_id, kind, body, href, created_at) VALUES (?1, ?2, 'branch', ?3, ?4, ?5)",
+    "INSERT INTO notifications (id, user_id, kind, body, href, created_at) VALUES (?1, ?2, 'fork', ?3, ?4, ?5)",
   )
     .bind(
       `n_${crypto.randomUUID().slice(0, 8)}`,

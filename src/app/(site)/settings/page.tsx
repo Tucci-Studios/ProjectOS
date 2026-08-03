@@ -48,7 +48,7 @@ export default async function SettingsPage() {
 
       <Card title="Publishing" Icon={ShieldCheck}>
         <p className="text-sm leading-relaxed text-neutral-400">
-          Everything you publish here is open source and free — no selling, no paywalls, branches stay open. Read the
+          Everything you publish here is open source and free — no selling, no paywalls, forks stay open. Read the
           full{" "}
           <Link href="/terms" className="text-emerald-400 transition hover:underline">
             terms

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GitBranch, MessageCircle } from "lucide-react";
+import { GitFork, MessageCircle } from "lucide-react";
 
 /**
  * The tree and the comments share one slot. Comments is a toggle: press it to
@@ -10,12 +10,12 @@ import { GitBranch, MessageCircle } from "lucide-react";
 export function PanelToggle({
   tree,
   comments,
-  branchCount,
+  forkCount,
   commentCount,
 }: {
   tree: React.ReactNode;
   comments: React.ReactNode;
-  branchCount: number;
+  forkCount: number;
   commentCount: number;
 }) {
   const [showComments, setShowComments] = useState(false);
@@ -31,14 +31,14 @@ export function PanelToggle({
             </>
           ) : (
             <>
-              <GitBranch size={13} aria-hidden /> The tree
+              <GitFork size={13} aria-hidden /> The tree
               <span className="font-normal normal-case tracking-normal">
-                {branchCount === 0 ? (
-                  <span className="text-neutral-500">no branches yet</span>
+                {forkCount === 0 ? (
+                  <span className="text-neutral-500">no forks yet</span>
                 ) : (
                   <>
-                    <span className="font-bold text-emerald-400">{branchCount}</span>
-                    <span className="text-neutral-500"> grew from this</span>
+                    <span className="font-bold text-emerald-400">{forkCount}</span>
+                    <span className="text-neutral-500"> forked from this</span>
                   </>
                 )}
               </span>
@@ -57,7 +57,7 @@ export function PanelToggle({
         >
           {showComments ? (
             <>
-              <GitBranch size={14} aria-hidden /> Back to the tree
+              <GitFork size={14} aria-hidden /> Back to the tree
             </>
           ) : (
             <>

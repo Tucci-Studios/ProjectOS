@@ -24,7 +24,7 @@ const SECTION_PURPOSE: Record<string, string> = {
   "local-llms": "Everything for models you run on your own machine — stacks, UIs, and tooling.",
   "mcp-servers": "MCP servers connect Claude to your tools and data. Add one with a single command.",
   apps: "Desktop and mobile apps you build from source. No binaries hosted here.",
-  games: "Games to play, read, and branch into your own version.",
+  games: "Games to play, read, and fork into your own version.",
   "scripts-tools": "Small scripts and command-line tools that do one thing well.",
 };
 
@@ -66,7 +66,7 @@ export default async function SectionPage({
   const meta = categoryMeta(category);
   const g = groupOf(category);
   const tab = tabParam === "tutorials" ? "tutorials" : tabParam === "help" ? "help" : "projects";
-  const sort = (["top", "new", "branched", "followed"].includes(sortParam ?? "") ? sortParam : "top") as FeedSort;
+  const sort = (["top", "new", "forked", "followed"].includes(sortParam ?? "") ? sortParam : "top") as FeedSort;
   const page = Math.max(1, Number(pageParam) || 1);
 
   const user = await getSessionUser();
@@ -118,7 +118,7 @@ export default async function SectionPage({
       feed.length === 0 ? (
         <Empty
           title={`No ${meta.label} yet`}
-          body="Publish the first one — it'll be the whole section until someone branches it."
+          body="Publish the first one — it'll be the whole section until someone forks it."
           cta={{ href: user ? "/submit" : "/api/auth/login", label: "Publish here" }}
         />
       ) : (

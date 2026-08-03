@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Play, ExternalLink, ShieldAlert, Monitor, Smartphone } from "lucide-react";
 
-// Live preview of someone's branch of Project OS.
+// Live preview of someone's fork of Project OS.
 //
 // SAFETY: the iframe is sandboxed WITHOUT allow-same-origin, so the embedded
 // page gets a unique opaque origin — it cannot read our cookies, our DOM, or

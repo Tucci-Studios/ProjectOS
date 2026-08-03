@@ -62,7 +62,7 @@ export function FollowButton({
       onClick={toggle}
       disabled={busy}
       aria-pressed={following}
-      title={error ?? (following ? "Stop following — no more branch alerts" : "Follow — get told when this grows a branch")}
+      title={error ?? (following ? "Stop following — no more fork alerts" : "Follow — get told when this grows a fork")}
       className={`group/follow relative inline-flex cursor-pointer items-center gap-1.5 rounded-lg border font-mono outline-none transition-colors focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50 ${dims} ${
         following
           ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"

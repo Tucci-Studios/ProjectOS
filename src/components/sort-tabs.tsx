@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Flame, Clock, GitBranch, Users } from "lucide-react";
+import { Flame, Clock, GitFork, Users } from "lucide-react";
 
 const SORTS = [
   { key: "top", label: "Most liked", Icon: Flame },
   { key: "new", label: "Newest", Icon: Clock },
-  { key: "branched", label: "Most branched", Icon: GitBranch },
+  { key: "forked", label: "Most forked", Icon: GitFork },
   { key: "followed", label: "Most followed", Icon: Users },
 ] as const;
 

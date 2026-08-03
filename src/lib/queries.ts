@@ -1,12 +1,12 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { ProjectFeedRow } from "@/components/project-card";
 
-export type FeedSort = "top" | "new" | "branched" | "followed";
+export type FeedSort = "top" | "new" | "forked" | "followed";
 
 const ORDER_BY: Record<FeedSort, string> = {
   top: "like_count DESC, p.stars DESC, p.created_at DESC",
   new: "p.created_at DESC",
-  branched: "fork_count DESC, like_count DESC, p.stars DESC",
+  forked: "fork_count DESC, like_count DESC, p.stars DESC",
   followed: "follower_count DESC, like_count DESC",
 };
 

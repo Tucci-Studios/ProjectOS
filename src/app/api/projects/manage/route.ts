@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "That isn't yours." }, { status: 403 });
 
   if (body.action === "delete") {
-    // Delist rather than hard-delete: branches below it keep their history.
+    // Delist rather than hard-delete: forks below it keep their history.
     await env.DB.prepare("UPDATE projects SET status = 'delisted', updated_at = ?2 WHERE id = ?1")
       .bind(projectId, Math.floor(Date.now() / 1000))
       .run();

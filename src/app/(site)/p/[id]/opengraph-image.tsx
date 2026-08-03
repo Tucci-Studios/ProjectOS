@@ -10,7 +10,7 @@ export default async function OgImage({ params }: { params: { id: string } }) {
   const { env } = getCloudflareContext();
   const p = await env.DB.prepare(
     `SELECT p.base_name, p.variant_name, p.description, u.github_login,
-            (SELECT COUNT(*) FROM projects f WHERE f.root_id = p.root_id AND f.status='live') - 1 AS branches,
+            (SELECT COUNT(*) FROM projects f WHERE f.root_id = p.root_id AND f.status='live') - 1 AS forks,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS votes
      FROM projects p JOIN users u ON u.id = p.owner_id WHERE p.id = ?1`,
   )
@@ -20,7 +20,7 @@ export default async function OgImage({ params }: { params: { id: string } }) {
       variant_name: string | null;
       description: string;
       github_login: string;
-      branches: number;
+      forks: number;
       votes: number;
     }>();
 
@@ -68,7 +68,7 @@ export default async function OgImage({ params }: { params: { id: string } }) {
         </div>
 
         <div style={{ display: "flex", gap: 44, fontSize: 28, color: "#a3a3a3" }}>
-          {p && <div style={{ color: "#34d399" }}>⑂ {Math.max(0, p.branches)} branches</div>}
+          {p && <div style={{ color: "#34d399" }}>⑂ {Math.max(0, p.forks)} forks</div>}
           {p && <div>▲ {p.votes} votes</div>}
           {p && <div>@{p.github_login}</div>}
         </div>

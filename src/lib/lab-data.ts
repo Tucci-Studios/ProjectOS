@@ -48,10 +48,10 @@ const VARIANTS = [
 export type LabShape = "small" | "wide" | "deep" | "monster";
 
 export const SHAPES: { key: LabShape; label: string; blurb: string }[] = [
-  { key: "small", label: "Small", blurb: "12 branches — the happy case everything looks fine in." },
-  { key: "wide", label: "Wide", blurb: "100 branches hanging off ONE parent. The case that breaks lists." },
+  { key: "small", label: "Small", blurb: "12 forks — the happy case everything looks fine in." },
+  { key: "wide", label: "Wide", blurb: "100 forks hanging off ONE parent. The case that breaks lists." },
   { key: "deep", label: "Deep", blurb: "A 14-deep chain. The case that breaks indentation." },
-  { key: "monster", label: "Monster", blurb: "260 branches, lumpy and uneven. The realistic worst case." },
+  { key: "monster", label: "Monster", blurb: "260 forks, lumpy and uneven. The realistic worst case." },
 ];
 
 /** How many children each node gets, by shape. */
@@ -70,7 +70,7 @@ function spread(shape: LabShape, depth: number, r: () => number): number {
     case "monster":
       if (depth === 0) return 9;
       if (depth >= 6) return 0;
-      // heavy tail: most branches are dead ends, a few are hubs
+      // heavy tail: most forks are dead ends, a few are hubs
       const roll = r();
       if (roll < 0.55) return 0;
       if (roll < 0.9) return 1 + Math.floor(r() * 3);
@@ -113,7 +113,7 @@ export function labLineage(shape: LabShape): LineageNode[] {
         change_summary: CHANGES[Math.floor(r() * CHANGES.length)],
         child_count: 0,
         github_login: HANDLES[Math.floor(r() * HANDLES.length)],
-        // votes decay with depth, with a long tail — a few deep branches beat the root
+        // votes decay with depth, with a long tail — a few deep forks beat the root
         like_count: Math.max(
           -4,
           Math.floor((r() ** 2.2) * 220 * Math.max(0.15, 1 - parent.depth * 0.1)) - (r() < 0.06 ? 9 : 0),

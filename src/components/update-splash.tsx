@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, Plus, Wrench, Bug, Rocket, Download, GitBranch, Vote, ArrowRight } from "lucide-react";
+import { X, Plus, Wrench, Bug, Rocket, Download, GitFork, Vote, ArrowRight } from "lucide-react";
 import { BrandMark } from "./brand";
 
 export type SplashUpdate = {
@@ -112,7 +112,7 @@ export function UpdateSplash({
               to <span className="text-emerald-400">build and rebuild</span>.
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-center text-[16px] leading-relaxed text-neutral-300">
-              Project OS is open source on itself. Don&apos;t like how something works here — branching, the feed, any
+              Project OS is open source on itself. Don&apos;t like how something works here — forking, the feed, any
               of it? Take a copy of the site, build the change, and put it up for a vote.{" "}
               <span className="text-white">Whatever the community votes for gets built into the real thing.</span>{" "}
               Nothing here is permanent, including this.
@@ -153,11 +153,11 @@ export function UpdateSplash({
                 </div>
                 <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
                   <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-300">
-                    <GitBranch size={18} aria-hidden />
+                    <GitFork size={18} aria-hidden />
                   </span>
-                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">Branch anything</p>
+                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">Fork anything</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
-                    A <span className="text-neutral-200">branch</span> is your own version of someone&apos;s project. It
+                    A <span className="text-neutral-200">fork</span> is your own version of someone&apos;s project. It
                     keeps their name and adds yours — Subwolf // Cyber — and joins a public family tree showing where
                     every idea came from.
                   </p>

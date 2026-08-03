@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { GitBranch, Plus } from "lucide-react";
+import { GitFork, Plus } from "lucide-react";
 import type { LineageNode } from "@/lib/queries";
 import { FollowButton } from "./follow-button";
 
@@ -29,7 +29,7 @@ function countAll(n: TreeNode): number {
   return n.children.reduce((sum, c) => sum + 1 + countAll(c), 0);
 }
 
-export function BranchTree({
+export function ForkTree({
   nodes,
   currentId,
   accent = "#34d399",
@@ -94,7 +94,7 @@ function Node({
 
   return (
     <div className="py-0.5">
-      {/* the branch itself */}
+      {/* the fork itself */}
       <div className={`group relative flex items-start gap-2.5 rounded-lg px-1.5 py-2 ${isCurrent ? "bg-neutral-800/70" : ""}`}>
         <Link
           href={`/p/${node.id}`}
@@ -107,8 +107,8 @@ function Node({
             isCurrent
               ? "You're looking at this one"
               : kids > 0
-                ? `${kids} branch${kids === 1 ? "" : "es"} came off this`
-                : "Nothing has branched off this yet"
+                ? `${kids} fork${kids === 1 ? "" : "es"} came off this`
+                : "Nothing has forked off this yet"
           }
           className="relative z-[1] mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border"
           style={{ borderColor: accent, background: isCurrent ? accent : "transparent" }}
@@ -155,7 +155,7 @@ function Node({
             onClick={() => setCollapsed(true)}
             onMouseEnter={() => setLineHot(true)}
             onMouseLeave={() => setLineHot(false)}
-            aria-label={`Collapse ${kids} branch${kids === 1 ? "" : "es"} of ${node.variant_name ?? node.base_name}`}
+            aria-label={`Collapse ${kids} fork${kids === 1 ? "" : "es"} of ${node.variant_name ?? node.base_name}`}
             title="Collapse this thread"
             className="group/line relative flex w-[17px] shrink-0 cursor-pointer justify-center outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
@@ -202,7 +202,7 @@ function TreeLegend({ accent }: { accent: string }) {
         <span className={dot} style={{ borderColor: accent }} aria-hidden>
           <span className="h-[3px] w-[3px] rounded-full" style={{ background: accent }} />
         </span>
-        has branches
+        has forks
       </span>
       <span className="flex items-center gap-1.5">
         <span className={dot} style={{ borderColor: accent, background: accent }} aria-hidden />

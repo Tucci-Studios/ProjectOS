@@ -40,7 +40,7 @@ export default async function FeedPage() {
         getUserVotes(user.id),
         getFollowedIds(user.id),
         getBlockedIds(user.id),
-        // Updates the owner posted to anything you follow. Branches are rare;
+        // Updates the owner posted to anything you follow. Forks are rare;
         // this is what keeps the feed alive between them.
         env.DB.prepare(
           `SELECT pu.id, pu.project_id, pu.version, pu.body_md, pu.created_at, u.github_login, p.owner_id,
@@ -60,7 +60,7 @@ export default async function FeedPage() {
   const followed = followedRaw.filter((p) => !blocked.has(p.owner_id ?? ""));
   const badges = await getBadgesFor(followed.map((p) => p.owner_id ?? ""));
 
-  // One timeline: new branches and updates interleaved by when they happened.
+  // One timeline: new forks and updates interleaved by when they happened.
   const timeline = [
     ...followed.map((p) => ({ kind: "project" as const, at: p.created_at, p })),
     ...updateRows.filter((u) => !blocked.has(u.owner_id)).map((u) => ({ kind: "update" as const, at: u.created_at, u })),
@@ -74,7 +74,7 @@ export default async function FeedPage() {
             <Rss size={22} className="text-emerald-400" aria-hidden /> Feed
           </h1>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
-            Projects you follow — the updates their owners post, and every new branch that grows off them.
+            Projects you follow — the updates their owners post, and every new fork someone makes of them.
           </p>
         </div>
       </header>
@@ -82,13 +82,13 @@ export default async function FeedPage() {
       {!user ? (
         <EmptyHome
           title="Sign in to build your feed"
-          body="Follow projects and branches you care about and they'll show up here — every update their owner posts, and every new branch someone grows off them."
+          body="Follow projects and forks you care about and they'll show up here — every update their owner posts, and every fork someone makes of them."
           cta={{ href: "/api/auth/login", label: "Sign in with GitHub" }}
         />
       ) : timeline.length === 0 ? (
         <EmptyHome
           title="You're not following anything yet"
-          body="Open any project and hit Follow. Its updates and any new branches off it land here automatically, so you can watch an idea evolve without checking back."
+          body="Open any project and hit Follow. Its updates and any new forks of it land here automatically, so you can watch an idea evolve without checking back."
           cta={{ href: "/popular", label: "Find something to follow" }}
         />
       ) : (

@@ -8,12 +8,12 @@ export default function NotFound() {
         <div className="mb-6 flex justify-center">
           <BrandMark size={52} />
         </div>
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-500">404 — dead branch</p>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-500">404 — dead fork</p>
         <h1 className="mt-3 font-mono text-2xl font-bold tracking-tight text-white">
           Nothing grew here
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-neutral-400">
-          This page doesn&apos;t exist, or the project moved. Not every branch survives.
+          This page doesn&apos;t exist, or the project moved. Not every fork survives.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link

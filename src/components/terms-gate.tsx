@@ -8,9 +8,9 @@ export function TermsGate({ login }: { login: string }) {
   const RULES = [
     { t: "Everything here is open source", d: "Anything you publish carries an open-source license and stays readable by anyone." },
     { t: "Nothing gets sold", d: "No paywalls, no locked features, no selling a project you published here. Donations and sponsor links are fine." },
-    { t: "Branches stay open", d: "When someone branches your work — or you branch theirs — that branch stays open too. That's the whole point." },
+    { t: "Forks stay open", d: "When someone forks your work — or you fork theirs — that fork stays open too. That's the whole point." },
     { t: "No malware, ever", d: "Malicious or deceptive code means instant removal and a ban. This one has no second chance." },
-    { t: "Credit is permanent", d: "Branch lineage and attribution are public and stay visible, even if a project is later delisted." },
+    { t: "Credit is permanent", d: "Fork lineage and attribution are public and stay visible, even if a project is later delisted." },
   ];
 
   return (

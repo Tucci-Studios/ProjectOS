@@ -1,6 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { Bell, GitBranch, MessageCircle, Rocket, TrendingUp } from "lucide-react";
+import { Bell, GitFork, MessageCircle, Rocket, TrendingUp } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 const KIND_ICON = {
   reply: MessageCircle,
-  branch: GitBranch,
+  fork: GitFork,
   vote_milestone: TrendingUp,
   idea_shipped: Rocket,
 } as const;
@@ -21,7 +21,7 @@ export default async function NotificationsPage() {
   if (!user) {
     return (
       <div className="mx-auto max-w-lg">
-        <PageHeader crumbs={[{ label: "Notifications" }]} title="Notifications" purpose="Replies, new branches of your work, and milestones." Icon={Bell} />
+        <PageHeader crumbs={[{ label: "Notifications" }]} title="Notifications" purpose="Replies, new forks of your work, and milestones." Icon={Bell} />
         <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-8 text-center">
           <p className="text-sm text-neutral-400">Sign in to see your notifications.</p>
           <div className="mt-4 flex justify-center">
@@ -51,7 +51,7 @@ export default async function NotificationsPage() {
       <PageHeader
         crumbs={[{ label: "Notifications" }]}
         title="Notifications"
-        purpose="Replies to your posts, new branches off your projects, and when one of your ideas ships."
+        purpose="Replies to your posts, new forks off your projects, and when one of your ideas ships."
         Icon={Bell}
       />
 

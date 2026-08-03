@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-// The Project OS mark: a branching trunk inside a circle — monochrome, matching
+// The Project OS mark: a forking trunk inside a circle — monochrome, matching
 // the glyph treatment used on project cards.
 export function BrandMark({ size = 34, className = "" }: { size?: number; className?: string }) {
   return (

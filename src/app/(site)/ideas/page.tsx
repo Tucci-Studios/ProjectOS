@@ -90,7 +90,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
       {tab === "vote" && (
         <>
           {upForVote.length === 0 ? (
-            <Empty>Nothing up for vote this round. Branch the site, build something, and show everyone.</Empty>
+            <Empty>Nothing up for vote this round. Fork the site, build something, and show everyone.</Empty>
           ) : (
             <ol className="space-y-3">
               {upForVote.map((idea, i) => (
@@ -263,7 +263,7 @@ Proposals that lost their round or were turned down. Nothing is ever deleted —
         </section>
       )}
       <p className="mt-8 border-t border-neutral-800 pt-5 text-[13px] leading-relaxed text-neutral-500">
-        <span className="text-neutral-300">How this works:</span>{" "}the site is built on itself. Branch it, build your
+        <span className="text-neutral-300">How this works:</span>{" "}the site is built on itself. Fork it, build your
         change, deploy it, and post it here — everyone tries the real thing before they vote. The round&apos;s winner
         gets a security check, then ships.
       </p>

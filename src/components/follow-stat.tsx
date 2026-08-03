@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GitBranch, Users, Download, ChevronUp } from "lucide-react";
+import { GitFork, Users, Download, ChevronUp, Star } from "lucide-react";
 import { FollowButton } from "./follow-button";
 
 const compact = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}k` : n.toLocaleString());
@@ -17,17 +17,19 @@ export function ProjectStats({
   projectId,
   initialFollowing,
   initialFollowers,
-  branchCount,
+  forkCount,
   voteCount,
   downloads,
+  stars,
   signedIn,
 }: {
   projectId: string;
   initialFollowing: boolean;
   initialFollowers: number;
-  branchCount: number;
+  forkCount: number;
   voteCount: number;
   downloads: number | null;
+  stars?: number | null;
   signedIn: boolean;
 }) {
   const [followers, setFollowers] = useState(initialFollowers);
@@ -35,15 +37,15 @@ export function ProjectStats({
   return (
     <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-neutral-800 bg-neutral-900/40 px-4 py-2.5">
       <Stat
-        Icon={GitBranch}
-        value={branchCount}
-        label={branchCount === 1 ? "branch" : "branches"}
+        Icon={GitFork}
+        value={forkCount}
+        label={forkCount === 1 ? "fork" : "forks"}
         explain={
-          branchCount === 0
+          forkCount === 0
             ? "Nobody has made their own version of this yet."
-            : `${branchCount} ${branchCount === 1 ? "person has" : "people have"} made their own version of this.`
+            : `${forkCount} ${forkCount === 1 ? "person has" : "people have"} made their own version of this.`
         }
-        highlight={branchCount > 0}
+        highlight={forkCount > 0}
       />
       <Stat
         Icon={ChevronUp}
@@ -55,8 +57,16 @@ export function ProjectStats({
         Icon={Users}
         value={followers}
         label={followers === 1 ? "follower" : "followers"}
-        explain="People who get told when this posts an update or grows a new branch."
+        explain="People who get told when this posts an update or someone forks it."
       />
+      {stars ? (
+        <Stat
+          Icon={Star}
+          value={stars}
+          label={stars === 1 ? "star" : "stars"}
+          explain="Stars on GitHub. Not a Project OS number — it's how the wider world rates it."
+        />
+      ) : null}
       {downloads ? (
         <Stat
           Icon={Download}

@@ -16,7 +16,7 @@ export type ProjectUpdate = {
 
 /**
  * A project's changelog. Only the owner can post; everyone else reads.
- * Branches are rare events — this is the weekly motion that keeps a project
+ * Forks are rare events — this is the weekly motion that keeps a project
  * (and the feed) alive between them.
  */
 export function ProjectUpdates({

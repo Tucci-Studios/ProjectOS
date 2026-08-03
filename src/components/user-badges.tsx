@@ -1,6 +1,6 @@
 "use client";
 
-import { Crown, Lightbulb, GitBranch } from "lucide-react";
+import { Crown, Lightbulb, GitFork } from "lucide-react";
 
 // Badges are counts you earned, never titles handed out.
 export type Badges = { numberOne: number; ideasShipped: number; biggestTree: number };
@@ -34,11 +34,11 @@ export function UserBadges({
     },
     showTree && badges.biggestTree > 1 && {
       key: "tree",
-      Icon: GitBranch,
+      Icon: GitFork,
       count: badges.biggestTree,
       cls: "border-emerald-400/40 bg-emerald-400/10 text-emerald-300",
       title: "Grew a tree",
-      detail: `Published something ${badges.biggestTree} people branched into their own versions.`,
+      detail: `Published something ${badges.biggestTree} people forked into their own versions.`,
     },
   ].filter(Boolean) as { key: string; Icon: typeof Crown; count: number; cls: string; title: string; detail: string }[];
 

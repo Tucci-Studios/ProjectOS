@@ -1,7 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Boxes, Megaphone, GitBranch, Heart, ExternalLink } from "lucide-react";
+import { Boxes, Megaphone, GitFork, Heart, ExternalLink } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { getUserVotes, getBadges } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
@@ -48,8 +48,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
         (SELECT COUNT(*) FROM projects WHERE owner_id = ?1 AND status='live') AS projects,
         (SELECT COALESCE(SUM(l.value),0) FROM likes l JOIN projects p ON p.id = l.project_id WHERE p.owner_id = ?1) AS votes,
         (SELECT COUNT(*) FROM projects f JOIN projects par ON par.id = f.parent_id
-          WHERE par.owner_id = ?1 AND f.status='live') AS branches_of_theirs`,
-    ).bind(person.id).first<{ projects: number; votes: number; branches_of_theirs: number }>(),
+          WHERE par.owner_id = ?1 AND f.status='live') AS forks_of_theirs`,
+    ).bind(person.id).first<{ projects: number; votes: number; forks_of_theirs: number }>(),
     env.DB.prepare("SELECT COUNT(*) AS n FROM ideas WHERE author_id = ?1 AND status = 'shipped'")
       .bind(person.id)
       .first<{ n: number }>(),
@@ -109,7 +109,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
                 <Heart size={14} className="text-neutral-500" aria-hidden /> {stats?.votes ?? 0} votes
               </span>
               <span className="flex items-center gap-1.5 text-neutral-300">
-                <GitBranch size={14} className="text-neutral-500" aria-hidden /> {stats?.branches_of_theirs ?? 0} branches off their work
+                <GitFork size={14} className="text-neutral-500" aria-hidden /> {stats?.forks_of_theirs ?? 0} forks off their work
               </span>
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Crown, GitBranch, Plus, Minus, Maximize2, Sparkle } from "lucide-react";
+import { Crown, GitFork, Plus, Minus, Maximize2, Sparkle } from "lucide-react";
 import type { LineageNode } from "@/lib/queries";
 import { build, name, flatten, pathTo, byVotes, maxDepth, type T } from "./tree";
 
@@ -329,7 +329,7 @@ export function VizGalaxy({ nodes }: { nodes: LineageNode[] }) {
                   {t.depth === 0 && <Sparkle size={10} style={{ color: A }} className="shrink-0" aria-hidden />}
                   {t.children.length > 0 && (
                     <span className="flex shrink-0 items-center gap-0.5 font-mono text-[10px] text-neutral-500">
-                      <GitBranch size={9} aria-hidden />
+                      <GitFork size={9} aria-hidden />
                       {t.children.length}
                     </span>
                   )}

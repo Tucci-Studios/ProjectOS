@@ -1,7 +1,7 @@
-import { GitBranch, BadgeCheck, HelpCircle } from "lucide-react";
+import { GitFork, BadgeCheck, HelpCircle } from "lucide-react";
 
 /**
- * Says how much we actually KNOW about a branch's parent, rather than implying
+ * Says how much we actually KNOW about a fork's parent, rather than implying
  * one level of certainty for both cases.
  *
  *   verified  — GitHub's fork graph proves it. We looked it up ourselves.
@@ -23,10 +23,10 @@ export function LineageBadge({
   if (source === "verified")
     return (
       <span
-        title={`GitHub's fork record confirms this is a branch${from}. We checked it ourselves — nobody typed it in.`}
+        title={`GitHub's fork record confirms this is a fork${from}. We checked it ourselves — nobody typed it in.`}
         className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-300"
       >
-        <BadgeCheck size={11} aria-hidden /> Verified branch
+        <BadgeCheck size={11} aria-hidden /> Verified fork
       </span>
     );
 
@@ -36,7 +36,7 @@ export function LineageBadge({
         title={`The owner of ${parentDisplay ?? "the parent"} confirmed this came from their project.`}
         className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/40 bg-sky-400/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-sky-300"
       >
-        <GitBranch size={11} aria-hidden /> Confirmed by owner
+        <GitFork size={11} aria-hidden /> Confirmed by owner
       </span>
     );
 
@@ -45,7 +45,7 @@ export function LineageBadge({
       title={`This publisher says it came from ${parentDisplay ?? "another project"}, but GitHub has no fork record — so we can't verify it. The parent's owner can confirm.`}
       className="inline-flex items-center gap-1.5 rounded-full border border-neutral-600 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-400"
     >
-      <HelpCircle size={11} aria-hidden /> Claimed branch
+      <HelpCircle size={11} aria-hidden /> Claimed fork
     </span>
   );
 }

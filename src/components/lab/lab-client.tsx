@@ -90,7 +90,7 @@ export function LabClient() {
             ))}
           </div>
           <p className="mt-2 font-mono text-[11px] text-neutral-500">
-            {meta.blurb} <span className="text-neutral-600">— {nodes.length} branches in this tree.</span>
+            {meta.blurb} <span className="text-neutral-600">— {nodes.length} forks in this tree.</span>
           </p>
         </>
       )}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Detection } from "@/app/api/detect/route";
 import { useRouter } from "next/navigation";
-import { Loader2, Sparkles, GitBranch, Boxes, BookOpen, HelpCircle, ArrowRight } from "lucide-react";
+import { Loader2, Sparkles, GitFork, Boxes, BookOpen, HelpCircle, ArrowRight } from "lucide-react";
 import { CATEGORY_META, GROUPS, GROUP_ORDER } from "@/lib/categories";
 import { ImageUploader } from "@/components/image-uploader";
 
@@ -11,12 +11,12 @@ const input =
   "w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3.5 py-2.5 font-mono text-sm text-white placeholder-neutral-600 outline-none transition focus:border-emerald-400";
 
 const KINDS = [
-  { key: "project", label: "A project", blurb: "Code people can install, run, or branch.", Icon: Boxes },
+  { key: "project", label: "A project", blurb: "Code people can install, run, or fork.", Icon: Boxes },
   { key: "tutorial", label: "A tutorial", blurb: "How to do something, step by step.", Icon: BookOpen },
   { key: "request", label: "A request", blurb: "Ask someone to build or explain something.", Icon: HelpCircle },
 ] as const;
 
-export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf?: string }) {
+export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: string }) {
   const router = useRouter();
   const [kind, setKind] = useState<"project" | "tutorial" | "request">("project");
   const [category, setCategory] = useState("");
@@ -80,8 +80,8 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
     };
   }, [repo]);
 
-  const isBranch = detection?.kind === "branch";
-  const parentName = isBranch ? detection.parentDisplay : branchOf;
+  const isFork = detection?.kind === "fork";
+  const parentName = isFork ? detection.parentDisplay : forkOf;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -112,7 +112,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      {!branchOf && <KindPicker kind={kind} setKind={setKind} />}
+      {!forkOf && <KindPicker kind={kind} setKind={setKind} />}
       <SectionPicker category={category} setCategory={setCategory} />
 
       <label className="block">
@@ -151,7 +151,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
         </span>
       </label>
 
-      {(isBranch || branchOf || claimParent) && (
+      {(isFork || forkOf || claimParent) && (
         <label className="block">
           <span className="mb-1.5 block font-mono text-xs text-neutral-400">
             What did you change? <span className="text-neutral-600">— vs. {parentName}</span>
@@ -164,7 +164,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
             className={input}
           />
           <span className="mt-1 block text-xs text-neutral-600">
-            This is the line people read in the tree to tell your branch apart.
+            This is the line people read in the tree to tell your fork apart.
           </span>
         </label>
       )}
@@ -184,7 +184,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
             <a href="/terms" target="_blank" className="text-emerald-400 hover:underline">
               Project OS terms
             </a>
-            : open source, never sold or paywalled, branches stay open, no malware.
+            : open source, never sold or paywalled, forks stay open, no malware.
           </span>
         </label>
       )}
@@ -194,7 +194,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
         disabled={busy}
         className="min-h-[46px] cursor-pointer rounded-lg bg-emerald-400 px-6 font-mono text-sm font-bold text-black transition hover:bg-emerald-300 disabled:opacity-50"
       >
-        {busy ? "Publishing..." : isBranch || claimParent ? "Publish my branch" : "Publish"}
+        {busy ? "Publishing..." : isFork || claimParent ? "Publish my fork" : "Publish"}
       </button>
 
       {errors.length > 0 && (
@@ -282,7 +282,7 @@ function SectionPicker({
 /**
  * What we found out about the repo, in plain words.
  *
- * The whole point: the publisher is never asked "is this a branch?" — GitHub
+ * The whole point: the publisher is never asked "is this a fork?" — GitHub
  * already knows, so we tell THEM. The only time we ask for anything is the one
  * case GitHub genuinely can't answer: they didn't fork, they copied.
  */
@@ -308,11 +308,11 @@ function DetectionNote({
 
   if (!detection) return null;
 
-  if (detection.kind === "branch")
+  if (detection.kind === "fork")
     return (
       <div className="rounded-xl border border-emerald-400/40 bg-emerald-400/[0.06] px-3.5 py-3">
         <p className="flex items-center gap-2 font-mono text-[13px] font-bold text-emerald-300">
-          <GitBranch size={14} aria-hidden /> This is a branch of {detection.parentDisplay}
+          <GitFork size={14} aria-hidden /> This is a fork of {detection.parentDisplay}
         </p>
         <p className="mt-1 text-[13px] leading-relaxed text-neutral-400">
           GitHub says you forked <span className="font-mono text-neutral-300">{detection.parentRepo}</span>, so we&apos;ll
@@ -367,7 +367,7 @@ function DetectionNote({
             </label>
             <p className="mt-1.5 text-[12px] leading-relaxed text-neutral-500">
               We can&apos;t verify this — GitHub has no fork record. It&apos;ll show as a{" "}
-              <span className="text-neutral-300">claimed branch</span> until that project&apos;s owner confirms it.
+              <span className="text-neutral-300">claimed fork</span> until that project&apos;s owner confirms it.
             </p>
           </div>
         )}

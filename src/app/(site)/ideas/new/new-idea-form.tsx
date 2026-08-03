@@ -59,7 +59,7 @@ export function NewIdeaForm() {
           onChange={(e) => setTitle(e.target.value)}
           required
           maxLength={120}
-          placeholder="Follow a branch and get notified when it grows"
+          placeholder="Follow a fork and get notified when it grows"
           className={input}
         />
       </label>
@@ -74,7 +74,7 @@ export function NewIdeaForm() {
           required
           rows={7}
           maxLength={4000}
-          placeholder="Right now if I branch something I have no way to know when someone branches mine. I added a follow button that..."
+          placeholder="Right now if I fork something I have no way to know when someone forks mine. I added a follow button that..."
           className={input}
         />
       </label>
@@ -85,13 +85,13 @@ export function NewIdeaForm() {
         </p>
         <label className="block">
           <span className="mb-1.5 block font-mono text-xs text-neutral-400">
-            Live demo URL <span className="text-neutral-600">— your deployed branch (https only)</span>
+            Live demo URL <span className="text-neutral-600">— your deployed fork (https only)</span>
           </span>
           <input
             value={demoUrl}
             onChange={(e) => setDemoUrl(e.target.value)}
             type="url"
-            placeholder="https://my-branch.pages.dev"
+            placeholder="https://my-fork.pages.dev"
             className={input}
           />
         </label>

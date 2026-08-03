@@ -1,7 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GitBranch, ExternalLink, MessageCircle } from "lucide-react";
+import { GitFork, ExternalLink, MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { GetItDialog } from "@/components/get-it-dialog";
 import { ProjectComments, type ProjectComment } from "@/components/project-comments";
@@ -16,7 +16,7 @@ import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
 import { ImagePreview } from "@/components/image-preview";
-import { BranchTree } from "@/components/branch-tree";
+import { ForkTree } from "@/components/fork-tree";
 import { ReportButton } from "@/components/report-button";
 import { BackLink } from "@/components/back-link";
 import { accentHex, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
@@ -45,6 +45,7 @@ type Row = {
   avatar_url: string | null;
   like_count: number;
   release_downloads: number | null;
+  stars: number | null;
   image_url: string | null;
   owner_id: string;
 };
@@ -59,7 +60,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at,
+            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source,
             (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      LEFT JOIN repo_stats rs ON rs.project_id = p.id
@@ -120,7 +121,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     : false;
 
   const following = new Set(followRows.results.map((r) => r.project_id));
-  const branchCount = lineage.length - 1;
+  const forkCount = lineage.length - 1;
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -168,7 +169,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               <>
                 <span>·</span>
                 <span className="inline-flex items-center gap-1">
-                  <GitBranch size={11} aria-hidden /> branch of{" "}
+                  <GitFork size={11} aria-hidden /> fork of{" "}
                   <Link href={`/p/${parent.id}`} className="text-neutral-300 hover:underline">
                     {parent.display}
                   </Link>
@@ -183,9 +184,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         projectId={p.id}
         initialFollowing={following.has(p.id)}
         initialFollowers={followerRow?.n ?? 0}
-        branchCount={branchCount}
+        forkCount={forkCount}
         voteCount={p.like_count}
         downloads={p.release_downloads}
+        stars={p.stars}
         signedIn={!!user}
       />
 
@@ -193,8 +195,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Actions */}
       <div className="mt-5 flex flex-wrap items-center gap-2.5">
-        <ButtonLink href={`/p/${p.id}/branch`} variant="primary">
-          <GitBranch size={16} aria-hidden /> Branch it
+        <ButtonLink href={`/p/${p.id}/fork`} variant="primary">
+          <GitFork size={16} aria-hidden /> Fork it
         </ButtonLink>
 
         <GetItDialog category={p.category} repo={p.github_repo} />
@@ -211,7 +213,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           initialDescription={p.description}
           initialChangeSummary={p.change_summary}
           initialImages={imageRows.results.map((r) => r.url)}
-          isBranch={!!p.parent_id}
+          isFork={!!p.parent_id}
         />
       )}
 
@@ -220,11 +222,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         alt={`Screenshot of ${p.base_name}`}
       />
 
-      {/* What changed vs. parent — only on branches */}
+      {/* What changed vs. parent — only on forks */}
       {(p.change_summary || p.lineage_source) && (
         <div className="mt-6 rounded-xl border-l-2 border-emerald-400/60 bg-neutral-900/50 p-4">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">What this branch changed</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">What this fork changed</p>
             <LineageBadge
               source={p.lineage_source}
               confirmedAt={p.parent_confirmed_at}
@@ -255,11 +257,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Stats strip */}
       <PanelToggle
-        branchCount={branchCount}
+        forkCount={forkCount}
         commentCount={commentRows.results.length}
         tree={
           <>
-            <BranchTree
+            <ForkTree
               nodes={lineage}
               currentId={p.id}
               accent={accentHex(p.category)}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sparkles, GitBranch, ArrowRight } from "lucide-react";
+import { Sparkles, GitFork, ArrowRight } from "lucide-react";
 import { categoryMeta, groupOf } from "@/lib/categories";
 import { ProjectMark } from "./project-mark";
 import { BrandMark } from "./brand";
@@ -61,14 +61,14 @@ export function FeaturedStrip({ p }: { p: FeaturedProject }) {
           </h2>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-300">{p.description}</p>
           <p className="mt-2 font-mono text-[11px] text-neutral-500">
-            @{p.github_login} · {p.like_count} likes · {p.fork_count} branch{p.fork_count === 1 ? "" : "es"}
+            @{p.github_login} · {p.like_count} likes · {p.fork_count} fork{p.fork_count === 1 ? "" : "es"}
           </p>
           <div className="mt-4 flex flex-wrap gap-2.5">
             <ButtonLink href={`/p/${p.id}`} variant="primary" className="!min-h-[40px]">
               Open <ArrowRight size={15} aria-hidden />
             </ButtonLink>
-            <ButtonLink href={`/p/${p.id}/branch`} variant="ghost" className="!min-h-[40px]">
-              <GitBranch size={15} aria-hidden /> Branch it
+            <ButtonLink href={`/p/${p.id}/fork`} variant="ghost" className="!min-h-[40px]">
+              <GitFork size={15} aria-hidden /> Fork it
             </ButtonLink>
           </div>
         </div>

@@ -20,7 +20,7 @@ export default async function ExplorePage() {
             <Sparkles size={22} className="text-emerald-400" aria-hidden /> New
           </h1>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
-            Everything as it lands — new projects, branches, posts, and questions. Keeps going as long as you scroll.{" "}
+            Everything as it lands — new projects, forks, posts, and questions. Keeps going as long as you scroll.{" "}
             <Link href="/popular" className="text-emerald-300 transition hover:underline">
               See what&apos;s popular
             </Link>

@@ -11,13 +11,13 @@ export function OwnerControls({
   initialDescription,
   initialChangeSummary,
   initialImages,
-  isBranch,
+  isFork,
 }: {
   projectId: string;
   initialDescription: string;
   initialChangeSummary: string | null;
   initialImages: string[];
-  isBranch: boolean;
+  isFork: boolean;
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -68,7 +68,7 @@ export function OwnerControls({
           />
         </label>
 
-        {isBranch && (
+        {isFork && (
           <label className="mt-3 block">
             <span className="mb-1.5 block font-mono text-xs text-neutral-400">What you changed</span>
             <input
@@ -138,7 +138,7 @@ export function OwnerControls({
           <Trash2 size={12} aria-hidden /> Take it down
         </button>
       )}
-      <span className="font-mono text-[11px] text-neutral-600">Branches off this keep their history.</span>
+      <span className="font-mono text-[11px] text-neutral-600">Forks off this keep their history.</span>
     </div>
   );
 }

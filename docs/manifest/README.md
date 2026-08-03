@@ -34,7 +34,7 @@ what your repo is. If GitHub says it's a fork of something already published
 here, you're added to that tree automatically — no `lineage` block, no parent
 repo to type in, no way to get it wrong. If you copied a project instead of
 forking it, GitHub has no record, so you can claim a parent on the publish form
-and it shows as a *claimed branch* until that project's owner confirms.
+and it shows as a *claimed fork* until that project's owner confirms.
 
 ## Example project.json (fork)
 

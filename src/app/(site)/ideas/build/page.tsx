@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code2, GitBranch, Rocket, Send, ExternalLink, AlertTriangle } from "lucide-react";
+import { Code2, GitFork, Rocket, Send, ExternalLink, AlertTriangle } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
 import { CopyLine } from "@/components/copy-line";
@@ -25,7 +25,7 @@ export default function BuildAChangePage() {
         </p>
       )}
 
-      <Step n={1} Icon={GitBranch} title="Take a copy">
+      <Step n={1} Icon={GitFork} title="Take a copy">
         <p className="mb-2.5 text-sm leading-relaxed text-neutral-400">
           Fork it on GitHub so your copy is yours, then pull it down.
         </p>
@@ -50,7 +50,7 @@ export default function BuildAChangePage() {
       <Step n={3} Icon={Rocket} title="Put your version online">
         <p className="mb-2.5 text-sm leading-relaxed text-neutral-400">
           People vote on what they can actually try, so your change needs a live link. Cloudflare Pages and Vercel both
-          deploy a branch for free.
+          deploy a fork for free.
         </p>
         <CopyLine code="npm run deploy" />
         <p className="mt-2 text-xs text-neutral-500">

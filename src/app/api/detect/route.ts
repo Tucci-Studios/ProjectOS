@@ -10,7 +10,7 @@ export type Detection =
   | { kind: "unknown"; message: string }
   | { kind: "duplicate"; message: string; projectId: string }
   | { kind: "original" }
-  | { kind: "branch"; parentId: string; parentDisplay: string; parentRepo: string; baseName: string }
+  | { kind: "fork"; parentId: string; parentDisplay: string; parentRepo: string; baseName: string }
   | { kind: "orphan-fork"; parentRepo: string };
 
 /**
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
   if (!parent) return NextResponse.json({ kind: "orphan-fork", parentRepo: info.parent.full_name } satisfies Detection);
 
   return NextResponse.json({
-    kind: "branch",
+    kind: "fork",
     parentId: parent.id,
     parentRepo: info.parent.full_name,
     parentDisplay: parent.variant_name ? `${parent.base_name} // ${parent.variant_name}` : parent.base_name,

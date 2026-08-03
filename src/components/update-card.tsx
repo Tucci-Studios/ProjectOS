@@ -14,7 +14,7 @@ export type FeedUpdate = {
 
 /**
  * An update in the feed. Deliberately lighter than a project card — a new
- * branch is the big event, an update is the steady drumbeat, and the feed
+ * fork is the big event, an update is the steady drumbeat, and the feed
  * should read that way at a glance.
  */
 export function UpdateCard({ u }: { u: FeedUpdate }) {

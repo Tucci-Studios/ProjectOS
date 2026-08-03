@@ -25,7 +25,7 @@ export function ConfirmLineage({ projectId, childDisplay }: { projectId: string;
 
   return (
     <div className="mt-4 rounded-xl border border-sky-400/35 bg-sky-400/[0.05] p-4">
-      <p className="font-mono text-[13px] font-bold text-sky-200">Is this really a branch of your project?</p>
+      <p className="font-mono text-[13px] font-bold text-sky-200">Is this really a fork of your project?</p>
       <p className="mt-1 text-[13px] leading-relaxed text-neutral-400">
         {childDisplay} says it came from your work, but GitHub has no fork record — so we can&apos;t check it. You can.
       </p>

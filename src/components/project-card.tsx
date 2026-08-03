@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GitBranch } from "lucide-react";
+import { GitFork } from "lucide-react";
 import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
@@ -148,13 +148,13 @@ export function ProjectCard({
             <CardComments projectId={p.id} count={p.comment_count ?? 0} />
             <span
               className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "font-bold text-emerald-400" : ""}`}
-              title={`${p.fork_count} branch${p.fork_count === 1 ? "" : "es"}`}
+              title={`${p.fork_count} fork${p.fork_count === 1 ? "" : "es"}`}
             >
-              <GitBranch size={11} aria-hidden /> {p.fork_count}
+              <GitFork size={11} aria-hidden /> {p.fork_count}
             </span>
             {p.parent_display && (
               <span className="inline-flex items-center gap-1 text-neutral-600">
-                branched from <span className="text-neutral-400">{p.parent_display}</span>
+                forked from <span className="text-neutral-400">{p.parent_display}</span>
               </span>
             )}
           </div>

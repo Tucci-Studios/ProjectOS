@@ -30,7 +30,7 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
         Fork <span className="text-emerald-400">{display}</span>
       </h1>
       <p className="mb-6 text-[15px] leading-relaxed text-neutral-400">
-        Your branch joins the lineage as{" "}
+        Your fork joins the lineage as{" "}
         <span className="font-mono text-neutral-200">
           {p.base_name}
           <span className="text-emerald-400"> // </span>YourVariant
@@ -73,13 +73,13 @@ export default async function ForkPage({ params }: { params: Promise<{ id: strin
       </ol>
 
       {user ? (
-        <SubmitForm needsTos={!user.tos_accepted_at} branchOf={display} />
+        <SubmitForm needsTos={!user.tos_accepted_at} forkOf={display} />
       ) : (
         <p className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-6 text-center font-mono text-sm text-neutral-300">
           <a href="/api/auth/login" className="text-emerald-400 hover:underline">
             Sign in with GitHub
           </a>{" "}
-          to register your branch.
+          to register your fork.
         </p>
       )}
     </div>
