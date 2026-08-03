@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ExternalLink, RefreshCw, Star } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
 import type { ForkPicture } from "@/lib/forks";
@@ -26,6 +27,7 @@ export function ForksPanel({
   repo: string;
   hasTree: boolean;
 }) {
+  const router = useRouter();
   const [picture, setPicture] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [show, setShow] = useState(8);
@@ -39,13 +41,17 @@ export function ForksPanel({
         body: JSON.stringify({ projectId }),
       });
       const data = (await res.json()) as ForkPicture & { ok?: boolean };
-      if (data.ok)
+      if (data.ok) {
         setPicture({
           unpublished: data.unpublished,
           total: data.total,
           published: data.published,
           syncedAt: data.syncedAt,
         });
+        // The trophy above is server-rendered, so it can't see what we just
+        // fetched. Without this you'd have to reload the page to get one.
+        if (initial.syncedAt === null && data.total > 0) router.refresh();
+      }
     } catch {
       /* GitHub being down is not this page's problem */
     } finally {
