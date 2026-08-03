@@ -4,7 +4,7 @@ import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
-import { Star } from "lucide-react";
+import { Star, TrendingUp } from "lucide-react";
 import { CardComments } from "./card-comments";
 import { UserChip } from "./user-chip";
 import type { Badges } from "./user-badges";
@@ -85,6 +85,7 @@ export function ProjectCard({
   vote = 0,
   following,
   saved,
+  gained,
   canFollow = false,
   badges,
 }: {
@@ -92,6 +93,8 @@ export function ProjectCard({
   vote?: number;
   following?: boolean;
   saved?: boolean;
+  /** Stars gained in the window being ranked, when one is in play. */
+  gained?: number;
   canFollow?: boolean;
   badges?: Badges;
 }) {
@@ -146,6 +149,14 @@ export function ProjectCard({
               </span>
             ) : null}
             {p.language && <span className="text-neutral-600">{p.language}</span>}
+            {gained !== undefined && gained > 0 && (
+              <span
+                className="inline-flex items-center gap-1 font-bold text-emerald-400"
+                title="Stars gained in the period being ranked"
+              >
+                <TrendingUp size={11} aria-hidden /> +{gained.toLocaleString()}
+              </span>
+            )}
             <span>{timeAgo(p.created_at)}</span>
             <CardComments projectId={p.id} count={p.comment_count ?? 0} />
             {(() => {
