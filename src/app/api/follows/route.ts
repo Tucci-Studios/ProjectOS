@@ -32,5 +32,9 @@ export async function POST(request: Request) {
       .run();
   }
 
-  return NextResponse.json({ following: !existing });
+  const count = await env.DB.prepare("SELECT COUNT(*) AS n FROM follows WHERE project_id = ?1")
+    .bind(projectId)
+    .first<{ n: number }>();
+
+  return NextResponse.json({ following: !existing, count: count?.n ?? 0 });
 }

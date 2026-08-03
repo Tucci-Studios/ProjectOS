@@ -1,16 +1,18 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { GitBranch, ExternalLink, Star, Download } from "lucide-react";
+import { GitBranch, ExternalLink } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
-import { InstallBlock } from "@/components/install-block";
+import { GetItDialog } from "@/components/get-it-dialog";
+import { ProjectComments, type ProjectComment } from "@/components/project-comments";
+import { UserBadges } from "@/components/user-badges";
+import { ProjectStats } from "@/components/follow-stat";
 import { BranchTree } from "@/components/branch-tree";
-import { FollowButton } from "@/components/follow-button";
 import { ReportButton } from "@/components/report-button";
 import { BackLink } from "@/components/back-link";
 import { accentHex, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { getSessionUser } from "@/lib/auth";
-import { getLineage } from "@/lib/queries";
+import { getLineage, getBadges } from "@/lib/queries";
 import { LikeButton } from "@/components/like-button";
 
 export const dynamic = "force-dynamic";
@@ -30,8 +32,9 @@ type Row = {
   github_login: string;
   avatar_url: string | null;
   like_count: number;
-  stars: number | null;
   release_downloads: number | null;
+  image_url: string | null;
+  owner_id: string;
 };
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
@@ -44,7 +47,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            rs.stars, rs.release_downloads
+            rs.release_downloads, p.image_url, p.owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      LEFT JOIN repo_stats rs ON rs.project_id = p.id
      WHERE p.id = ?1 AND p.status = 'live'`,
@@ -56,7 +59,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const meta = categoryMeta(p.category);
   const g = groupOf(p.category);
 
-  const [myVote, lineage, followRows, parent] = await Promise.all([
+  const [myVote, lineage, followRows, parent, followerRow, commentRows, badges] = await Promise.all([
     user
       ? env.DB.prepare("SELECT value FROM likes WHERE user_id = ?1 AND project_id = ?2")
           .bind(user.id, p.id)
@@ -74,6 +77,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           .bind(p.parent_id)
           .first<{ id: string; display: string }>()
       : Promise.resolve(null),
+    env.DB.prepare("SELECT COUNT(*) AS n FROM follows WHERE project_id = ?1").bind(id).first<{ n: number }>(),
+    env.DB.prepare(
+      `SELECT c.id, c.body_md, c.created_at, u.github_login, u.avatar_url
+       FROM project_comments c JOIN users u ON u.id = c.author_id
+       WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT 50`,
+    ).bind(id).all<ProjectComment>(),
+    (async () => {
+      const owner = await env.DB.prepare("SELECT owner_id FROM projects WHERE id = ?1").bind(id).first<{ owner_id: string }>();
+      return owner ? getBadges(owner.owner_id) : null;
+    })(),
   ]);
 
   const following = new Set(followRows.results.map((r) => r.project_id));
@@ -110,6 +123,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
               ) : null}
               @{p.github_login}
             </Link>
+            {badges && <UserBadges badges={badges} />}
             <span>·</span>
             <span>{timeAgo(p.created_at)}</span>
             <span>·</span>
@@ -138,11 +152,21 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <ButtonLink href={`/p/${p.id}/branch`} variant="primary">
           <GitBranch size={16} aria-hidden /> Branch it
         </ButtonLink>
-        {user && <FollowButton projectId={p.id} initialFollowing={following.has(p.id)} />}
+
+        <GetItDialog category={p.category} repo={p.github_repo} />
         <ButtonLink href={`https://github.com/${p.github_repo}`} variant="ghost" external>
           GitHub <ExternalLink size={14} aria-hidden />
         </ButtonLink>
       </div>
+
+      {p.image_url && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={p.image_url}
+          alt={`Screenshot of ${p.base_name}`}
+          className="mt-6 w-full rounded-xl border border-neutral-700 object-cover"
+        />
+      )}
 
       {/* What changed vs. parent — only on branches */}
       {p.change_summary && (
@@ -153,16 +177,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       )}
 
       {/* Stats strip */}
-      <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Branches" value={branchCount} Icon={GitBranch} />
-        <Stat label="Votes" value={p.like_count} />
-        {p.stars != null && <Stat label="Stars" value={p.stars} Icon={Star} />}
-        {p.release_downloads ? <Stat label="Downloads" value={p.release_downloads} Icon={Download} /> : null}
-      </dl>
-
-      <Section title="Get it">
-        <InstallBlock category={p.category} repo={p.github_repo} />
-      </Section>
+      <ProjectStats
+        projectId={p.id}
+        initialFollowing={following.has(p.id)}
+        initialFollowers={followerRow?.n ?? 0}
+        branchCount={branchCount}
+        voteCount={p.like_count}
+        downloads={p.release_downloads}
+        signedIn={!!user}
+      />
 
       <Section
         title="The tree"
@@ -179,6 +202,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           following={following}
           canFollow={!!user}
         />
+      </Section>
+
+      <Section title={`Comments (${commentRows.results.length})`}>
+        <ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />
       </Section>
 
       <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
@@ -204,13 +231,3 @@ function Section({
   );
 }
 
-function Stat({ label, value, Icon }: { label: string; value: number; Icon?: typeof GitBranch }) {
-  return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 px-3 py-2.5">
-      <dt className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-        {Icon && <Icon size={11} aria-hidden />} {label}
-      </dt>
-      <dd className="mt-0.5 font-mono text-lg font-bold text-white tabular-nums">{value}</dd>
-    </div>
-  );
-}

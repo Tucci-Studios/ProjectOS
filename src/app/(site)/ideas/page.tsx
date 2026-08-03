@@ -12,8 +12,8 @@ export const dynamic = "force-dynamic";
 
 const STATUS: Record<string, { label: string; cls: string }> = {
   open: { label: "Up for vote", cls: "border-neutral-600 text-neutral-400" },
-  planned: { label: "Winning", cls: "border-sky-400/40 text-sky-300" },
-  building: { label: "Merging", cls: "border-amber-400/40 text-amber-300" },
+  planned: { label: "Winning the vote", cls: "border-sky-400/40 text-sky-300" },
+  building: { label: "Getting built", cls: "border-amber-400/40 text-amber-300" },
   shipped: { label: "Shipped", cls: "border-emerald-400/40 text-emerald-300" },
   declined: { label: "Not doing", cls: "border-neutral-700 text-neutral-600" },
 };
@@ -38,8 +38,8 @@ export default async function IdeasPage() {
 
   const { results } = await env.DB.prepare(
     `SELECT i.id, i.title, i.body_md, i.status, i.demo_url, i.repo_url, i.created_at, u.github_login,
-            (SELECT COUNT(*) FROM idea_votes v WHERE v.idea_id = i.id) AS vote_count,
-            (SELECT COUNT(*) FROM idea_votes v WHERE v.idea_id = i.id AND v.user_id = ?1) AS voted
+            (SELECT COALESCE(SUM(v.value),0) FROM idea_votes v WHERE v.idea_id = i.id) AS vote_count,
+            (SELECT COALESCE(SUM(v.value),0) FROM idea_votes v WHERE v.idea_id = i.id AND v.user_id = ?1) AS voted
      FROM ideas i JOIN users u ON u.id = i.author_id
      ORDER BY CASE i.status WHEN 'declined' THEN 2 WHEN 'shipped' THEN 1 ELSE 0 END,
               vote_count DESC, i.created_at DESC`,
@@ -67,7 +67,7 @@ export default async function IdeasPage() {
       {/* Cycle banner */}
       <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-emerald-400/25 bg-emerald-400/[0.05] px-4 py-3">
         <span className="flex items-center gap-2 font-mono text-sm font-bold text-emerald-300">
-          <Clock size={15} aria-hidden /> Cycle {cycle.n}
+          <Clock size={15} aria-hidden /> Round {cycle.n}
         </span>
         <span className="font-mono text-sm text-neutral-300">Voting {closesInWords(cycle.daysLeft)}</span>
         <span className="ml-auto flex items-center gap-1.5 font-mono text-[11px] text-neutral-500">
@@ -94,7 +94,7 @@ export default async function IdeasPage() {
                 }`}
               >
                 <div className="relative z-[2] shrink-0">
-                  <VoteButton ideaId={idea.id} initialCount={idea.vote_count} initialVoted={idea.voted > 0} />
+                  <VoteButton ideaId={idea.id} initialCount={idea.vote_count} initialVote={idea.voted} />
                 </div>
 
                 <div className="min-w-0 flex-1">

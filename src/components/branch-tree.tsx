@@ -12,7 +12,7 @@ import { FollowButton } from "./follow-button";
  * whenever that level still has siblings below it. That continuity is what
  * makes it read as branching instead of as an indented list.
  */
-type Row = LineageNode & { guides: boolean[]; isLast: boolean };
+type Row = LineageNode & { guides: boolean[]; isLast: boolean; parentLabel: string | null };
 
 function layout(nodes: LineageNode[]): Row[] {
   const byParent = new Map<string | null, LineageNode[]>();
@@ -22,12 +22,15 @@ function layout(nodes: LineageNode[]): Row[] {
     byParent.set(n.parent_id, list);
   }
 
+  const label = (n: LineageNode) => (n.parent_id === null ? n.base_name : (n.variant_name ?? n.base_name));
+
   const out: Row[] = [];
   const walk = (parentId: string | null, guides: boolean[]) => {
     const kids = byParent.get(parentId) ?? [];
+    const parent = nodes.find((n) => n.id === parentId) ?? null;
     kids.forEach((kid, i) => {
       const isLast = i === kids.length - 1;
-      out.push({ ...kid, guides, isLast });
+      out.push({ ...kid, guides, isLast, parentLabel: parent ? label(parent) : null });
       // A child's guides = ours plus "does this level continue below me?"
       walk(kid.id, [...guides, !isLast]);
     });
@@ -169,7 +172,13 @@ export function BranchTree({
                 )}
               </span>
 
-              <span className="mt-0.5 block text-[13px] leading-snug text-neutral-400">
+              {node.parentLabel && (
+                <span className="mt-0.5 block font-mono text-[11px] text-neutral-500">
+                  branched from <span className="text-neutral-300">{node.parentLabel}</span>
+                </span>
+              )}
+
+              <span className="mt-1 block text-[13px] leading-snug text-neutral-400">
                 {node.change_summary ?? (isTrunk ? "Where this all started." : "No summary given.")}
               </span>
 

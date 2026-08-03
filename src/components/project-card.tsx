@@ -18,6 +18,7 @@ export type ProjectFeedRow = {
   fork_count: number;
   created_at: number;
   avatar_url?: string | null;
+  image_url?: string | null;
 };
 
 /** Monochrome "PROJECT /" byline, then the name. The headliner. */
@@ -89,7 +90,18 @@ export function ProjectCard({
         <div className="min-w-0 flex-1">
           <ProjectHeadline baseName={p.base_name} variantName={p.variant_name} />
 
-          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
+          <div className="mt-1.5 flex items-start gap-3">
+            <p className="line-clamp-2 min-w-0 flex-1 text-sm leading-relaxed text-neutral-400">{p.description}</p>
+            {p.image_url && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={p.image_url}
+                alt=""
+                loading="lazy"
+                className="h-14 w-24 shrink-0 rounded-lg border border-neutral-700 object-cover"
+              />
+            )}
+          </div>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
             <Link

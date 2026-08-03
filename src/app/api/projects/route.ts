@@ -84,8 +84,9 @@ export async function POST(request: Request) {
   const id = `p_${crypto.randomUUID().slice(0, 8)}`;
   await env.DB.prepare(
     `INSERT INTO projects (id, owner_id, base_name, variant_name, category, description, license, github_repo,
-       manifest_json, parent_id, root_id, change_summary, fork_verified_at, status, created_at, updated_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 'live', ?14, ?14)`,
+       manifest_json, parent_id, root_id, change_summary, fork_verified_at, status, created_at, updated_at
+     , image_url)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 'live', ?14, ?14, ?15)`,
   )
     .bind(
       id,
@@ -102,6 +103,14 @@ export async function POST(request: Request) {
       manifest.lineage?.changeSummary ?? null,
       parentId ? now : null,
       now,
+      // First screenshot doubles as the card image; repo-relative paths resolve on GitHub.
+      (() => {
+        const shot = manifest.screenshots?.[0];
+        if (!shot) return null;
+        return /^https?:\/\//.test(shot)
+          ? shot
+          : `https://raw.githubusercontent.com/${repo}/HEAD/${shot.replace(/^\.?\//, "")}`;
+      })(),
     )
     .run();
 

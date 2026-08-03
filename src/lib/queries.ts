@@ -7,7 +7,7 @@ export async function getProjectFeed(category?: string, sort: "top" | "new" = "n
   const where = category ? "p.status = 'live' AND p.category = ?1" : "p.status = 'live'";
   const order = sort === "top" ? "like_count DESC, p.created_at DESC" : "p.created_at DESC";
   const stmt = env.DB.prepare(
-    `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at,
+    `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
             u.github_login, u.avatar_url,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
             (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status = 'live') AS fork_count,
@@ -86,4 +86,31 @@ export async function getLineage(rootId: string): Promise<LineageNode[]> {
   walk(null, 0);
   for (const r of results) if (!out.find((o) => o.id === r.id)) out.push({ ...r, depth: 0 });
   return out;
+}
+
+/** Earned counters shown next to a username. */
+export async function getBadges(userId: string): Promise<import("@/components/user-badges").Badges> {
+  const { env } = getCloudflareContext();
+  const row = await env.DB.prepare(
+    `SELECT
+      (SELECT COUNT(*) FROM projects p WHERE p.owner_id = ?1 AND p.status='live'
+        AND (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) =
+            (SELECT MAX(s) FROM (SELECT COALESCE(SUM(l2.value),0) AS s FROM projects p2
+              LEFT JOIN likes l2 ON l2.project_id = p2.id WHERE p2.status='live' GROUP BY p2.id))
+      ) AS number_one,
+      (SELECT COUNT(*) FROM ideas WHERE author_id = ?1 AND status='shipped') AS ideas_shipped,
+      (SELECT COALESCE(MAX(cnt),0) FROM (
+         SELECT COUNT(*) AS cnt FROM projects c
+         JOIN projects r ON r.id = c.root_id
+         WHERE r.owner_id = ?1 AND c.status='live' GROUP BY c.root_id
+      )) AS biggest_tree`,
+  )
+    .bind(userId)
+    .first<{ number_one: number; ideas_shipped: number; biggest_tree: number }>();
+
+  return {
+    numberOne: row?.number_one ?? 0,
+    ideasShipped: row?.ideas_shipped ?? 0,
+    biggestTree: row?.biggest_tree ?? 0,
+  };
 }
