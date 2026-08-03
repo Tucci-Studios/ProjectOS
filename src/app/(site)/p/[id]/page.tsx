@@ -193,8 +193,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
             <GitBranch size={13} aria-hidden /> The tree
-            <span className="font-normal normal-case tracking-normal text-neutral-500">
-              {branchCount === 0 ? "no branches yet" : `${branchCount} grew from this`}
+            <span className="font-normal normal-case tracking-normal">
+              {branchCount === 0 ? (
+                <span className="text-neutral-500">no branches yet</span>
+              ) : (
+                <>
+                  <span className="font-bold text-emerald-400">{branchCount}</span>
+                  <span className="text-neutral-500"> grew from this</span>
+                </>
+              )}
             </span>
           </h2>
           <Link
