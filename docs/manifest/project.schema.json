@@ -4,7 +4,13 @@
   "title": "Project OS Manifest (project.json)",
   "description": "Required in the repo root of every project published on Project OS. Validated on submit; missing or invalid manifest = can't publish.",
   "type": "object",
-  "required": ["name", "category", "description", "license", "howToRun"],
+  "required": [
+    "name",
+    "category",
+    "description",
+    "license",
+    "howToRun"
+  ],
   "additionalProperties": false,
   "properties": {
     "name": {
@@ -17,7 +23,7 @@
       "type": "string",
       "minLength": 2,
       "maxLength": 40,
-      "description": "Variant name if this is a fork (e.g. \"Cyber\" — displayed as \"Subwolf // Cyber\"). Omit for lineage roots."
+      "description": "Optional. If GitHub says your repo is a fork of something published here, Project OS sets this for you from your project's name."
     },
     "category": {
       "type": "string",
@@ -55,21 +61,37 @@
       "type": "array",
       "maxItems": 6,
       "description": "Optional. Images are normally uploaded on the publish form and stored by Project OS; these are used only as a fallback.",
-      "items": { "type": "string", "description": "Repo-relative path or https URL" }
+      "items": {
+        "type": "string",
+        "description": "Repo-relative path or https URL"
+      }
     },
     "tags": {
       "type": "array",
       "maxItems": 10,
-      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,29}$" }
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{1,29}$"
+      }
     },
     "lineage": {
       "type": "object",
-      "description": "Present on forks only. Verified against the GitHub fork graph on registration.",
-      "required": ["parentRepo"],
+      "description": "Deprecated \u2014 do not write this. Lineage is detected from GitHub's fork record when you publish. Kept only so older manifests still validate.",
+      "required": [
+        "parentRepo"
+      ],
       "additionalProperties": false,
       "properties": {
-        "parentRepo": { "type": "string", "pattern": "^[\\w.-]+/[\\w.-]+$", "description": "GitHub \"owner/repo\" of the direct parent." },
-        "changeSummary": { "type": "string", "maxLength": 280, "description": "One line: what this fork changes vs. the parent." }
+        "parentRepo": {
+          "type": "string",
+          "pattern": "^[\\w.-]+/[\\w.-]+$",
+          "description": "GitHub \"owner/repo\" of the direct parent."
+        },
+        "changeSummary": {
+          "type": "string",
+          "maxLength": 280,
+          "description": "One line: what this fork changes vs. the parent."
+        }
       }
     }
   }

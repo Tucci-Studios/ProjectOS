@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Detection } from "@/app/api/detect/route";
 import { useRouter } from "next/navigation";
-import { Boxes, BookOpen, HelpCircle, ArrowRight } from "lucide-react";
+import { Loader2, Sparkles, GitBranch, Boxes, BookOpen, HelpCircle, ArrowRight } from "lucide-react";
 import { CATEGORY_META, GROUPS, GROUP_ORDER } from "@/lib/categories";
 import { ImageUploader } from "@/components/image-uploader";
 
@@ -25,6 +26,9 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
   const [images, setImages] = useState<string[]>([]);
   const [acceptTos, setAcceptTos] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [detection, setDetection] = useState<Detection | null>(null);
+  const [detecting, setDetecting] = useState(false);
+  const [claimParent, setClaimParent] = useState("");
   const [busy, setBusy] = useState(false);
 
   // Tutorials and requests are posts, not repos — hand them to the post composer.
@@ -47,6 +51,38 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
     );
   }
 
+  // Ask GitHub what this repo IS as soon as there's something to ask about.
+  // The publisher never declares a parent — GitHub already wrote it down when
+  // they clicked Fork, so we just read it back and show them.
+  useEffect(() => {
+    const value = repo.trim();
+    if (!/[\w.-]+\/[\w.-]+/.test(value)) {
+      setDetection(null);
+      return;
+    }
+    let cancelled = false;
+    setDetecting(true);
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/detect?repo=${encodeURIComponent(value)}`);
+        const data = (await res.json()) as Detection;
+        if (!cancelled) setDetection(data);
+      } catch {
+        if (!cancelled) setDetection(null);
+      } finally {
+        if (!cancelled) setDetecting(false);
+      }
+    }, 550);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+      setDetecting(false);
+    };
+  }, [repo]);
+
+  const isBranch = detection?.kind === "branch";
+  const parentName = isBranch ? detection.parentDisplay : branchOf;
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -55,7 +91,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ repo, acceptTos, description, changeSummary, images, category }),
+        body: JSON.stringify({ repo, acceptTos, description, changeSummary, images, category, claimedParentId: claimParent || undefined }),
       });
       const data = (await res.json()) as { ok?: boolean; id?: string; errors?: string[] };
       if (data.ok && data.id) {
@@ -91,6 +127,13 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
         </span>
       </label>
 
+      <DetectionNote
+        detection={detection}
+        busy={detecting}
+        claimParent={claimParent}
+        setClaimParent={setClaimParent}
+      />
+
       <label className="block">
         <span className="mb-1.5 block font-mono text-xs text-neutral-400">
           Describe it <span className="text-neutral-600">— what it does, in plain words</span>
@@ -108,10 +151,10 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
         </span>
       </label>
 
-      {branchOf && (
+      {(isBranch || branchOf || claimParent) && (
         <label className="block">
           <span className="mb-1.5 block font-mono text-xs text-neutral-400">
-            What did you change? <span className="text-neutral-600">— vs. {branchOf}</span>
+            What did you change? <span className="text-neutral-600">— vs. {parentName}</span>
           </span>
           <input
             value={changeSummary}
@@ -151,7 +194,7 @@ export function SubmitForm({ needsTos, branchOf }: { needsTos: boolean; branchOf
         disabled={busy}
         className="min-h-[46px] cursor-pointer rounded-lg bg-emerald-400 px-6 font-mono text-sm font-bold text-black transition hover:bg-emerald-300 disabled:opacity-50"
       >
-        {busy ? "Checking repo..." : branchOf ? "Publish my branch" : "Publish"}
+        {busy ? "Publishing..." : isBranch || claimParent ? "Publish my branch" : "Publish"}
       </button>
 
       {errors.length > 0 && (
@@ -233,5 +276,117 @@ function SectionPicker({
         Is it a Claude skill? An MCP server? A Grok project? This decides where people find it.
       </span>
     </label>
+  );
+}
+
+/**
+ * What we found out about the repo, in plain words.
+ *
+ * The whole point: the publisher is never asked "is this a branch?" — GitHub
+ * already knows, so we tell THEM. The only time we ask for anything is the one
+ * case GitHub genuinely can't answer: they didn't fork, they copied.
+ */
+function DetectionNote({
+  detection,
+  busy,
+  claimParent,
+  setClaimParent,
+}: {
+  detection: Detection | null;
+  busy: boolean;
+  claimParent: string;
+  setClaimParent: (v: string) => void;
+}) {
+  const [picking, setPicking] = useState(false);
+
+  if (busy)
+    return (
+      <p className="flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/40 px-3.5 py-3 font-mono text-[12px] text-neutral-500">
+        <Loader2 size={14} className="animate-spin" aria-hidden /> Checking what this repo is...
+      </p>
+    );
+
+  if (!detection) return null;
+
+  if (detection.kind === "branch")
+    return (
+      <div className="rounded-xl border border-emerald-400/40 bg-emerald-400/[0.06] px-3.5 py-3">
+        <p className="flex items-center gap-2 font-mono text-[13px] font-bold text-emerald-300">
+          <GitBranch size={14} aria-hidden /> This is a branch of {detection.parentDisplay}
+        </p>
+        <p className="mt-1 text-[13px] leading-relaxed text-neutral-400">
+          GitHub says you forked <span className="font-mono text-neutral-300">{detection.parentRepo}</span>, so we&apos;ll
+          add you to that tree automatically. It keeps the name{" "}
+          <span className="font-mono text-neutral-300">{detection.baseName}</span> — the part you pick is your own
+          variant name.
+        </p>
+      </div>
+    );
+
+  if (detection.kind === "original" || detection.kind === "orphan-fork")
+    return (
+      <div className="rounded-xl border border-neutral-700 bg-neutral-900/40 px-3.5 py-3">
+        <p className="flex items-center gap-2 font-mono text-[13px] text-neutral-200">
+          <Sparkles size={14} className="text-emerald-400" aria-hidden /> This will be published as its own project
+        </p>
+        <p className="mt-1 text-[13px] leading-relaxed text-neutral-500">
+          {detection.kind === "orphan-fork" ? (
+            <>
+              GitHub says it&apos;s a fork of{" "}
+              <span className="font-mono text-neutral-400">{detection.parentRepo}</span>, but that isn&apos;t published
+              here — so it starts its own tree.
+            </>
+          ) : (
+            <>GitHub has no fork record for it, so it starts its own tree.</>
+          )}
+        </p>
+
+        {/* The one case GitHub can't answer: they copied instead of forking. */}
+        {!picking && !claimParent && (
+          <button
+            type="button"
+            onClick={() => setPicking(true)}
+            className="mt-2 cursor-pointer font-mono text-[12px] text-neutral-500 underline-offset-2 hover:text-emerald-300 hover:underline"
+          >
+            Built this on top of something already here? Say so →
+          </button>
+        )}
+
+        {(picking || claimParent) && (
+          <div className="mt-2.5 border-t border-neutral-800 pt-2.5">
+            <label className="block">
+              <span className="mb-1.5 block font-mono text-[11px] text-neutral-400">
+                Project ID it came from <span className="text-neutral-600">— from that project&apos;s URL</span>
+              </span>
+              <input
+                value={claimParent}
+                onChange={(e) => setClaimParent(e.target.value.trim())}
+                placeholder="p_subwolf"
+                className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-[13px] text-white placeholder-neutral-600 outline-none focus:border-emerald-400"
+              />
+            </label>
+            <p className="mt-1.5 text-[12px] leading-relaxed text-neutral-500">
+              We can&apos;t verify this — GitHub has no fork record. It&apos;ll show as a{" "}
+              <span className="text-neutral-300">claimed branch</span> until that project&apos;s owner confirms it.
+            </p>
+          </div>
+        )}
+      </div>
+    );
+
+  if (detection.kind === "duplicate")
+    return (
+      <p className="rounded-xl border border-amber-400/40 bg-amber-400/[0.06] px-3.5 py-3 font-mono text-[12px] text-amber-200">
+        Already published here.{" "}
+        <a href={`/p/${detection.projectId}`} className="underline">
+          Go to it →
+        </a>
+      </p>
+    );
+
+  return (
+    <p className="rounded-xl border border-neutral-700 bg-neutral-900/40 px-3.5 py-3 font-mono text-[12px] text-neutral-500">
+      {detection.message}
+    </p>
   );
 }

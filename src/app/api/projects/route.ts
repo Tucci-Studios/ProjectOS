@@ -27,6 +27,7 @@ export async function POST(request: Request) {
     images?: unknown;
     changeSummary?: unknown;
     category?: unknown;
+    claimedParentId?: unknown;
   };
   try {
     body = (await request.json()) as typeof body;
@@ -72,8 +73,7 @@ export async function POST(request: Request) {
   const typedDescription = typeof body.description === "string" ? body.description.trim() : "";
   if (typedDescription.length >= 20) manifest.description = typedDescription.slice(0, 500);
 
-  const typedSummary = typeof body.changeSummary === "string" ? body.changeSummary.trim() : "";
-  if (typedSummary && manifest.lineage) manifest.lineage.changeSummary = typedSummary.slice(0, 280);
+  const typedSummary = typeof body.changeSummary === "string" ? body.changeSummary.trim().slice(0, 280) : "";
 
   const typedImages = Array.isArray(body.images)
     ? body.images
@@ -96,31 +96,61 @@ export async function POST(request: Request) {
   const errors = validateManifest(manifest);
   if (errors.length) return bad(errors);
 
-  // Lineage: forks register against a parent already on Project OS (verified via GitHub fork graph).
+  // Lineage is DETECTED, never declared. GitHub wrote down the parent the
+  // moment someone clicked Fork, so we read that note rather than asking the
+  // publisher to retype a fact we can already look up.
   let parentId: string | null = null;
   let rootId: string | null = null;
-  if (manifest.lineage) {
+  let lineageSource: "verified" | "declared" | null = null;
+
+  const forkParent = info.fork ? info.parent?.full_name : undefined;
+  if (forkParent) {
     const parent = await env.DB.prepare(
       "SELECT id, root_id, base_name FROM projects WHERE github_repo = ?1 AND status = 'live'",
     )
-      .bind(manifest.lineage.parentRepo)
+      .bind(forkParent)
       .first<{ id: string; root_id: string; base_name: string }>();
-    if (!parent) return bad([`Parent ${manifest.lineage.parentRepo} isn't published on Project OS.`]);
-    if (!info.fork || info.parent?.full_name !== manifest.lineage.parentRepo)
-      return bad([`GitHub says ${repo} is not a fork of ${manifest.lineage.parentRepo}. Fork it on GitHub first, then register the fork.`]);
-    if (manifest.name !== parent.base_name)
-      return bad([`Base name must stay "${parent.base_name}" down the lineage — only "variant" is yours to name.`]);
-    if (!manifest.variant) return bad(['Forks need a "variant" name (e.g. "Cyber" for Subwolf // Cyber).']);
-    parentId = parent.id;
-    rootId = parent.root_id;
+
+    // A fork of something that isn't published here is simply an original here.
+    if (parent) {
+      parentId = parent.id;
+      rootId = parent.root_id;
+      lineageSource = "verified";
+      // The base name is immutable down a lineage, so we set it rather than
+      // making the publisher match it by hand. Whatever they called their
+      // project becomes the variant.
+      const theirName = manifest.variant ?? manifest.name;
+      manifest.variant = theirName === parent.base_name ? repo.split("/")[1] : theirName;
+      manifest.name = parent.base_name;
+    }
+  }
+
+  // No fork edge on GitHub — they downloaded a zip instead of forking. They can
+  // claim a parent, but it stays unverified until that parent's owner confirms.
+  if (!parentId) {
+    const claimed = typeof body.claimedParentId === "string" ? body.claimedParentId.trim() : "";
+    if (claimed) {
+      const parent = await env.DB.prepare(
+        "SELECT id, root_id, base_name, owner_id FROM projects WHERE id = ?1 AND status = 'live'",
+      )
+        .bind(claimed)
+        .first<{ id: string; root_id: string; base_name: string; owner_id: string }>();
+      if (!parent) return bad(["That project isn't on Project OS."]);
+      parentId = parent.id;
+      rootId = parent.root_id;
+      lineageSource = "declared";
+      const theirName = manifest.variant ?? manifest.name;
+      manifest.variant = theirName === parent.base_name ? repo.split("/")[1] : theirName;
+      manifest.name = parent.base_name;
+    }
   }
 
   const id = `p_${crypto.randomUUID().slice(0, 8)}`;
   await env.DB.prepare(
     `INSERT INTO projects (id, owner_id, base_name, variant_name, category, description, license, github_repo,
        manifest_json, parent_id, root_id, change_summary, fork_verified_at, status, created_at, updated_at
-     , image_url)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 'live', ?14, ?14, ?15)`,
+     , image_url, lineage_source, parent_confirmed_at)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, 'live', ?14, ?14, ?15, ?16, ?17)`,
   )
     .bind(
       id,
@@ -134,8 +164,8 @@ export async function POST(request: Request) {
       manifestText,
       parentId,
       rootId ?? id,
-      manifest.lineage?.changeSummary ?? null,
-      parentId ? now : null,
+      typedSummary || manifest.lineage?.changeSummary || null,
+      lineageSource === "verified" ? now : null,
       now,
       // First screenshot doubles as the card image; repo-relative paths resolve on GitHub.
       (() => {
@@ -146,6 +176,8 @@ export async function POST(request: Request) {
           ? shot
           : `https://raw.githubusercontent.com/${repo}/HEAD/${shot.replace(/^\.?\//, "")}`;
       })(),
+      lineageSource,
+      lineageSource === "verified" ? now : null,
     )
     .run();
 
@@ -180,7 +212,9 @@ export async function POST(request: Request) {
         .bind(
           `n_${crypto.randomUUID().slice(0, 8)}`,
           w.user_id,
-          `@${user.github_login} branched something you follow — ${branchName}`,
+          lineageSource === "declared"
+            ? `@${user.github_login} says ${branchName} came from something you follow — confirm it?`
+            : `@${user.github_login} branched something you follow — ${branchName}`,
           `/p/${id}`,
           now,
         )

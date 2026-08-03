@@ -7,6 +7,8 @@ import { GetItDialog } from "@/components/get-it-dialog";
 import { ProjectComments, type ProjectComment } from "@/components/project-comments";
 import { PanelToggle } from "@/components/panel-toggle";
 import { ProjectUpdates, type ProjectUpdate } from "@/components/project-updates";
+import { LineageBadge } from "@/components/lineage-badge";
+import { ConfirmLineage } from "@/components/confirm-lineage";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
@@ -31,6 +33,9 @@ type Row = {
   github_repo: string;
   change_summary: string | null;
   parent_id: string | null;
+  lineage_source: string | null;
+  parent_confirmed_at: number | null;
+  parent_owner_id: string | null;
   root_id: string;
   created_at: number;
   github_login: string;
@@ -51,7 +56,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            rs.release_downloads, p.image_url, p.owner_id
+            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at,
+            (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      LEFT JOIN repo_stats rs ON rs.project_id = p.id
      WHERE p.id = ?1 AND p.status = 'live'`,
@@ -199,11 +205,28 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       />
 
       {/* What changed vs. parent — only on branches */}
-      {p.change_summary && (
+      {(p.change_summary || p.lineage_source) && (
         <div className="mt-6 rounded-xl border-l-2 border-emerald-400/60 bg-neutral-900/50 p-4">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">What this branch changed</p>
-          <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-300">{p.change_summary}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-emerald-400">What this branch changed</p>
+            <LineageBadge
+              source={p.lineage_source}
+              confirmedAt={p.parent_confirmed_at}
+              parentDisplay={parent?.display}
+            />
+          </div>
+          <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-300">
+            {p.change_summary ?? "No summary given."}
+          </p>
         </div>
+      )}
+
+      {/* The parent's owner is the only one who can settle an unverified claim. */}
+      {p.lineage_source === "declared" && !p.parent_confirmed_at && user?.id === p.parent_owner_id && (
+        <ConfirmLineage
+          projectId={p.id}
+          childDisplay={p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name}
+        />
       )}
 
       <div className="mt-7 border-t border-neutral-800 pt-6">
