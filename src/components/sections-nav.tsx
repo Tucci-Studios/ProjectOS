@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FlaskConical, ChevronRight, Compass, Lightbulb, Rss, Flame, Sparkles, Megaphone } from "lucide-react";
+import { FlaskConical, ChevronRight, Lightbulb, Rss, Flame, Sparkles, Megaphone } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 // Three doors: AI, Build, Play. Each opens to its sections. The group you're in
@@ -46,17 +46,6 @@ export function SectionsNav() {
         })}
       </div>
 
-      <Link
-        href="/popular"
-        aria-current={pathname === "/popular" ? "page" : undefined}
-        className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-          pathname === "/popular"
-            ? "bg-emerald-400/10 font-bold text-emerald-300"
-            : "text-neutral-200 hover:bg-neutral-800"
-        }`}
-      >
-        <Compass size={16} aria-hidden /> Everything
-      </Link>
 
       {GROUP_ORDER.map((key) => {
         const g = GROUPS[key];

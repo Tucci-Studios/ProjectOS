@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu, X, Rss, Flame, Sparkles, Megaphone, Lightbulb, Compass, ChevronRight, FlaskConical } from "lucide-react";
+import { Menu, X, Rss, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 const MAIN = [
@@ -88,12 +88,6 @@ export function MobileNav() {
             </div>
 
             <div className="my-3 border-t border-neutral-800 pt-3">
-              <Link
-                href="/explore"
-                className={`${row} ${pathname === "/explore" ? "text-emerald-300" : "text-neutral-200 hover:bg-neutral-800"}`}
-              >
-                <Compass size={17} aria-hidden /> Everything
-              </Link>
 
               {GROUP_ORDER.map((key) => {
                 const g = GROUPS[key];
