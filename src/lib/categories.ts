@@ -68,11 +68,11 @@ export const GROUPS: Record<
     label: "Play",
     blurb: "Things you run and enjoy",
     Icon: Play,
-    text: "text-amber-300",
-    border: "border-amber-400/30",
-    bg: "bg-amber-400/10",
-    dot: "bg-amber-400",
-    hex: "#fbbf24",
+    text: "text-orange-400",
+    border: "border-orange-400/30",
+    bg: "bg-orange-400/10",
+    dot: "bg-orange-400",
+    hex: "#fb923c",
   },
 };
 

@@ -50,27 +50,12 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-x-5 gap-y-3">
-        <div className="min-w-0">
-          <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
-            <Lightbulb size={22} className="text-amber-300" aria-hidden /> Ideas
-          </h1>
-          <p className="mt-1 font-mono text-[13px] text-neutral-400">
-            {tab === "vote" ? (
-              <>
-                <span className="font-bold text-emerald-300">Round {cycle.n}</span>
-                <span className="text-neutral-600"> · </span>
-                voting {closesInWords(cycle.daysLeft)}
-                <span className="text-neutral-600"> · </span>
-                most votes ships
-              </>
-            ) : tab === "winners" ? (
-              <>Changes that won a round — shipped, or on the way.</>
-            ) : (
-              <>Everything that didn&apos;t make it. Nothing is ever deleted.</>
-            )}
-          </p>
-        </div>
+      {/* Title and actions share one row, so the buttons sit in the same place on
+          every tab — the line underneath changes length and must not move them. */}
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
+        <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
+          <Lightbulb size={22} className="text-amber-300" aria-hidden /> Ideas
+        </h1>
         <div className="flex flex-wrap gap-2">
           <ButtonLink href="/ideas/build" variant="ghost" className="!min-h-[38px] !text-[13px]">
             <Code2 size={14} aria-hidden /> Get the code
@@ -84,6 +69,22 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
           </ButtonLink>
         </div>
       </div>
+
+      <p className="mb-4 font-mono text-[13px] text-neutral-400">
+        {tab === "vote" ? (
+          <>
+            <span className="font-bold text-emerald-300">Round {cycle.n}</span>
+            <span className="text-neutral-600"> · </span>
+            voting {closesInWords(cycle.daysLeft)}
+            <span className="text-neutral-600"> · </span>
+            most votes ships
+          </>
+        ) : tab === "winners" ? (
+          <>Changes that won a round — shipped, or on the way.</>
+        ) : (
+          <>Everything that didn&apos;t make it. Nothing is ever deleted.</>
+        )}
+      </p>
 
       <IdeaTabs active={tab} counts={counts} />
 

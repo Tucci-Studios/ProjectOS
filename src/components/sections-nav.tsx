@@ -127,7 +127,7 @@ export function SectionsNav() {
           aria-current={pathname.startsWith("/saves") ? "page" : undefined}
           className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
             pathname.startsWith("/saves")
-              ? "bg-amber-400/10 font-bold text-amber-300"
+              ? "bg-sky-400/10 font-bold text-sky-300"
               : "text-neutral-300 hover:bg-neutral-800"
           }`}
         >

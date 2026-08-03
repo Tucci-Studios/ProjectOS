@@ -47,8 +47,8 @@ export function SaveButton({
         iconOnly ? "h-8 w-8 justify-center" : "min-h-[40px] px-4 text-sm"
       } ${
         saved
-          ? "border-neutral-400 bg-neutral-100/10 text-white"
-          : "border-neutral-600 text-neutral-300 hover:border-neutral-400 hover:text-white"
+          ? "border-sky-400/60 bg-sky-400/10 text-sky-300"
+          : "border-neutral-600 text-neutral-300 hover:border-sky-400/60 hover:text-sky-300"
       }`}
     >
       {iconOnly && (
