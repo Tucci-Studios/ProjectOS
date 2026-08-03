@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Sparkles, GitBranch, ArrowRight } from "lucide-react";
 import { categoryMeta, groupOf } from "@/lib/categories";
-import { ProjectSigil } from "./project-sigil";
+import { ProjectMark } from "./project-mark";
+import { BrandMark } from "./brand";
 import { ButtonLink } from "./ui";
 
 export type FeaturedProject = {
@@ -35,10 +36,16 @@ export function FeaturedStrip({ p }: { p: FeaturedProject }) {
         <Sparkles size={12} aria-hidden /> Featured this week
       </p>
       <div className="flex items-start gap-4">
-        <ProjectSigil name={fullName} category={p.category} size={64} />
+        <ProjectMark category={p.category} size={64} />
         <div className="min-w-0 flex-1">
-          <span className={`rounded border ${g.border} px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${g.text}`}>
-            {meta.kind}
+          <span className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-400/25 bg-emerald-400/[0.07] py-0.5 pl-1 pr-2">
+              <BrandMark size={16} className="!border-0 !bg-transparent" />
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300/90">Project</span>
+            </span>
+            <span className={`rounded-md border ${g.border} px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${g.text}`}>
+              {meta.kind}
+            </span>
           </span>
           <h2 className="mt-1.5 font-mono text-2xl font-bold tracking-tight text-white">
             <Link href={`/p/${p.id}`} className="outline-none transition hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400">

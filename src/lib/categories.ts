@@ -1,67 +1,99 @@
-// Single source of truth for sections, grouping, and color.
+import {
+  Sparkles,
+  FileText,
+  Plug,
+  Cpu,
+  SquareTerminal,
+  Bot,
+  Code2,
+  Wrench,
+  AppWindow,
+  Gamepad2,
+  Brain,
+  Hammer,
+  Play,
+  type LucideIcon,
+} from "lucide-react";
+
+// Single source of truth for sections, grouping, color, and iconography.
 //
-// COLOR RULE: color carries meaning, not decoration. There are exactly three
-// group colors (AI-purple, Build-amber, Play-rose) plus the emerald accent for
-// "you can click this". Individual sections inherit their group's color — no
-// ten-way rainbow.
+// COLOR RULE: three group colors, nothing else. Emerald is reserved for "you
+// can click this". Section identity comes from ICONS, not from more colors.
+//
+// NOTE ON LOGOS: these are original icons, not Anthropic/OpenAI/xAI marks.
+// Shipping third-party trademarks in a product UI needs their permission and
+// compliance with each brand's guidelines — see docs/legal/TERMS.md notes.
+
+export type GroupKey = "ai" | "build" | "play";
 
 export type CategoryMeta = {
   slug: string;
   label: string;
-  /** What this kind of thing IS, in one or two words — shown as a badge on cards. */
+  /** What this kind of thing IS — shown as a badge and spoken in plain words. */
   kind: string;
   group: GroupKey;
+  Icon: LucideIcon;
 };
 
-export type GroupKey = "ai" | "build" | "play";
-
-export const GROUPS: Record<GroupKey, { label: string; blurb: string; text: string; border: string; dot: string; hex: string }> = {
+export const GROUPS: Record<
+  GroupKey,
+  { key: GroupKey; label: string; blurb: string; Icon: LucideIcon; text: string; border: string; bg: string; dot: string; hex: string }
+> = {
   ai: {
+    key: "ai",
     label: "AI",
-    blurb: "Things that make your AI better",
-    text: "text-violet-300",
-    border: "border-violet-400/30",
-    dot: "bg-violet-400",
-    hex: "#c4b5fd",
+    blurb: "Make your AI better",
+    Icon: Brain,
+    text: "text-sky-300",
+    border: "border-sky-400/30",
+    bg: "bg-sky-400/10",
+    dot: "bg-sky-400",
+    hex: "#7cc4ff",
   },
   build: {
+    key: "build",
     label: "Build",
-    blurb: "Tools and code you build with",
-    text: "text-amber-300",
-    border: "border-amber-400/30",
-    dot: "bg-amber-400",
-    hex: "#fcd34d",
+    blurb: "Code and tools to build with",
+    Icon: Hammer,
+    text: "text-orange-300",
+    border: "border-orange-400/30",
+    bg: "bg-orange-400/10",
+    dot: "bg-orange-400",
+    hex: "#ffb86b",
   },
   play: {
+    key: "play",
     label: "Play",
     blurb: "Things you run and enjoy",
-    text: "text-rose-300",
-    border: "border-rose-400/30",
-    dot: "bg-rose-400",
-    hex: "#fda4af",
+    Icon: Play,
+    text: "text-pink-300",
+    border: "border-pink-400/30",
+    bg: "bg-pink-400/10",
+    dot: "bg-pink-400",
+    hex: "#ff8fb1",
   },
 };
 
 export const GROUP_ORDER: GroupKey[] = ["ai", "build", "play"];
 
 export const CATEGORY_META: CategoryMeta[] = [
-  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", group: "ai" },
-  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", group: "ai" },
-  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", group: "ai" },
-  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", group: "ai" },
-  { slug: "codex", label: "Codex", kind: "Codex Setup", group: "ai" },
-  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", group: "ai" },
+  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", group: "ai", Icon: Sparkles },
+  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", group: "ai", Icon: FileText },
+  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", group: "ai", Icon: Plug },
+  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", group: "ai", Icon: Cpu },
+  { slug: "codex", label: "Codex", kind: "Codex Setup", group: "ai", Icon: SquareTerminal },
+  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", group: "ai", Icon: Bot },
 
-  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", group: "build" },
-  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", group: "build" },
+  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", group: "build", Icon: Code2 },
+  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", group: "build", Icon: Wrench },
 
-  { slug: "apps", label: "Apps", kind: "App", group: "play" },
-  { slug: "games", label: "Games", kind: "Game", group: "play" },
+  { slug: "apps", label: "Apps", kind: "App", group: "play", Icon: AppWindow },
+  { slug: "games", label: "Games", kind: "Game", group: "play", Icon: Gamepad2 },
 ];
 
 export const CATEGORY_SLUGS = CATEGORY_META.map((c) => c.slug);
 
-const FALLBACK: CategoryMeta = { slug: "", label: "Other", kind: "Project", group: "build" };
+const FALLBACK: CategoryMeta = { slug: "", label: "Other", kind: "Project", group: "build", Icon: Code2 };
 
 export function categoryMeta(slug: string): CategoryMeta {
   return CATEGORY_META.find((c) => c.slug === slug) ?? { ...FALLBACK, slug, label: slug };

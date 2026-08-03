@@ -50,7 +50,7 @@ export function SectionsNav() {
               aria-expanded={isOpen}
               className="flex min-h-[44px] w-full cursor-pointer items-center gap-2 px-3 text-left outline-none transition-colors duration-200 hover:bg-neutral-800/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
             >
-              <span className={`h-2 w-2 shrink-0 rounded-full ${g.dot}`} aria-hidden />
+              <g.Icon size={15} strokeWidth={2} className={`shrink-0 ${isOpen || isActiveGroup ? g.text : "text-neutral-500"}`} aria-hidden />
               <span className={`flex-1 font-mono text-sm font-bold ${isOpen || isActiveGroup ? g.text : "text-neutral-300"}`}>
                 {g.label}
               </span>
@@ -95,6 +95,7 @@ export function SectionsNav() {
                             aria-hidden
                           />
                         )}
+                        <c.Icon size={13} strokeWidth={2} className="mr-2 shrink-0 opacity-80" aria-hidden />
                         {c.label}
                       </Link>
                     );

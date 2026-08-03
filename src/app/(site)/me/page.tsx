@@ -25,8 +25,8 @@ export default async function MyStuffPage() {
     return (
       <div className="mx-auto max-w-lg">
         <PageHeader
-          crumbs={[{ label: "My stuff" }]}
-          title="My stuff"
+          crumbs={[{ label: "You" }]}
+          title="You"
           purpose="Your projects, your posts, and the replies you've gotten — all in one place."
           Icon={User}
         />
@@ -73,7 +73,7 @@ export default async function MyStuffPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <PageHeader
-        crumbs={[{ label: "My stuff" }]}
+        crumbs={[{ label: "You" }]}
         title={`@${user.github_login}`}
         purpose="Everything you've published, posted, liked — and what people said back."
         Icon={User}
