@@ -11,6 +11,7 @@ import { LineageBadge } from "@/components/lineage-badge";
 import { VerifiedMark } from "@/components/verified-mark";
 import { ConfirmLineage } from "@/components/confirm-lineage";
 import { ForksPanel } from "@/components/forks-panel";
+import { ForkTrophy } from "@/components/fork-trophy";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
@@ -269,6 +270,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         commentCount={commentRows.results.length}
         tree={
           <>
+            <ForkTrophy
+              lineage={lineage}
+              unpublished={forkPicture.unpublished}
+              total={forkCount}
+              published={publishedForks}
+              projectName={p.base_name}
+            />
+
             {/* A tree of one is not a tree — only draw it once something is published. */}
             {publishedForks > 0 && (
               <ForkTree
