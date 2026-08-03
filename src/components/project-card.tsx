@@ -3,6 +3,7 @@ import { GitBranch } from "lucide-react";
 import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
+import { CardComments } from "./card-comments";
 import { BrandMark } from "./brand";
 
 export type ProjectFeedRow = {
@@ -19,6 +20,7 @@ export type ProjectFeedRow = {
   created_at: number;
   avatar_url?: string | null;
   image_url?: string | null;
+  comment_count?: number;
 };
 
 /** Monochrome "PROJECT /" byline, then the name. The headliner. */
@@ -90,18 +92,19 @@ export function ProjectCard({
         <div className="min-w-0 flex-1">
           <ProjectHeadline baseName={p.base_name} variantName={p.variant_name} />
 
-          <div className="mt-1.5 flex items-start gap-3">
-            <p className="line-clamp-2 min-w-0 flex-1 text-sm leading-relaxed text-neutral-400">{p.description}</p>
-            {p.image_url && (
-              // eslint-disable-next-line @next/next/no-img-element
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
+
+          {p.image_url && (
+            <div className="mt-3 border-t border-neutral-800 pt-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={p.image_url}
                 alt=""
                 loading="lazy"
-                className="h-14 w-24 shrink-0 rounded-lg border border-neutral-700 object-cover"
+                className="h-24 w-full max-w-[280px] rounded-lg border border-neutral-800 object-cover"
               />
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
             <Link
@@ -119,6 +122,7 @@ export function ProjectCard({
               @{p.github_login}
             </Link>
             <span>{timeAgo(p.created_at)}</span>
+            <CardComments projectId={p.id} count={p.comment_count ?? 0} />
             <span
               className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "font-bold text-emerald-400" : ""}`}
               title={`${p.fork_count} branch${p.fork_count === 1 ? "" : "es"}`}

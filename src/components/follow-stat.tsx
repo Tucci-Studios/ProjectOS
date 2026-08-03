@@ -26,30 +26,22 @@ export function ProjectStats({
   const [followers, setFollowers] = useState(initialFollowers);
 
   return (
-    <>
+    <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+      <Chip Icon={GitBranch} value={branchCount} label="branches" />
+      <Chip Icon={ChevronUp} value={voteCount} label="votes" />
+      <Chip Icon={Users} value={followers} label="followers" />
+      {downloads ? <Chip Icon={Download} value={downloads} label="downloads" /> : null}
       {signedIn && (
-        <div className="mt-4">
-          <FollowButton projectId={projectId} initialFollowing={initialFollowing} onCount={setFollowers} />
-        </div>
+        <FollowButton projectId={projectId} initialFollowing={initialFollowing} onCount={setFollowers} size="sm" />
       )}
-
-      <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label="Branches" value={branchCount} Icon={GitBranch} />
-        <Stat label="Votes" value={voteCount} Icon={ChevronUp} />
-        <Stat label="Followers" value={followers} Icon={Users} />
-        {downloads ? <Stat label="Downloads" value={downloads} Icon={Download} /> : null}
-      </dl>
-    </>
+    </span>
   );
 }
 
-function Stat({ label, value, Icon }: { label: string; value: number; Icon: typeof Users }) {
+function Chip({ Icon, value, label }: { Icon: typeof Users; value: number; label: string }) {
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 px-3 py-2.5">
-      <dt className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-        <Icon size={11} aria-hidden /> {label}
-      </dt>
-      <dd className="mt-0.5 font-mono text-lg font-bold tabular-nums text-white">{value}</dd>
-    </div>
+    <span title={`${value} ${label}`} className="inline-flex items-center gap-1 text-neutral-400">
+      <Icon size={12} aria-hidden /> {value}
+    </span>
   );
 }

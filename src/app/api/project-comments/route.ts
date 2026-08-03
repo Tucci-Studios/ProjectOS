@@ -53,3 +53,25 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true });
 }
+
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const projectId = url.searchParams.get("projectId") ?? "";
+  const limit = Math.min(20, Number(url.searchParams.get("limit")) || 5);
+
+  const { env } = getCloudflareContext();
+  const [{ results }, total] = await Promise.all([
+    env.DB.prepare(
+      `SELECT c.id, c.body_md, c.created_at, u.github_login, u.avatar_url
+       FROM project_comments c JOIN users u ON u.id = c.author_id
+       WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT ?2`,
+    )
+      .bind(projectId, limit)
+      .all(),
+    env.DB.prepare("SELECT COUNT(*) AS n FROM project_comments WHERE project_id = ?1 AND status='live'")
+      .bind(projectId)
+      .first<{ n: number }>(),
+  ]);
+
+  return NextResponse.json({ comments: results, total: total?.n ?? 0 });
+}

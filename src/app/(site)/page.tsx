@@ -18,6 +18,7 @@ export default async function FeedPage() {
     u.github_login, u.avatar_url,
     (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
     (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
+              (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
     (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                  ELSE pp.base_name || ' // ' || pp.variant_name END
      FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;

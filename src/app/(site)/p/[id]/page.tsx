@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { GitBranch, ExternalLink, MessageCircle } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { GetItDialog } from "@/components/get-it-dialog";
-import { ProjectComments, type ProjectComment } from "@/components/project-comments";
+import type { ProjectComment } from "@/components/project-comments";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
 import { ImagePreview } from "@/components/image-preview";
@@ -60,7 +60,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const meta = categoryMeta(p.category);
   const g = groupOf(p.category);
 
-  const [myVote, lineage, followRows, parent, followerRow, commentRows, badges] = await Promise.all([
+  const [myVote, lineage, followRows, parent, followerRow, commentRows, imageRows, badges] = await Promise.all([
     user
       ? env.DB.prepare("SELECT value FROM likes WHERE user_id = ?1 AND project_id = ?2")
           .bind(user.id, p.id)
@@ -84,6 +84,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
        FROM project_comments c JOIN users u ON u.id = c.author_id
        WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT 50`,
     ).bind(id).all<ProjectComment>(),
+    env.DB.prepare("SELECT url FROM project_images WHERE project_id = ?1 ORDER BY position").bind(id).all<{ url: string }>(),
     (async () => {
       const owner = await env.DB.prepare("SELECT owner_id FROM projects WHERE id = ?1").bind(id).first<{ owner_id: string }>();
       return owner ? getBadges(owner.owner_id) : null;
@@ -131,6 +132,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <Link href={`/s/${meta.slug}`} className={`transition hover:underline ${g.text}`}>
               {meta.kind}
             </Link>
+            <span>·</span>
+            <ProjectStats
+              projectId={p.id}
+              initialFollowing={following.has(p.id)}
+              initialFollowers={followerRow?.n ?? 0}
+              branchCount={branchCount}
+              voteCount={p.like_count}
+              downloads={p.release_downloads}
+              signedIn={!!user}
+            />
             {parent && (
               <>
                 <span>·</span>
@@ -160,7 +171,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </ButtonLink>
       </div>
 
-      {p.image_url && <ImagePreview src={p.image_url} alt={`Screenshot of ${p.base_name}`} />}
+      <ImagePreview
+        images={imageRows.results.length > 0 ? imageRows.results.map((r) => r.url) : p.image_url ? [p.image_url] : []}
+        alt={`Screenshot of ${p.base_name}`}
+      />
 
       {/* What changed vs. parent — only on branches */}
       {p.change_summary && (
@@ -171,48 +185,29 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       )}
 
       {/* Stats strip */}
-      <ProjectStats
-        projectId={p.id}
-        initialFollowing={following.has(p.id)}
-        initialFollowers={followerRow?.n ?? 0}
-        branchCount={branchCount}
-        voteCount={p.like_count}
-        downloads={p.release_downloads}
-        signedIn={!!user}
-      />
-
-      <div className="mt-9 grid gap-6 lg:grid-cols-2">
-        <section>
-          <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
-            <MessageCircle size={13} aria-hidden /> Comments
-            <span className="font-normal normal-case tracking-normal text-neutral-500">
-              {commentRows.results.length}
-            </span>
-          </h2>
-          <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
-            Ask the author, report a bug, or say it worked.
-          </p>
-          <ProjectComments projectId={p.id} comments={commentRows.results} signedIn={!!user} />
-        </section>
-        <section>
+      <section className="mt-9">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
             <GitBranch size={13} aria-hidden /> The tree
+            <span className="font-normal normal-case tracking-normal text-neutral-500">
+              {branchCount === 0 ? "no branches yet" : `${branchCount} grew from this`}
+            </span>
           </h2>
-          <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">
-            {branchCount === 0
-              ? "Nobody has branched this yet — you could be first."
-              : `${branchCount} ${branchCount === 1 ? "version" : "versions"} grew from this.`}
-          </p>
-          <BranchTree
-            nodes={lineage}
-            currentId={p.id}
-            accent={accentHex(p.category)}
-            following={following}
-            canFollow={!!user}
-          />
-        </section>
-
-      </div>
+          <Link
+            href={`/p/${p.id}/comments`}
+            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg border border-neutral-700 px-3 font-mono text-[13px] text-neutral-300 outline-none transition hover:border-emerald-400/50 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+          >
+            <MessageCircle size={14} aria-hidden /> Comments {commentRows.results.length}
+          </Link>
+        </div>
+        <BranchTree
+          nodes={lineage}
+          currentId={p.id}
+          accent={accentHex(p.category)}
+          following={following}
+          canFollow={!!user}
+        />
+      </section>
 
       <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
     </div>
