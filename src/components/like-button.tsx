@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowBigUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 
+// Minimal vote control: a chevron over a count. No box, no chrome — it only
+// gains a background on hover so the card stays quiet.
 export function LikeButton({
   projectId,
   initialCount,
@@ -45,19 +47,22 @@ export function LikeButton({
       <button
         onClick={toggle}
         disabled={busy}
-        title={error ?? (liked ? "unlike" : "like")}
-        aria-label={liked ? "Unlike" : "Like"}
         aria-pressed={liked}
-        className={`flex min-h-[44px] min-w-[44px] cursor-pointer flex-col items-center justify-center rounded-lg border font-mono text-sm outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-wait ${
-          liked
-            ? "border-emerald-400/60 bg-emerald-400/10 text-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.3)]"
-            : "border-neutral-700 text-neutral-400 hover:border-emerald-400/50 hover:bg-neutral-800 hover:text-emerald-400"
+        aria-label={liked ? "Remove vote" : "Vote"}
+        title={error ?? (liked ? "Remove vote" : "Vote")}
+        className={`group/vote flex min-h-[52px] w-11 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-wait ${
+          liked ? "text-emerald-400" : "text-neutral-500 hover:bg-neutral-800/70 hover:text-emerald-300"
         }`}
       >
-        <ArrowBigUp size={18} fill={liked ? "currentColor" : "none"} aria-hidden />
-        <span className="text-xs font-semibold leading-none">{count}</span>
+        <ChevronUp
+          size={20}
+          strokeWidth={liked ? 3 : 2.25}
+          aria-hidden
+          className="transition-transform duration-200 group-hover/vote:-translate-y-0.5"
+        />
+        <span className={`font-mono text-[13px] leading-none ${liked ? "font-bold" : "font-medium"}`}>{count}</span>
       </button>
-      {error && <span className="mt-1 max-w-[90px] text-center font-mono text-[11px] text-rose-400">{error}</span>}
+      {error && <span className="mt-1 max-w-[84px] text-center font-mono text-[10px] text-rose-400">{error}</span>}
     </div>
   );
 }

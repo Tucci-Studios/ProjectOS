@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { GitBranch, Heart } from "lucide-react";
-import { categoryMeta, timeAgo } from "@/lib/categories";
+import { GitBranch } from "lucide-react";
+import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { BrandMark } from "./brand";
 
@@ -50,13 +50,16 @@ export function ProjectHeadline({
   );
 }
 
-/** What you DO with it — plain words, no color coding. */
-export function UseTag({ category }: { category: string }) {
-  const { use, Icon } = categoryMeta(category);
+/** Minimal group symbol — AI, Build, or Play — sitting quietly on the right. */
+export function GroupGlyph({ category, size = 22 }: { category: string; size?: number }) {
+  const g = groupOf(category);
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-700 bg-neutral-800/60 px-2 py-1 font-mono text-[11px] text-neutral-300">
-      <Icon size={12} strokeWidth={2} className="text-neutral-400" aria-hidden />
-      {use}
+    <span
+      title={`${g.label} — ${g.blurb}`}
+      aria-label={g.label}
+      className="flex shrink-0 items-center justify-center opacity-70 transition-opacity duration-200 group-hover:opacity-100"
+    >
+      <g.Icon size={size} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
     </span>
   );
 }
@@ -66,23 +69,21 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
-      <div className="flex items-start gap-4 py-4 px-4">
+      <div className="flex items-start gap-3 px-4 py-4">
+        <div className="relative z-[2] shrink-0 pt-0.5">
+          <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={liked} />
+        </div>
+
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <ProjectHeadline baseName={p.base_name} variantName={p.variant_name} />
-            <UseTag category={p.category} />
-          </div>
+          <ProjectHeadline baseName={p.base_name} variantName={p.variant_name} />
 
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
+          <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
             <span className="text-neutral-400">@{p.github_login}</span>
             <span>{timeAgo(p.created_at)}</span>
             <span className="inline-flex items-center gap-1">
-              <Heart size={11} aria-hidden /> {p.like_count}
-            </span>
-            <span className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "text-emerald-400" : ""}`}>
-              <GitBranch size={11} aria-hidden /> {p.fork_count} branch{p.fork_count === 1 ? "" : "es"}
+              <GitBranch size={11} aria-hidden /> {p.fork_count}
             </span>
             {p.parent_display && (
               <span className="inline-flex items-center gap-1 text-neutral-600">
@@ -92,9 +93,7 @@ export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean })
           </div>
         </div>
 
-        <div className="relative z-[2] shrink-0">
-          <LikeButton projectId={p.id} initialCount={p.like_count} initialLiked={liked} />
-        </div>
+        <GroupGlyph category={p.category} />
       </div>
 
       <Link

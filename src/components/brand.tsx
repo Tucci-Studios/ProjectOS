@@ -25,10 +25,15 @@ export function BrandMark({ size = 28, className = "", mono = false }: { size?: 
 
 export function Wordmark() {
   return (
-    <span className="flex items-center gap-2">
-      <BrandMark size={30} />
-      <span className="font-mono text-[17px] font-bold tracking-[0.18em] text-white">
-        PROJECT<span className="text-emerald-400">_</span>OS
+    <span className="flex items-center gap-2.5">
+      <BrandMark size={32} />
+      <span className="flex flex-col leading-none">
+        <span className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
+          PROJECT<span className="text-emerald-400">_</span>OS
+        </span>
+        <span className="mt-[3px] font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-500">
+          open source
+        </span>
       </span>
     </span>
   );
