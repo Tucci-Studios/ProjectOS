@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { GitFork, Users, Download, ChevronUp, Star } from "lucide-react";
 import { FollowButton } from "./follow-button";
+import { SaveButton } from "./save-button";
 
 const compact = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ? 0 : 1)}k` : n.toLocaleString());
 
@@ -21,6 +22,7 @@ export function ProjectStats({
   voteCount,
   downloads,
   stars,
+  saved,
   signedIn,
 }: {
   projectId: string;
@@ -30,6 +32,7 @@ export function ProjectStats({
   voteCount: number;
   downloads: number | null;
   stars?: number | null;
+  saved?: boolean;
   signedIn: boolean;
 }) {
   const [followers, setFollowers] = useState(initialFollowers);
@@ -65,7 +68,7 @@ export function ProjectStats({
           value={stars}
           label={stars === 1 ? "star" : "stars"}
           explain="Stars on GitHub. Not a Project OS number — it's how the wider world rates it."
-          tone="text-amber-300/70"
+          tone="text-amber-400"
         />
       ) : null}
       {downloads ? (
@@ -78,8 +81,9 @@ export function ProjectStats({
       ) : null}
 
       {signedIn && (
-        <span className="ml-auto">
+        <span className="ml-auto flex items-center gap-2">
           <FollowButton projectId={projectId} initialFollowing={initialFollowing} onCount={setFollowers} size="sm" />
+          <SaveButton projectId={projectId} initialSaved={!!saved} iconOnly />
         </span>
       )}
     </div>

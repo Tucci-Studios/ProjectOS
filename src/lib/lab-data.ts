@@ -1,11 +1,13 @@
 import type { LineageNode } from "./queries";
 
+export type LabNode = LineageNode & { created_at: number };
+
 /**
- * Synthetic lineages for the visualization lab.
+ * A fake project with a real-feeling fork tree, for designing views against.
  *
- * Deterministic on purpose: a seeded PRNG instead of Math.random, so the server
- * and the client render byte-identical trees and React doesn't scream about
- * hydration. Same seed always gives the same tree.
+ * Deterministic on purpose — a seeded PRNG rather than Math.random — so the
+ * server and the client draw the identical tree and React doesn't complain
+ * about hydration. Same seed, same tree, every time.
  */
 function rng(seed: number) {
   let s = seed >>> 0;
@@ -16,27 +18,26 @@ function rng(seed: number) {
 }
 
 const HANDLES = [
-  "nyx-dev", "patchcable", "solder", "vhs-ghost", "mothlight", "kilobyte", "静", "rustbelt",
-  "anode", "gutterpunk", "wirefox", "halcyon", "deadlink", "quartz", "byte-me", "nullptr",
-  "sunkcost", "riverbed", "tinfoil", "chromeless", "spindle", "lofi-cat", "grimoire", "pixelrot",
+  "nyx", "patchcable", "solder", "vhs-ghost", "mothlight", "kilobyte", "rustbelt", "anode",
+  "gutterpunk", "wirefox", "halcyon", "deadlink", "quartz", "byte-me", "nullptr", "sunkcost",
+  "riverbed", "tinfoil", "chromeless", "spindle", "lofi-cat", "grimoire", "pixelrot", "ember",
 ];
 
 const CHANGES = [
   "Swapped the renderer for something that doesn't melt laptops.",
   "Added controller support.",
   "Rewrote the save system — no more corrupt files.",
-  "Dark mode, finally.",
   "Made it work offline.",
   "Cut the dependency count from 40 to 3.",
   "Added a level editor.",
   "Ported it to the browser.",
-  "Fixed the thing everyone complained about.",
   "Added multiplayer. It barely works, but it works.",
   "Made the whole thing 4x faster.",
-  "Replaced the art with something less ugly.",
   "Added mod support.",
-  "Stripped it down to the smallest version that still does the job.",
+  "Stripped it to the smallest version that still does the job.",
   "Accessibility pass: keyboard-only play, real focus states.",
+  "Replaced the art with something less ugly.",
+  "Fixed the thing everyone complained about.",
 ];
 
 const VARIANTS = [
@@ -49,7 +50,7 @@ export type LabShape = "small" | "wide" | "deep" | "monster";
 
 export const SHAPES: { key: LabShape; label: string; blurb: string }[] = [
   { key: "small", label: "Small", blurb: "12 forks — the happy case everything looks fine in." },
-  { key: "wide", label: "Wide", blurb: "100 forks hanging off ONE parent. The case that breaks lists." },
+  { key: "wide", label: "Wide", blurb: "100 forks off ONE parent. The case that breaks lists." },
   { key: "deep", label: "Deep", blurb: "A 14-deep chain. The case that breaks indentation." },
   { key: "monster", label: "Monster", blurb: "260 forks, lumpy and uneven. The realistic worst case." },
 ];
@@ -60,30 +61,39 @@ function spread(shape: LabShape, depth: number, r: () => number): number {
     case "small":
       return depth >= 3 ? 0 : Math.floor(r() * 3);
     case "wide":
-      // one enormous fan at the root, then almost nothing
       if (depth === 0) return 100;
       return depth >= 2 ? 0 : r() < 0.15 ? 1 : 0;
     case "deep":
-      // a near-linear chain with the occasional twig
       if (depth >= 14) return 0;
       return r() < 0.22 ? 2 : 1;
-    case "monster":
+    case "monster": {
       if (depth === 0) return 9;
       if (depth >= 6) return 0;
-      // heavy tail: most forks are dead ends, a few are hubs
       const roll = r();
       if (roll < 0.55) return 0;
       if (roll < 0.9) return 1 + Math.floor(r() * 3);
       return 8 + Math.floor(r() * 26);
+    }
   }
 }
 
 const CAP = 400;
+const DAY = 86_400;
 
-export function labLineage(shape: LabShape): LineageNode[] {
+/** The fake project every lab view is built against. */
+export const LAB_PROJECT = {
+  name: "Subwolf",
+  repo: "nyx/subwolf",
+  description: "A neon stealth game about a wolf that hacks security systems.",
+};
+
+export function labLineage(shape: LabShape): LabNode[] {
   const r = rng({ small: 7, wide: 21, deep: 88, monster: 404 }[shape]);
-  const base = "Subwolf";
-  const out: LineageNode[] = [
+  const base = LAB_PROJECT.name;
+  // Fixed epoch, not Date.now() — timestamps must not shift between renders.
+  const EPOCH = 1_780_000_000;
+
+  const out: LabNode[] = [
     {
       id: "lab-0",
       base_name: base,
@@ -94,31 +104,32 @@ export function labLineage(shape: LabShape): LineageNode[] {
       github_login: HANDLES[0],
       like_count: 240 + Math.floor(r() * 90),
       depth: 0,
+      created_at: EPOCH,
     },
   ];
 
   let n = 1;
-  const queue: LineageNode[] = [out[0]];
+  const queue: LabNode[] = [out[0]];
   while (queue.length && out.length < CAP) {
     const parent = queue.shift()!;
     const kids = spread(shape, parent.depth, r);
     for (let i = 0; i < kids && out.length < CAP; i++) {
       const variant = VARIANTS[Math.floor(r() * VARIANTS.length)];
-      const node: LineageNode = {
+      const node: LabNode = {
         id: `lab-${n}`,
         base_name: base,
-        // keep variants unique-ish so two siblings aren't literally the same word
         variant_name: `${variant}${n % 7 === 0 ? " " + (1 + (n % 4)) : ""}`,
         parent_id: parent.id,
         change_summary: CHANGES[Math.floor(r() * CHANGES.length)],
         child_count: 0,
         github_login: HANDLES[Math.floor(r() * HANDLES.length)],
-        // votes decay with depth, with a long tail — a few deep forks beat the root
         like_count: Math.max(
           -4,
-          Math.floor((r() ** 2.2) * 220 * Math.max(0.15, 1 - parent.depth * 0.1)) - (r() < 0.06 ? 9 : 0),
+          Math.floor(r() ** 2.2 * 220 * Math.max(0.15, 1 - parent.depth * 0.1)) - (r() < 0.06 ? 9 : 0),
         ),
         depth: parent.depth + 1,
+          // Children always come after their parent, so a timeline reads forward.
+        created_at: parent.created_at + Math.floor(r() * 40 + 3) * DAY,
       };
       parent.child_count++;
       out.push(node);
@@ -128,3 +139,4 @@ export function labLineage(shape: LabShape): LineageNode[] {
   }
   return out;
 }
+

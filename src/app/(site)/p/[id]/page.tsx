@@ -11,7 +11,6 @@ import { LineageBadge } from "@/components/lineage-badge";
 import { VerifiedMark } from "@/components/verified-mark";
 import { ConfirmLineage } from "@/components/confirm-lineage";
 import { ForksPanel } from "@/components/forks-panel";
-import { SaveButton } from "@/components/save-button";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
@@ -201,8 +200,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </ButtonLink>
 
         <GetItDialog category={p.category} repo={p.github_repo} />
-
-        {user && <SaveButton projectId={p.id} initialSaved={savedHere} />}
         <ButtonLink href={`https://github.com/${p.github_repo}`} variant="ghost" external>
           GitHub <ExternalLink size={14} aria-hidden />
         </ButtonLink>
@@ -216,6 +213,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         voteCount={p.like_count}
         downloads={p.release_downloads}
         stars={p.stars}
+        saved={savedHere}
         signedIn={!!user}
       />
 
