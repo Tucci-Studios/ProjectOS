@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GitFork, ExternalLink } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
+import { InstallBlock } from "@/components/install-block";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage } from "@/lib/queries";
 import { categoryMeta, timeAgo } from "@/lib/categories";
@@ -97,6 +98,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           view on GitHub <ExternalLink size={15} aria-hidden />
         </ButtonLink>
       </div>
+
+      <InstallBlock category={p.category} repo={p.github_repo} />
 
       {/* Lineage */}
       <section className="mt-8">

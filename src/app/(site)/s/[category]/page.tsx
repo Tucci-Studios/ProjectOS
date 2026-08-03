@@ -136,7 +136,7 @@ export default async function SectionPage({
       <div className="mb-5 flex gap-1 rounded-lg border border-neutral-700 bg-neutral-900/60 p-1">
         {tabLink("projects", "projects")}
         {tabLink("tutorials", "tutorials")}
-        {tabLink("requests", "requests")}
+        {tabLink("requests", "help wanted")}
       </div>
       {content}
     </div>

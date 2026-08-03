@@ -1,13 +1,11 @@
 import Link from "next/link";
-import { Home, Trophy, Radio, Swords, Search, LogOut, Plus } from "lucide-react";
+import { Home, Trophy, Search, LogOut, Plus } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { ButtonLink } from "./ui";
 
 const NAV = [
   { href: "/", label: "home", Icon: Home },
-  { href: "/projects", label: "top", Icon: Trophy },
-  { href: "/wire", label: "feed", Icon: Radio },
-  { href: "/remix-wars", label: "remix wars", Icon: Swords },
+  { href: "/projects", label: "browse", Icon: Trophy },
 ];
 
 export async function SiteHeader() {

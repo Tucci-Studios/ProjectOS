@@ -25,11 +25,13 @@
         "claude-code",
         "claude-skills",
         "claude-md",
-        "mcp-servers",
         "codex",
+        "grok",
         "local-llms",
-        "scripts-tools",
-        "games"
+        "mcp-servers",
+        "apps",
+        "games",
+        "scripts-tools"
       ]
     },
     "description": {

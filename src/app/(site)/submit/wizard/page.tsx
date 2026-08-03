@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { CATEGORY_SLUGS } from "@/lib/categories";
 
 // Manifest wizard: generates project.json + AGENTS.md to copy into the repo root.
 
-const CATEGORIES = [
-  "claude-code",
-  "claude-skills",
-  "claude-md",
-  "mcp-servers",
-  "codex",
-  "local-llms",
-  "scripts-tools",
-  "games",
-];
+const CATEGORIES = CATEGORY_SLUGS;
 
 const inputCls =
   "w-full rounded border border-neutral-700 bg-neutral-800 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";

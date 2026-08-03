@@ -1,31 +1,42 @@
-// Single source of truth for category display. Slugs must match
+// Single source of truth for category display + grouping. Slugs must match
 // docs/manifest/project.schema.json's category enum.
 
 export type CategoryMeta = {
   slug: string;
   label: string;
-  /** Tailwind classes for the neon accent */
+  group: string;
+  /** Tailwind classes for the accent */
   text: string;
   border: string;
   dot: string;
 };
 
+export const CATEGORY_GROUPS = ["Claude", "AI", "Software"] as const;
+
 export const CATEGORY_META: CategoryMeta[] = [
-  { slug: "claude-code",   label: "Claude Code",     text: "text-cyan-400",    border: "border-cyan-400/30",    dot: "bg-cyan-400" },
-  { slug: "claude-skills", label: "Claude Skills",   text: "text-fuchsia-400", border: "border-fuchsia-400/30", dot: "bg-fuchsia-400" },
-  { slug: "claude-md",     label: "CLAUDE.md",       text: "text-amber-400",   border: "border-amber-400/30",   dot: "bg-amber-400" },
-  { slug: "mcp-servers",   label: "MCP Servers",     text: "text-emerald-400", border: "border-emerald-400/30", dot: "bg-emerald-400" },
-  { slug: "codex",         label: "Codex",           text: "text-sky-400",     border: "border-sky-400/30",     dot: "bg-sky-400" },
-  { slug: "local-llms",    label: "Local LLMs",      text: "text-violet-400",  border: "border-violet-400/30",  dot: "bg-violet-400" },
-  { slug: "scripts-tools", label: "Scripts & Tools", text: "text-lime-400",    border: "border-lime-400/30",    dot: "bg-lime-400" },
-  { slug: "games",         label: "Games",           text: "text-rose-400",    border: "border-rose-400/30",    dot: "bg-rose-400" },
+  // Claude — everything in the Claude ecosystem, branched properly
+  { slug: "claude-code",   label: "Code Projects", group: "Claude",   text: "text-cyan-400",    border: "border-cyan-400/30",    dot: "bg-cyan-400" },
+  { slug: "claude-skills", label: "Skills",        group: "Claude",   text: "text-fuchsia-400", border: "border-fuchsia-400/30", dot: "bg-fuchsia-400" },
+  { slug: "claude-md",     label: "CLAUDE.md",     group: "Claude",   text: "text-amber-400",   border: "border-amber-400/30",   dot: "bg-amber-400" },
+  // Other AI ecosystems
+  { slug: "codex",         label: "Codex",         group: "AI",       text: "text-sky-400",     border: "border-sky-400/30",     dot: "bg-sky-400" },
+  { slug: "grok",          label: "Grok / xAI",    group: "AI",       text: "text-zinc-300",    border: "border-zinc-300/30",    dot: "bg-zinc-300" },
+  { slug: "local-llms",    label: "Local LLMs",    group: "AI",       text: "text-violet-400",  border: "border-violet-400/30",  dot: "bg-violet-400" },
+  { slug: "mcp-servers",   label: "MCP Servers",   group: "AI",       text: "text-emerald-400", border: "border-emerald-400/30", dot: "bg-emerald-400" },
+  // Software — things you run
+  { slug: "apps",          label: "Apps",          group: "Software", text: "text-orange-400",  border: "border-orange-400/30",  dot: "bg-orange-400" },
+  { slug: "games",         label: "Games",         group: "Software", text: "text-rose-400",    border: "border-rose-400/30",    dot: "bg-rose-400" },
+  { slug: "scripts-tools", label: "Scripts & Tools", group: "Software", text: "text-lime-400",  border: "border-lime-400/30",    dot: "bg-lime-400" },
 ];
+
+export const CATEGORY_SLUGS = CATEGORY_META.map((c) => c.slug);
 
 export function categoryMeta(slug: string): CategoryMeta {
   return (
     CATEGORY_META.find((c) => c.slug === slug) ?? {
       slug,
       label: slug,
+      group: "Software",
       text: "text-neutral-400",
       border: "border-neutral-400/30",
       dot: "bg-neutral-400",

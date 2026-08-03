@@ -54,7 +54,13 @@ INSERT INTO projects (id, owner_id, base_name, variant_name, category, descripti
 -- scripts-tools
   ('p_yeet', 'u_nyx', 'YEET.sh', NULL, 'scripts-tools',
    'Finds every node_modules on your machine, shows the damage in GB, and yeets them with one keypress.',
-   'MIT', 'nyx-dev/yeet-sh', '{}', NULL, 'p_yeet', NULL, NULL, 'live', 1754150000, 1754150000);
+   'MIT', 'nyx-dev/yeet-sh', '{}', NULL, 'p_yeet', NULL, NULL, 'live', 1754150000, 1754150000),
+  ('p_grokbot', 'u_zero', 'Grok Standup', NULL, 'grok',
+   'Grok reads your commits and writes your standup update in your voice. Slack-ready, mildly sarcastic.',
+   'MIT', 'zerocool99/grok-standup', '{}', NULL, 'p_grokbot', NULL, NULL, 'live', 1754120000, 1754120000),
+  ('p_lantern', 'u_patch', 'Lantern', NULL, 'apps',
+   'A tiny desktop app that keeps one always-on-top note per project. Opens in 40ms, forgets nothing.',
+   'GPL-3.0-or-later', 'patchcable/lantern', '{}', NULL, 'p_lantern', NULL, NULL, 'live', 1754140000, 1754140000);
 
 INSERT INTO likes (user_id, project_id, created_at) VALUES
   ('u_nyx', 'p_subwolf', 1753610000), ('u_rook', 'p_subwolf', 1753710000), ('u_zero', 'p_subwolf', 1753810000),
@@ -65,7 +71,9 @@ INSERT INTO likes (user_id, project_id, created_at) VALUES
   ('u_zero', 'p_oneclaude', 1753910000), ('u_nyx', 'p_oneclaude', 1753920000), ('u_rook', 'p_oneclaude', 1753930000),
   ('u_patch', 'p_fridge', 1753960000), ('u_nyx', 'p_fridge', 1753970000),
   ('u_rook', 'p_basement', 1754110000),
-  ('u_patch', 'p_pdfgoblin', 1753860000);
+  ('u_patch', 'p_pdfgoblin', 1753860000),
+  ('u_nyx', 'p_grokbot', 1754121000), ('u_rook', 'p_grokbot', 1754122000),
+  ('u_zero', 'p_lantern', 1754141000), ('u_nyx', 'p_lantern', 1754142000), ('u_rook', 'p_lantern', 1754143000);
 
 INSERT INTO repo_stats (project_id, stars, github_forks, release_downloads, refreshed_at) VALUES
   ('p_subwolf', 42, 7, 130, 1754130000), ('p_cyber', 17, 2, 40, 1754130000), ('p_night', 5, 0, 0, 1754130000),

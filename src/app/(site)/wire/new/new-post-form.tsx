@@ -1,21 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { CATEGORY_SLUGS } from "@/lib/categories";
 import { useRouter } from "next/navigation";
 
 const inputCls =
   "w-full rounded border border-neutral-700 bg-neutral-800 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 
-const CATEGORIES = [
-  "claude-code",
-  "claude-skills",
-  "claude-md",
-  "mcp-servers",
-  "codex",
-  "local-llms",
-  "scripts-tools",
-  "games",
-];
+const CATEGORIES = CATEGORY_SLUGS;
 
 // The tutorial template: a structure any human or AI can fill in.
 // "## Step N — title" lines render as neon step cards.
