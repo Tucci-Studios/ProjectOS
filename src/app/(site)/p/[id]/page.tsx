@@ -9,6 +9,8 @@ import { PanelToggle } from "@/components/panel-toggle";
 import { ProjectUpdates, type ProjectUpdate } from "@/components/project-updates";
 import { LineageBadge } from "@/components/lineage-badge";
 import { ConfirmLineage } from "@/components/confirm-lineage";
+import { ForksPanel } from "@/components/forks-panel";
+import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
 import { ProjectStats } from "@/components/follow-stat";
@@ -105,6 +107,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     ).bind(id).all<ProjectUpdate>(),
   ]);
 
+  // Cached only — the page never waits on GitHub. The panel refreshes itself
+  // after paint if the cache has gone stale.
+  const [forkPicture, forksStale] = await Promise.all([
+    getForkPicture(p.id, p.github_repo),
+    forksAreStale(p.id),
+  ]);
+
   const following = new Set(followRows.results.map((r) => r.project_id));
   const branchCount = lineage.length - 1;
 
@@ -150,16 +159,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <Link href={`/s/${meta.slug}`} className={`transition hover:underline ${g.text}`}>
               {meta.kind}
             </Link>
-            <span>·</span>
-            <ProjectStats
-              projectId={p.id}
-              initialFollowing={following.has(p.id)}
-              initialFollowers={followerRow?.n ?? 0}
-              branchCount={branchCount}
-              voteCount={p.like_count}
-              downloads={p.release_downloads}
-              signedIn={!!user}
-            />
             {parent && (
               <>
                 <span>·</span>
@@ -174,6 +173,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           </p>
         </div>
       </div>
+
+      <ProjectStats
+        projectId={p.id}
+        initialFollowing={following.has(p.id)}
+        initialFollowers={followerRow?.n ?? 0}
+        branchCount={branchCount}
+        voteCount={p.like_count}
+        downloads={p.release_downloads}
+        signedIn={!!user}
+      />
 
       <p className="mt-5 text-[17px] leading-relaxed text-neutral-200">{p.description}</p>
 
@@ -242,13 +251,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         branchCount={branchCount}
         commentCount={commentRows.results.length}
         tree={
-          <BranchTree
-            nodes={lineage}
-            currentId={p.id}
-            accent={accentHex(p.category)}
-            following={following}
-            canFollow={!!user}
-          />
+          <>
+            <BranchTree
+              nodes={lineage}
+              currentId={p.id}
+              accent={accentHex(p.category)}
+              following={following}
+              canFollow={!!user}
+            />
+            <ForksPanel projectId={p.id} initial={forkPicture} stale={forksStale} repo={p.github_repo} />
+          </>
         }
         comments={
           <ProjectComments
