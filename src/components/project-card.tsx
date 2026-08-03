@@ -144,8 +144,12 @@ export function ProjectCard({
               </span>
             )}
             {p.stars ? (
-              <span className="inline-flex items-center gap-1" title={`${p.stars.toLocaleString()} stars on GitHub`}>
-                <Star size={11} aria-hidden /> {p.stars >= 1000 ? `${(p.stars / 1000).toFixed(1)}k` : p.stars}
+              <span
+                className="inline-flex items-center gap-1 font-bold text-amber-300"
+                title={`${p.stars.toLocaleString()} stars on GitHub`}
+              >
+                <Star size={11} className="fill-amber-300" aria-hidden />{" "}
+                {p.stars >= 1000 ? `${(p.stars / 1000).toFixed(1)}k` : p.stars}
               </span>
             ) : null}
             {p.language && <span className="text-neutral-600">{p.language}</span>}

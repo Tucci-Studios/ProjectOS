@@ -65,6 +65,7 @@ export function ProjectStats({
           value={stars}
           label={stars === 1 ? "star" : "stars"}
           explain="Stars on GitHub. Not a Project OS number — it's how the wider world rates it."
+          tone="text-amber-300"
         />
       ) : null}
       {downloads ? (
@@ -91,17 +92,24 @@ function Stat({
   label,
   explain,
   highlight = false,
+  tone,
 }: {
   Icon: typeof Users;
   value: number;
   label: string;
   explain: string;
   highlight?: boolean;
+  /** Overrides the highlight colour — stars are gold, not emerald. */
+  tone?: string;
 }) {
   return (
     <span className="group/chip relative inline-flex items-baseline gap-1.5">
-      <Icon size={13} aria-hidden className={`self-center ${highlight ? "text-emerald-400" : "text-neutral-500"}`} />
-      <span className={`font-mono text-[15px] font-bold ${highlight ? "text-emerald-400" : "text-neutral-200"}`}>
+      <Icon
+        size={13}
+        aria-hidden
+        className={`self-center ${tone ?? (highlight ? "text-emerald-400" : "text-neutral-500")} ${tone ? "fill-current" : ""}`}
+      />
+      <span className={`font-mono text-[15px] font-bold ${tone ?? (highlight ? "text-emerald-400" : "text-neutral-200")}`}>
         {compact(value)}
       </span>
       <span className="cursor-help font-mono text-[12px] text-neutral-500 underline decoration-dotted underline-offset-4">
