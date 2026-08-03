@@ -31,6 +31,8 @@ export type CategoryMeta = {
   label: string;
   /** What this kind of thing IS — shown as a badge and spoken in plain words. */
   kind: string;
+  /** What you DO with it — the thing you actually want to know at a glance. */
+  use: string;
   group: GroupKey;
   Icon: LucideIcon;
 };
@@ -77,23 +79,23 @@ export const GROUPS: Record<
 export const GROUP_ORDER: GroupKey[] = ["ai", "build", "play"];
 
 export const CATEGORY_META: CategoryMeta[] = [
-  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", group: "ai", Icon: Sparkles },
-  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", group: "ai", Icon: FileText },
-  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", group: "ai", Icon: Plug },
-  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", group: "ai", Icon: Cpu },
-  { slug: "codex", label: "Codex", kind: "Codex Setup", group: "ai", Icon: SquareTerminal },
-  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", group: "ai", Icon: Bot },
+  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", use: "Teaches Claude a new trick", group: "ai", Icon: Sparkles },
+  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", use: "Drops into your repo", group: "ai", Icon: FileText },
+  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", use: "Connects Claude to something", group: "ai", Icon: Plug },
+  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: Cpu },
+  { slug: "codex", label: "Codex", kind: "Codex Setup", use: "Set up for Codex", group: "ai", Icon: SquareTerminal },
+  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot },
 
-  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", group: "build", Icon: Code2 },
-  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", group: "build", Icon: Wrench },
+  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", use: "Clone it and keep building", group: "build", Icon: Code2 },
+  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", use: "Run it in your terminal", group: "build", Icon: Wrench },
 
-  { slug: "apps", label: "Apps", kind: "App", group: "play", Icon: AppWindow },
-  { slug: "games", label: "Games", kind: "Game", group: "play", Icon: Gamepad2 },
+  { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow },
+  { slug: "games", label: "Games", kind: "Game", use: "Play it", group: "play", Icon: Gamepad2 },
 ];
 
 export const CATEGORY_SLUGS = CATEGORY_META.map((c) => c.slug);
 
-const FALLBACK: CategoryMeta = { slug: "", label: "Other", kind: "Project", group: "build", Icon: Code2 };
+const FALLBACK: CategoryMeta = { slug: "", label: "Other", kind: "Project", use: "Open source project", group: "build", Icon: Code2 };
 
 export function categoryMeta(slug: string): CategoryMeta {
   return CATEGORY_META.find((c) => c.slug === slug) ?? { ...FALLBACK, slug, label: slug };

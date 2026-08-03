@@ -25,12 +25,16 @@ export function SiteHeaderClient({ user }: { user: SessionUser | null }) {
     <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
       <div className="mx-auto flex h-[60px] max-w-6xl items-center px-5">
         {/* Left: brand */}
-        <Link
-          href="/"
-          className="rounded-lg outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-emerald-400"
+        <span
+          title="Project Open Source"
+          aria-label="Project OS — Project Open Source"
+          className="group/brand relative cursor-default select-none"
         >
           <Wordmark />
-        </Link>
+          <span className="pointer-events-none absolute left-0 top-[46px] z-30 whitespace-nowrap rounded-lg border border-neutral-700 bg-[#1a221d] px-2.5 py-1.5 font-mono text-[11px] text-neutral-300 opacity-0 shadow-xl transition-opacity duration-200 group-hover/brand:opacity-100">
+            Project <span className="text-emerald-300">Open Source</span>
+          </span>
+        </span>
 
         {/* Center: the two places you go */}
         <nav className="ml-10 flex gap-1">

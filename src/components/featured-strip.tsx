@@ -43,8 +43,9 @@ export function FeaturedStrip({ p }: { p: FeaturedProject }) {
               <BrandMark size={16} className="!border-0 !bg-transparent" />
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300/90">Project</span>
             </span>
-            <span className={`rounded-md border ${g.border} px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${g.text}`}>
-              {meta.kind}
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-neutral-700 bg-neutral-800/60 px-2 py-1 font-mono text-[11px] text-neutral-300">
+              <meta.Icon size={12} strokeWidth={2} className="text-neutral-400" aria-hidden />
+              {meta.use}
             </span>
           </span>
           <h2 className="mt-1.5 font-mono text-2xl font-bold tracking-tight text-white">

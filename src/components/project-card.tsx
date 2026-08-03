@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { GitBranch, Heart } from "lucide-react";
-import { categoryMeta, groupOf, timeAgo } from "@/lib/categories";
+import { categoryMeta, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { BrandMark } from "./brand";
 
@@ -50,33 +50,27 @@ export function ProjectHeadline({
   );
 }
 
-/** Right-aligned type tag: icon + word, in the group's color. */
-export function TypeTag({ category }: { category: string }) {
-  const { kind, Icon } = categoryMeta(category);
-  const g = groupOf(category);
+/** What you DO with it — plain words, no color coding. */
+export function UseTag({ category }: { category: string }) {
+  const { use, Icon } = categoryMeta(category);
   return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border ${g.border} ${g.bg} px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.12em] ${g.text}`}
-    >
-      <Icon size={12} strokeWidth={2.25} aria-hidden />
-      {kind}
+    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-neutral-700 bg-neutral-800/60 px-2 py-1 font-mono text-[11px] text-neutral-300">
+      <Icon size={12} strokeWidth={2} className="text-neutral-400" aria-hidden />
+      {use}
     </span>
   );
 }
 
 export function ProjectCard({ p, liked }: { p: ProjectFeedRow; liked: boolean }) {
-  const g = groupOf(p.category);
   const fullName = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
   return (
     <article className="group relative overflow-hidden rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
-      <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: g.hex, opacity: 0.7 }} aria-hidden />
-
-      <div className="flex items-start gap-4 py-4 pl-5 pr-4">
+      <div className="flex items-start gap-4 py-4 px-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <ProjectHeadline baseName={p.base_name} variantName={p.variant_name} />
-            <TypeTag category={p.category} />
+            <UseTag category={p.category} />
           </div>
 
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-neutral-400">{p.description}</p>
