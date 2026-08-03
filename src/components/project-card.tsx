@@ -153,7 +153,7 @@ export function ProjectCard({
               const forks = p.github_forks ?? p.fork_count;
               return (
                 <span
-                  className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "font-bold text-emerald-400" : ""}`}
+                  className="inline-flex items-center gap-1 font-bold text-emerald-400"
                   title={
                     p.fork_count > 0
                       ? `${forks.toLocaleString()} forks on GitHub, ${p.fork_count} published here`

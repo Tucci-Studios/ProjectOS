@@ -45,7 +45,7 @@ export function ProjectStats({
             ? "Nobody has made their own version of this yet."
             : `${forkCount} ${forkCount === 1 ? "person has" : "people have"} made their own version of this.`
         }
-        highlight={forkCount > 0}
+        highlight
       />
       <Stat
         Icon={ChevronUp}
