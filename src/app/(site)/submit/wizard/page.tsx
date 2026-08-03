@@ -46,6 +46,8 @@ export default function WizardPage() {
   const [parentRepo, setParentRepo] = useState("");
   const [changeSummary, setChangeSummary] = useState("");
 
+  // No `screenshots` here on purpose — images are uploaded on the publish form
+  // and stored by Project OS, so the manifest stays about the code.
   const manifest: Record<string, unknown> = {
     name,
     ...(variant ? { variant } : {}),
@@ -83,6 +85,11 @@ ${howToRun || "(exact commands from fresh clone)"}
   return (
     <div className="max-w-2xl">
       <h1 className="mb-2 font-mono text-lg font-bold text-white">Manifest wizard</h1>
+      <div className="mb-5 rounded-xl border border-neutral-700/70 bg-neutral-900/40 p-4 text-sm leading-relaxed text-neutral-400">
+        <span className="text-neutral-200">Screenshots aren&apos;t in here.</span> You upload those on the publish
+        form — they&apos;re stored by Project OS, so you don&apos;t have to commit images to your repo or keep links
+        alive.
+      </div>
       <p className="mb-6 text-sm text-neutral-400">
         Fill this in, copy both files into your repo root, then{" "}
         <a href="/submit" className="text-emerald-400 hover:underline">

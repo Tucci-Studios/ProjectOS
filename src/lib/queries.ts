@@ -1,11 +1,27 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { ProjectFeedRow } from "@/components/project-card";
 
-/** Feed rows, optionally filtered by category. sort: "top" (likes) or "new". */
-export async function getProjectFeed(category?: string, sort: "top" | "new" = "new"): Promise<ProjectFeedRow[]> {
+export type FeedSort = "top" | "new" | "branched" | "followed";
+
+const ORDER_BY: Record<FeedSort, string> = {
+  top: "like_count DESC, p.created_at DESC",
+  new: "p.created_at DESC",
+  branched: "fork_count DESC, like_count DESC",
+  followed: "follower_count DESC, like_count DESC",
+};
+
+/** Feed rows, optionally filtered by category, sorted and paginated. */
+export async function getProjectFeed(
+  category?: string,
+  sort: FeedSort = "new",
+  { limit, offset = 0, viewerId }: { limit?: number; offset?: number; viewerId?: string } = {},
+): Promise<{ results: ProjectFeedRow[]; total: number }> {
   const { env } = getCloudflareContext();
-  const where = category ? "p.status = 'live' AND p.category = ?1" : "p.status = 'live'";
-  const order = sort === "top" ? "like_count DESC, p.created_at DESC" : "p.created_at DESC";
+  const hideBlocked = viewerId
+    ? ` AND p.owner_id NOT IN (SELECT blocked_id FROM blocks WHERE user_id = '${viewerId.replace(/'/g, "")}')`
+    : "";
+  const where = (category ? "p.status = 'live' AND p.category = ?1" : "p.status = 'live'") + hideBlocked;
+  const order = ORDER_BY[sort] ?? ORDER_BY.new;
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
             u.github_login, u.avatar_url,
@@ -13,15 +29,22 @@ export async function getProjectFeed(category?: string, sort: "top" | "new" = "n
             (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status = 'live') AS fork_count,
             (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
             (SELECT GROUP_CONCAT(url, '|') FROM (SELECT url FROM project_images pi WHERE pi.project_id = p.id ORDER BY pi.position LIMIT 5)) AS image_urls,
+            (SELECT COUNT(*) FROM follows fo WHERE fo.project_id = p.id) AS follower_count,
             (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                          ELSE pp.base_name || ' // ' || pp.variant_name END
              FROM projects pp WHERE pp.id = p.parent_id) AS parent_display
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE ${where}
-     ORDER BY ${order}`,
+     ORDER BY ${order}
+     ${limit ? `LIMIT ${Number(limit)} OFFSET ${Number(offset)}` : ""}`,
   );
-  const { results } = await (category ? stmt.bind(category) : stmt).all<ProjectFeedRow>();
-  return results;
+
+  const countStmt = env.DB.prepare(`SELECT COUNT(*) AS n FROM projects p WHERE ${where}`);
+  const [rows, count] = await Promise.all([
+    (category ? stmt.bind(category) : stmt).all<ProjectFeedRow>(),
+    (category ? countStmt.bind(category) : countStmt).first<{ n: number }>(),
+  ]);
+  return { results: rows.results, total: count?.n ?? 0 };
 }
 
 /** How this user voted on each project: 1 up, -1 down, absent = no vote. */
@@ -32,6 +55,16 @@ export async function getUserVotes(userId: string | undefined): Promise<Map<stri
     .bind(userId)
     .all<{ project_id: string; value: number }>();
   return new Map(results.map((r) => [r.project_id, r.value]));
+}
+
+/** People this viewer has hidden — their work is filtered out of feeds. */
+export async function getBlockedIds(userId: string | undefined): Promise<Set<string>> {
+  if (!userId) return new Set();
+  const { env } = getCloudflareContext();
+  const { results } = await env.DB.prepare("SELECT blocked_id FROM blocks WHERE user_id = ?1")
+    .bind(userId)
+    .all<{ blocked_id: string }>();
+  return new Set(results.map((r) => r.blocked_id));
 }
 
 /** Project ids this user follows. */

@@ -10,6 +10,11 @@ Every project published on Project OS ships two files in its repo root:
 Missing or invalid manifest = can't publish. The submit flow includes a wizard
 that generates both files (copy-paste or open-a-PR) so compliance takes ~2 minutes.
 
+**Screenshots are not part of the manifest anymore.** Images are uploaded on the
+publish form and stored by Project OS, so authors don't have to commit images or
+keep external links alive. The `screenshots` field still validates if present and
+is used as a fallback when nothing was uploaded.
+
 ## Example project.json (lineage root)
 
 ```json

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local secrets
 .dev.vars
+
+# local wrangler/miniflare state
+.wrangler/

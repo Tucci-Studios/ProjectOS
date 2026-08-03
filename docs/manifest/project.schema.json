@@ -54,6 +54,7 @@
     "screenshots": {
       "type": "array",
       "maxItems": 6,
+      "description": "Optional. Images are normally uploaded on the publish form and stored by Project OS; these are used only as a fallback.",
       "items": { "type": "string", "description": "Repo-relative path or https URL" }
     },
     "tags": {

@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Rss, Compass } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes, getFollowedIds, getBadgesFor } from "@/lib/queries";
+import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ButtonLink } from "@/components/ui";
 
@@ -24,7 +24,7 @@ export default async function FeedPage() {
                  ELSE pp.base_name || ' // ' || pp.variant_name END
      FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;
 
-  const [followed, votes, follows] = user
+  const [followedRaw, votes, follows, blocked] = user
     ? await Promise.all([
         env.DB.prepare(
           `SELECT ${FEED_COLS} FROM projects p
@@ -38,9 +38,11 @@ export default async function FeedPage() {
         ).bind(user.id).all<ProjectFeedRow>().then((r) => r.results),
         getUserVotes(user.id),
         getFollowedIds(user.id),
+        getBlockedIds(user.id),
       ])
-    : [[], new Map<string, number>(), new Set<string>()];
+    : [[], new Map<string, number>(), new Set<string>(), new Set<string>()];
 
+  const followed = followedRaw.filter((p) => !blocked.has(p.owner_id ?? ""));
   const badges = await getBadgesFor(followed.map((p) => p.owner_id ?? ""));
 
   return (

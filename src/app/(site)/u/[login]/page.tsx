@@ -6,6 +6,7 @@ import { getSessionUser } from "@/lib/auth";
 import { getUserVotes, getBadges } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ReportButton } from "@/components/report-button";
+import { BlockButton } from "@/components/block-button";
 import { UserBadges } from "@/components/user-badges";
 import { ButtonLink } from "@/components/ui";
 import { timeAgo } from "@/lib/categories";
@@ -33,7 +34,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
     .first<{ id: string; github_login: string; display_name: string | null; avatar_url: string | null; role: string; created_at: number }>();
   if (!person) notFound();
 
-  const [projects, posts, stats, ideasShipped, votes, badges, activity] = await Promise.all([
+  const [projects, posts, stats, ideasShipped, votes, badges, blockRow, activity] = await Promise.all([
     env.DB.prepare(
       `SELECT ${FEED_COLS} FROM projects p JOIN users u ON u.id = p.owner_id
        WHERE p.owner_id = ?1 AND p.status='live' ORDER BY like_count DESC, p.created_at DESC`,
@@ -54,6 +55,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
       .first<{ n: number }>(),
     getUserVotes(viewer?.id),
     getBadges(person.id),
+    viewer
+      ? env.DB.prepare("SELECT 1 AS blocked FROM blocks WHERE user_id = ?1 AND blocked_id = ?2")
+          .bind(viewer.id, person.id)
+          .first<{ blocked: number }>()
+      : Promise.resolve(null),
     env.DB.prepare(
       `SELECT MAX(t) AS last_seen FROM (
          SELECT MAX(created_at) AS t FROM projects WHERE owner_id = ?1 AND status='live'
@@ -117,11 +123,21 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
                 This is you — go to your page
               </Link>
             ) : (
-              <ReportButton targetType="user" targetId={person.id} signedIn={!!viewer} label="Report user" />
+              <span className="flex flex-wrap items-center justify-end gap-1.5">
+                {viewer && <BlockButton login={person.github_login} initialBlocked={!!blockRow} />}
+                <ReportButton targetType="user" targetId={person.id} signedIn={!!viewer} label="Report" />
+              </span>
             )}
           </div>
         </div>
       </header>
+
+      {blockRow && (
+        <p className="mb-6 rounded-xl border border-neutral-700 bg-neutral-900/50 p-4 text-sm text-neutral-400">
+          You&apos;ve hidden @{person.github_login}. Their work stays off your feeds until you unhide them — this page
+          still shows it.
+        </p>
+      )}
 
       <section className="mb-8">
         <h2 className="mb-3 flex items-center gap-2 font-mono text-sm font-bold text-neutral-200">
