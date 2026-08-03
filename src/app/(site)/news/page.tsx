@@ -40,7 +40,7 @@ export default async function UpdatesPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <PageHeader
-        crumbs={[{ label: "Updates" }]}
+        crumbs={[{ label: "News" }]}
         title="What's new"
         purpose="Every change to Project OS, posted as it ships. Ideas the community voted for show up here when they go live."
         Icon={Megaphone}

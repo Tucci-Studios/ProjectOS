@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { GitBranch, ExternalLink } from "lucide-react";
 import { ButtonLink } from "@/components/ui";
 import { InstallBlock } from "@/components/install-block";
+import { FollowButton } from "@/components/follow-button";
+import { ReportButton } from "@/components/report-button";
 import { BranchTree } from "@/components/branch-tree";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage } from "@/lib/queries";
@@ -54,6 +56,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     ? await env.DB.prepare("SELECT value FROM likes WHERE user_id = ?1 AND project_id = ?2").bind(user.id, p.id).first<{ value: number }>()
     : null;
   const lineage = await getLineage(p.root_id);
+  const followRows = user
+    ? await env.DB.prepare("SELECT project_id FROM follows WHERE user_id = ?1").bind(user.id).all<{ project_id: string }>()
+    : { results: [] as { project_id: string }[] };
+  const following = new Set(followRows.results.map((r) => r.project_id));
 
   const crumbLabel = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
@@ -110,6 +116,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <ButtonLink href={`https://github.com/${p.github_repo}`} variant="ghost" external>
           view on GitHub <ExternalLink size={15} aria-hidden />
         </ButtonLink>
+        {user && <FollowButton projectId={p.id} initialFollowing={following.has(p.id)} />}
+        <span className="ml-auto self-center">
+          <ReportButton targetType="project" targetId={p.id} signedIn={!!user} />
+        </span>
       </div>
 
       <InstallBlock category={p.category} repo={p.github_repo} />
@@ -122,7 +132,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             {lineage.length} branch{lineage.length === 1 ? "" : "es"} growing from {p.base_name}
           </span>
         </h2>
-        <BranchTree nodes={lineage} currentId={p.id} accent={accentHex(p.category)} />
+        <BranchTree nodes={lineage} currentId={p.id} accent={accentHex(p.category)} following={following} canFollow={!!user} />
       </section>
     </div>
   );

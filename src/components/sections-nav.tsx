@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronRight, Compass, Lightbulb } from "lucide-react";
+import { ChevronRight, Compass, Lightbulb, House, Flame, Sparkles, Megaphone } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 // Three doors: AI, Build, Play. Each opens to its sections. The group you're in
@@ -19,8 +19,33 @@ export function SectionsNav() {
     Object.fromEntries(GROUP_ORDER.map((g) => [g, g === activeGroup])),
   );
 
+  const MAIN = [
+    { href: "/", label: "Feed", Icon: House, exact: true },
+    { href: "/popular", label: "Popular", Icon: Flame },
+    { href: "/explore", label: "Explore", Icon: Sparkles },
+    { href: "/news", label: "News", Icon: Megaphone },
+  ];
+
   return (
     <nav aria-label="Browse" className="space-y-1.5">
+      <div className="mb-4 space-y-0.5 border-b border-neutral-800 pb-4">
+        {MAIN.map(({ href, label, Icon, exact }) => {
+          const active = exact ? pathname === href : pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={`flex min-h-[40px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+                active ? "bg-emerald-400/10 font-bold text-emerald-300" : "text-neutral-300 hover:bg-neutral-800 hover:text-white"
+              }`}
+            >
+              <Icon size={16} aria-hidden /> {label}
+            </Link>
+          );
+        })}
+      </div>
+
       <Link
         href="/projects"
         aria-current={pathname === "/projects" ? "page" : undefined}

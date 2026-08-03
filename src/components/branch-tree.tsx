@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FollowButton } from "./follow-button";
 import type { LineageNode } from "@/lib/queries";
 
 // Branch tree: the trunk runs down the left, each branch hangs off it with an
@@ -9,10 +10,14 @@ export function BranchTree({
   nodes,
   currentId,
   accent = "#34d399",
+  following,
+  canFollow = false,
 }: {
   nodes: LineageNode[];
   currentId?: string;
   accent?: string;
+  following?: Set<string>;
+  canFollow?: boolean;
 }) {
   if (nodes.length === 0) return null;
 
@@ -22,14 +27,18 @@ export function BranchTree({
         const isCurrent = node.id === currentId;
         const isRoot = node.depth === 0;
         return (
-          <Link
+          <div
             key={node.id}
-            href={`/p/${node.id}`}
-            className={`group relative flex min-h-[52px] cursor-pointer items-center gap-3 pr-4 outline-none transition duration-200 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400 ${
+            className={`group relative flex min-h-[52px] items-center gap-3 pr-3 transition duration-200 ${
               isCurrent ? "bg-neutral-800/80" : "hover:bg-neutral-800/50"
             } ${i > 0 ? "border-t border-neutral-800" : ""}`}
             style={{ paddingLeft: 16 + node.depth * 26 }}
           >
+            <Link
+              href={`/p/${node.id}`}
+              aria-label={`Open ${node.base_name}${node.variant_name ? ` // ${node.variant_name}` : ""}`}
+              className="absolute inset-0 z-0 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
+            />
             {/* trunk / elbow */}
             <span className="relative flex h-full w-4 shrink-0 items-center justify-center" aria-hidden>
               {!isRoot && (
@@ -79,7 +88,18 @@ export function BranchTree({
                 @{node.github_login} · {node.like_count} like{node.like_count === 1 ? "" : "s"}
               </span>
             </span>
-          </Link>
+
+            {canFollow && (
+              <span className="relative z-[2] shrink-0">
+                <FollowButton
+                  projectId={node.id}
+                  initialFollowing={!!following?.has(node.id)}
+                  size="sm"
+                  label="Follow"
+                />
+              </span>
+            )}
+          </div>
         );
       })}
     </div>

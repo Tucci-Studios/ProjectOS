@@ -8,7 +8,7 @@ import { StreamList, type StreamItem } from "./stream-list";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewPage() {
+export default async function ExplorePage() {
   const user = await getSessionUser();
   const [{ items, nextCursor }, votes] = await Promise.all([getStream(), getUserVotes(user?.id)]);
 
@@ -21,7 +21,7 @@ export default async function NewPage() {
           </h1>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
             Everything as it lands — new projects, branches, posts, and questions. Keeps going as long as you scroll.{" "}
-            <Link href="/" className="text-emerald-300 transition hover:underline">
+            <Link href="/popular" className="text-emerald-300 transition hover:underline">
               See what&apos;s popular
             </Link>
             .

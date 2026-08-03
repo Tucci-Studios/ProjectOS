@@ -55,7 +55,8 @@ export function UserMenu({ user }: { user: SessionUser }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-[46px] z-30 w-56 overflow-hidden rounded-xl border border-neutral-700 bg-[#1a221d] p-1.5 shadow-2xl shadow-black/60"
+          style={{ transformOrigin: "top right" }}
+          className="animate-rise absolute right-0 top-[46px] z-30 w-56 overflow-hidden rounded-xl border border-neutral-700 bg-[#1a221d] p-1.5 shadow-2xl shadow-black/60"
         >
           <div className="border-b border-neutral-800 px-3 pb-2.5 pt-1.5">
             <p className="font-mono text-sm font-bold text-white">@{user.github_login}</p>

@@ -4,22 +4,12 @@ import { useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Flame, Sparkles, Search, Plus, Bell } from "lucide-react";
+import { Search, Plus, Bell } from "lucide-react";
 import type { SessionUser } from "@/lib/auth";
 import { ButtonLink } from "./ui";
 import { BrandMark } from "./brand";
 import { UpdateSplash, type SplashUpdate } from "./update-splash";
 import { UserMenu } from "./user-menu";
-
-const NAV = [
-  { href: "/", label: "Popular", Icon: Flame, match: (p: string) => p === "/" },
-  {
-    href: "/new",
-    label: "New",
-    Icon: Sparkles,
-    match: (p: string) => p.startsWith("/new") || p.startsWith("/wire") || p.startsWith("/projects") || p.startsWith("/s/") || p.startsWith("/p/"),
-  },
-];
 
 export function SiteHeaderClient({
   user,
@@ -40,7 +30,7 @@ export function SiteHeaderClient({
   return (
     <>
     <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
-      <div className="mx-auto flex h-[60px] max-w-6xl items-center pl-3 pr-4">
+      <div className="flex h-[60px] w-full items-center pl-4 pr-4">
         {/* Left: brand */}
         <span className="flex select-none items-center gap-2.5">
           <BrandMark size={34} />
@@ -59,28 +49,7 @@ export function SiteHeaderClient({
         </span>
 
         {/* Center: the two places you go */}
-        <nav className="ml-7 flex gap-1">
-          {NAV.map(({ href, label, Icon, match }) => {
-            const active = match(pathname);
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={`relative flex h-[60px] items-center gap-2 px-4 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400 ${
-                  active ? "text-white" : "text-neutral-500 hover:text-neutral-200"
-                }`}
-              >
-                <Icon size={16} strokeWidth={2} aria-hidden />
-                {label}
-                {active && <span className="absolute inset-x-3 bottom-0 h-[2px] rounded-t bg-emerald-400" aria-hidden />}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Right: search, publish, you */}
-        <form action="/search" method="get" className="relative mx-auto hidden max-w-md flex-1 md:block">
+        <form action="/search" method="get" className="relative mx-8 hidden max-w-xl flex-1 md:block">
           <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" aria-hidden />
           <input
             name="q"

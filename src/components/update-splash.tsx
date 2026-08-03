@@ -106,10 +106,10 @@ export function UpdateSplash({
       role="dialog"
       aria-modal="true"
       aria-label="What's new"
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm sm:p-8"
+      className="animate-overlay fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm sm:p-8"
       onClick={(e) => e.target === e.currentTarget && close()}
     >
-      <div className="my-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-400/30 bg-[#161d18] shadow-2xl shadow-black/70">
+      <div className="animate-dialog my-auto w-full max-w-2xl overflow-hidden rounded-2xl border border-emerald-400/30 bg-[#161d18] shadow-2xl shadow-black/70">
         {/* Banner */}
         <div className="relative flex items-center gap-3 border-b border-neutral-800 bg-neutral-900/70 px-5 py-4">
           <BrandMark size={36} />
@@ -217,7 +217,7 @@ export function UpdateSplash({
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800 px-5 py-3.5">
           <Link
-            href="/updates"
+            href="/news"
             onClick={close}
             className="font-mono text-[12px] text-neutral-500 transition hover:text-neutral-300"
           >
