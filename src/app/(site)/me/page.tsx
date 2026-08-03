@@ -7,6 +7,8 @@ import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
 import { timeAgo } from "@/lib/categories";
+import { Suspense } from "react";
+import { VerifiedGrant } from "@/components/verified-grant";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +27,9 @@ export default async function MyStuffPage() {
   if (!user) {
     return (
       <div className="mx-auto max-w-lg">
+      <Suspense fallback={null}>
+        <VerifiedGrant />
+      </Suspense>
         <PageHeader
           crumbs={[{ label: "You" }]}
           title="You"

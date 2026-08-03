@@ -12,6 +12,7 @@ export type FeaturedProject = {
   category: string;
   description: string;
   github_login: string;
+  github_repo: string;
   like_count: number;
   fork_count: number;
 };
@@ -67,8 +68,13 @@ export function FeaturedStrip({ p }: { p: FeaturedProject }) {
             <ButtonLink href={`/p/${p.id}`} variant="primary" className="!min-h-[40px]">
               Open <ArrowRight size={15} aria-hidden />
             </ButtonLink>
-            <ButtonLink href={`/p/${p.id}/fork`} variant="ghost" className="!min-h-[40px]">
-              <GitFork size={15} aria-hidden /> Fork it
+            <ButtonLink
+              href={`https://github.com/${p.github_repo}/fork`}
+              variant="ghost"
+              className="!min-h-[40px]"
+              external
+            >
+              <GitFork size={15} aria-hidden /> Fork on GitHub
             </ButtonLink>
           </div>
         </div>

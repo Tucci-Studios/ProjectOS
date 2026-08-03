@@ -52,6 +52,13 @@ export async function GET(request: Request) {
 
   const now = Math.floor(Date.now() / 1000);
   const userId = `gh_${gh.id}`;
+  // Was this person already real before now? Anyone who wasn't gets the mark
+  // granted to them on arrival, whether or not we'd indexed their work.
+  const before = await env.DB.prepare("SELECT is_shadow FROM users WHERE id = ?1")
+    .bind(userId)
+    .first<{ is_shadow: number }>();
+  const firstTime = !before || before.is_shadow === 1;
+
   // Indexing creates a shadow user under this exact id, so the row may already
   // exist before its owner has ever heard of Project OS. Signing in turns that
   // shadow into a real account rather than making a second one.
@@ -81,7 +88,9 @@ export async function GET(request: Request) {
   const claimedCount = claimed.meta?.changes ?? 0;
 
   const res = NextResponse.redirect(
-    claimedCount > 0 ? `${url.origin}/me?claimed=${claimedCount}` : `${url.origin}/projects`,
+    firstTime
+      ? `${url.origin}/me?verified=1${claimedCount > 0 ? `&claimed=${claimedCount}` : ""}`
+      : `${url.origin}/projects`,
   );
   res.cookies.set(sessionCookieName, await signSession(userId, env.SESSION_SECRET), {
     httpOnly: true,

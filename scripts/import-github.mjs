@@ -108,6 +108,7 @@ for (const { category, q, min } of SOURCES) {
       description: r.description.trim().slice(0, 500),
       license: r.license?.spdx_id ?? "NOASSERTION",
       stars: r.stargazers_count ?? 0,
+      forks: r.forks_count ?? 0,
       language: r.language ?? null,
       homepage: r.homepage && /^https?:\/\//.test(r.homepage) ? r.homepage : null,
       pushed_at: r.pushed_at,
@@ -144,12 +145,13 @@ for (const o of owners.values()) {
 for (const r of rows) {
   sql.push(
     `INSERT INTO projects (id, owner_id, base_name, variant_name, category, description, license, github_repo,
-       manifest_json, parent_id, root_id, status, created_at, updated_at, source, stars, language, pushed_at, homepage)
+       manifest_json, parent_id, root_id, status, created_at, updated_at, source, stars, github_forks, language, pushed_at, homepage)
      VALUES (${esc(r.id)}, ${esc(r.owner_id)}, ${esc(r.name)}, NULL, ${esc(r.category)}, ${esc(r.description)},
        ${esc(r.license)}, ${esc(r.repo)}, '{}', NULL, ${esc(r.id)}, 'live', ${ts(r.created_at)}, ${ts(r.pushed_at)},
-       'indexed', ${r.stars}, ${esc(r.language)}, ${ts(r.pushed_at)}, ${esc(r.homepage)})
+       'indexed', ${r.stars}, ${r.forks}, ${esc(r.language)}, ${ts(r.pushed_at)}, ${esc(r.homepage)})
      ON CONFLICT(id) DO UPDATE SET
-       description = excluded.description, stars = excluded.stars, language = excluded.language,
+       description = excluded.description, stars = excluded.stars, github_forks = excluded.github_forks,
+       language = excluded.language,
        pushed_at = excluded.pushed_at, updated_at = excluded.updated_at
      WHERE projects.source = 'indexed';`,
   );

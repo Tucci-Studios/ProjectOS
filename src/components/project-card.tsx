@@ -28,6 +28,8 @@ export type ProjectFeedRow = {
   owner_id?: string;
   image_urls?: string | null;
   source?: string | null;
+  is_shadow?: number | null;
+  github_forks?: number | null;
   stars?: number | null;
   language?: string | null;
 };
@@ -129,7 +131,7 @@ export function ProjectCard({
           })()}
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
-            <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} />
+            <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} verified={p.is_shadow === 0} />
             {p.source === "indexed" && (
               <span
                 title="Found on GitHub and listed here. Its author hasn't signed in — if it's yours, sign in and it becomes yours."
@@ -146,12 +148,23 @@ export function ProjectCard({
             {p.language && <span className="text-neutral-600">{p.language}</span>}
             <span>{timeAgo(p.created_at)}</span>
             <CardComments projectId={p.id} count={p.comment_count ?? 0} />
-            <span
-              className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "font-bold text-emerald-400" : ""}`}
-              title={`${p.fork_count} fork${p.fork_count === 1 ? "" : "es"}`}
-            >
-              <GitFork size={11} aria-hidden /> {p.fork_count}
-            </span>
+            {(() => {
+              // GitHub's count is the truth; ours only counts what got published here.
+              const forks = p.github_forks ?? p.fork_count;
+              return (
+                <span
+                  className={`inline-flex items-center gap-1 ${p.fork_count > 0 ? "font-bold text-emerald-400" : ""}`}
+                  title={
+                    p.fork_count > 0
+                      ? `${forks.toLocaleString()} forks on GitHub, ${p.fork_count} published here`
+                      : `${forks.toLocaleString()} fork${forks === 1 ? "" : "s"} on GitHub`
+                  }
+                >
+                  <GitFork size={11} aria-hidden />{" "}
+                  {forks >= 1000 ? `${(forks / 1000).toFixed(1)}k` : forks}
+                </span>
+              );
+            })()}
             {p.parent_display && (
               <span className="inline-flex items-center gap-1 text-neutral-600">
                 forked from <span className="text-neutral-400">{p.parent_display}</span>
@@ -163,9 +176,9 @@ export function ProjectCard({
         <div className="relative z-[2] flex shrink-0 flex-col items-end justify-between self-stretch pt-1">
           <GroupGlyph category={p.category} size={20} />
           {canFollow && (
-            <span className="flex flex-col items-end gap-1.5">
-              <SaveButton projectId={p.id} initialSaved={!!saved} iconOnly />
+            <span className="flex items-center gap-1.5">
               <FollowButton projectId={p.id} initialFollowing={!!following} iconOnly />
+              <SaveButton projectId={p.id} initialSaved={!!saved} iconOnly />
             </span>
           )}
         </div>

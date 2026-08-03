@@ -1,3 +1,4 @@
+import { VerifiedMark } from "./verified-mark";
 import Link from "next/link";
 import { UserBadges, type Badges } from "./user-badges";
 
@@ -6,12 +7,14 @@ export function UserChip({
   login,
   avatarUrl,
   badges,
+  verified,
   size = "sm",
   className = "",
 }: {
   login: string;
   avatarUrl?: string | null;
   badges?: Badges;
+  verified?: boolean;
   size?: "xs" | "sm";
   className?: string;
 }) {
@@ -33,6 +36,7 @@ export function UserChip({
         </span>
       )}
       <span className="font-mono">@{login}</span>
+      {verified && <VerifiedMark size={size === "xs" ? 10 : 11} />}
       {badges && <UserBadges badges={badges} />}
     </Link>
   );

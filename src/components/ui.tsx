@@ -30,7 +30,8 @@ export function ButtonLink({
   external?: boolean;
 }) {
   const cls = `${BASE} ${VARIANTS[variant]} ${className}`;
-  if (external) {
+  // An absolute URL always leaves the site, whether or not the caller said so.
+  if (external || /^https?:\/\//.test(href)) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
         {children}

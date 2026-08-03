@@ -8,6 +8,7 @@ import { ProjectComments, type ProjectComment } from "@/components/project-comme
 import { PanelToggle } from "@/components/panel-toggle";
 import { ProjectUpdates, type ProjectUpdate } from "@/components/project-updates";
 import { LineageBadge } from "@/components/lineage-badge";
+import { VerifiedMark } from "@/components/verified-mark";
 import { ConfirmLineage } from "@/components/confirm-lineage";
 import { ForksPanel } from "@/components/forks-panel";
 import { SaveButton } from "@/components/save-button";
@@ -43,9 +44,11 @@ type Row = {
   created_at: number;
   github_login: string;
   avatar_url: string | null;
+  is_shadow: number;
   like_count: number;
   release_downloads: number | null;
   stars: number | null;
+  github_forks: number | null;
   image_url: string | null;
   owner_id: string;
 };
@@ -58,9 +61,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const p = await env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.license,
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
-            u.github_login, u.avatar_url,
+            u.github_login, u.avatar_url, u.is_shadow,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source,
+            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks,
             (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      LEFT JOIN repo_stats rs ON rs.project_id = p.id
@@ -124,7 +127,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const publishedForks = lineage.length - 1;
   // GitHub is the truth. Fall back to what we've published only when we haven't
   // asked GitHub yet, so the number is never invented.
-  const forkCount = forkPicture.syncedAt !== null ? forkPicture.total : publishedForks;
+  const forkCount =
+    forkPicture.syncedAt !== null ? forkPicture.total : (p.github_forks ?? publishedForks);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -160,6 +164,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                 </span>
               )}
               @{p.github_login}
+              {p.is_shadow === 0 && <VerifiedMark size={11} />}
             </Link>
             {badges && <UserBadges badges={badges} />}
             <span>·</span>
@@ -198,8 +203,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Actions */}
       <div className="mt-5 flex flex-wrap items-center gap-2.5">
-        <ButtonLink href={`/p/${p.id}/fork`} variant="primary">
-          <GitFork size={16} aria-hidden /> Fork it
+        <ButtonLink
+          href={`https://github.com/${p.github_repo}/fork`}
+          variant="primary"
+          external
+        >
+          <GitFork size={16} aria-hidden /> Fork on GitHub <ExternalLink size={13} aria-hidden />
         </ButtonLink>
 
         <GetItDialog category={p.category} repo={p.github_repo} />
