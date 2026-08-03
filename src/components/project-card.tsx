@@ -4,6 +4,8 @@ import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
 import { CardComments } from "./card-comments";
+import { UserChip } from "./user-chip";
+import type { Badges } from "./user-badges";
 import { BrandMark } from "./brand";
 
 export type ProjectFeedRow = {
@@ -21,6 +23,7 @@ export type ProjectFeedRow = {
   avatar_url?: string | null;
   image_url?: string | null;
   comment_count?: number;
+  owner_id?: string;
 };
 
 /** Monochrome "PROJECT /" byline, then the name. The headliner. */
@@ -74,11 +77,13 @@ export function ProjectCard({
   vote = 0,
   following,
   canFollow = false,
+  badges,
 }: {
   p: ProjectFeedRow;
   vote?: number;
   following?: boolean;
   canFollow?: boolean;
+  badges?: Badges;
 }) {
   const fullName = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
 
@@ -101,26 +106,13 @@ export function ProjectCard({
                 src={p.image_url}
                 alt=""
                 loading="lazy"
-                className="h-24 w-full max-w-[280px] rounded-lg border border-neutral-800 object-cover"
+                className="h-16 w-28 rounded-lg border border-neutral-800 object-cover"
               />
             </div>
           )}
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
-            <Link
-              href={`/u/${p.github_login}`}
-              className="relative z-[2] inline-flex items-center gap-1.5 text-neutral-400 transition hover:text-white"
-            >
-              {p.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.avatar_url} alt="" className="h-4 w-4 rounded-full border border-neutral-700" />
-              ) : (
-                <span className="flex h-4 w-4 items-center justify-center rounded-full border border-neutral-700 bg-neutral-800 text-[7px]">
-                  {p.github_login.slice(0, 1).toUpperCase()}
-                </span>
-              )}
-              @{p.github_login}
-            </Link>
+            <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} />
             <span>{timeAgo(p.created_at)}</span>
             <CardComments projectId={p.id} count={p.comment_count ?? 0} />
             <span

@@ -36,7 +36,7 @@ export function ImagePreview({ images, alt }: { images: string[]; alt: string })
         <button
           onClick={() => setOpenAt(0)}
           aria-label="Expand screenshot"
-          className="group/img relative block h-28 w-40 shrink-0 cursor-pointer overflow-hidden rounded-lg border border-neutral-700 outline-none transition hover:border-emerald-400/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
+          className="group/img relative block h-[74px] w-28 shrink-0 cursor-pointer overflow-hidden rounded-lg border border-neutral-700 outline-none transition hover:border-emerald-400/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={images[0]} alt={alt} className="h-full w-full object-cover" loading="lazy" />
@@ -47,18 +47,18 @@ export function ImagePreview({ images, alt }: { images: string[]; alt: string })
 
         {images.length > 1 && (
           <div className="flex flex-wrap gap-2.5">
-            {images.slice(1, 4).map((src, i) => (
+            {images.slice(1, 5).map((src, i) => (
               <button
                 key={src}
                 onClick={() => setOpenAt(i + 1)}
                 aria-label={`Open image ${i + 2}`}
-                className="relative h-28 w-40 shrink-0 cursor-pointer overflow-hidden rounded-lg border border-neutral-700 outline-none transition hover:border-emerald-400/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
+                className="relative h-[74px] w-28 shrink-0 cursor-pointer overflow-hidden rounded-lg border border-neutral-700 outline-none transition hover:border-emerald-400/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt="" className="h-full w-full object-cover" loading="lazy" />
-                {i === 2 && images.length > 4 && (
+                {i === 3 && images.length > 5 && (
                   <span className="absolute inset-0 flex items-center justify-center bg-black/70 font-mono text-xs text-white">
-                    +{images.length - 4}
+                    +{images.length - 5}
                   </span>
                 )}
               </button>

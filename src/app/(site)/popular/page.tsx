@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Flame, Plus } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes, getFollowedIds } from "@/lib/queries";
+import { getUserVotes, getFollowedIds, getBadgesFor } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ButtonLink } from "@/components/ui";
 
@@ -17,7 +17,7 @@ export default async function PopularPage() {
   const [{ results: top }, votes, follows] = await Promise.all([
     env.DB.prepare(
       `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
-              u.github_login, u.avatar_url,
+              u.github_login, u.avatar_url, p.owner_id,
               (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
               (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
               (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
@@ -32,6 +32,8 @@ export default async function PopularPage() {
     getUserVotes(user?.id),
     getFollowedIds(user?.id),
   ]);
+
+  const badges = await getBadgesFor(top.map((p) => p.owner_id ?? ""));
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -69,7 +71,7 @@ export default async function PopularPage() {
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0 flex-1">
-                <ProjectCard p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} />
+                <ProjectCard p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} badges={badges.get(p.owner_id ?? "")} />
               </div>
             </li>
           ))}

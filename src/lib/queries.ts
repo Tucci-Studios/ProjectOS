@@ -115,3 +115,36 @@ export async function getBadges(userId: string): Promise<import("@/components/us
     biggestTree: row?.biggest_tree ?? 0,
   };
 }
+
+/** Badges for a set of users in one query — for lists where many names appear. */
+export async function getBadgesFor(
+  userIds: string[],
+): Promise<Map<string, import("@/components/user-badges").Badges>> {
+  const out = new Map<string, import("@/components/user-badges").Badges>();
+  const ids = [...new Set(userIds)].filter(Boolean);
+  if (ids.length === 0) return out;
+
+  const { env } = getCloudflareContext();
+  const placeholders = ids.map((_, i) => `?${i + 1}`).join(",");
+  const { results } = await env.DB.prepare(
+    `SELECT u.id,
+       (SELECT COUNT(*) FROM projects p WHERE p.owner_id = u.id AND p.status='live'
+         AND (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) =
+             (SELECT MAX(s) FROM (SELECT COALESCE(SUM(l2.value),0) AS s FROM projects p2
+               LEFT JOIN likes l2 ON l2.project_id = p2.id WHERE p2.status='live' GROUP BY p2.id))
+       ) AS number_one,
+       (SELECT COUNT(*) FROM ideas i WHERE i.author_id = u.id AND i.status='shipped') AS ideas_shipped,
+       (SELECT COALESCE(MAX(cnt),0) FROM (
+          SELECT COUNT(*) AS cnt FROM projects c JOIN projects r ON r.id = c.root_id
+          WHERE r.owner_id = u.id AND c.status='live' GROUP BY c.root_id
+       )) AS biggest_tree
+     FROM users u WHERE u.id IN (${placeholders})`,
+  )
+    .bind(...ids)
+    .all<{ id: string; number_one: number; ideas_shipped: number; biggest_tree: number }>();
+
+  for (const r of results) {
+    out.set(r.id, { numberOne: r.number_one, ideasShipped: r.ideas_shipped, biggestTree: r.biggest_tree });
+  }
+  return out;
+}

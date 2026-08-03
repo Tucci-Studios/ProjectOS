@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, Plus, Wrench, Bug, Rocket, Download, GitBranch, Vote } from "lucide-react";
+import { X, Plus, Wrench, Bug, Rocket, Download, GitBranch, Vote, ArrowRight } from "lucide-react";
 import { BrandMark } from "./brand";
 
 export type SplashUpdate = {
@@ -22,7 +22,8 @@ const LINE_KINDS = {
   ">": { Icon: Rocket, cls: "text-fuchsia-300", label: "From an idea" },
 } as const;
 
-// Three steps, not four paragraphs. Whole thing fits on one screen.
+// Two things you do with projects; the third — rebuilding the site itself — is
+// the actual pitch, so it gets its own block below.
 const STEPS = [
   {
     Icon: Download,
@@ -32,12 +33,7 @@ const STEPS = [
   {
     Icon: GitBranch,
     title: "Branch it",
-    body: "Change anything you find. Your version keeps the original name and adds yours, and joins its family tree.",
-  },
-  {
-    Icon: Vote,
-    title: "Vote on it",
-    body: "Vote projects up, and vote on changes to this site. What wins gets built.",
+    body: "Change anything you find. Your version keeps the original's name and adds yours, and joins its family tree.",
   },
 ];
 
@@ -139,26 +135,49 @@ export function UpdateSplash({
               <span className="text-emerald-400">Branch</span> what everyone else built.
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-center text-[15px] leading-relaxed text-neutral-400">
-              Project OS is a home for open-source projects — mostly built with AI. Nothing here can be sold, and every
-              version stays linked to the one it came from.
+              A home for open-source projects — mostly built with AI. Nothing here can be sold, and every version stays
+              linked to the one it came from.
             </p>
 
-            <div className="mt-9 grid gap-4 sm:grid-cols-3">
-              {STEPS.map((s, i) => (
+            <div className="mx-auto mt-8 grid max-w-2xl gap-4 sm:grid-cols-2">
+              {STEPS.map((s) => (
                 <div key={s.title} className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
                   <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
                     <s.Icon size={18} aria-hidden />
                   </span>
-                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">
-                    <span className="text-neutral-600">{i + 1}. </span>
-                    {s.title}
-                  </p>
+                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">{s.title}</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">{s.body}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            {/* The actual pitch */}
+            <div className="mt-5 rounded-xl border border-emerald-400/35 bg-emerald-400/[0.06] p-5">
+              <div className="flex items-start gap-3.5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-emerald-400/40 bg-emerald-400/10 text-emerald-300">
+                  <Vote size={18} aria-hidden />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-mono text-[15px] font-bold text-white">
+                    And the site itself is yours to rebuild.
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-300">
+                    This is the part that matters: <span className="text-white">Project OS is open source on itself.</span>{" "}
+                    Don&apos;t like how branching works? Think the feed should be different? Take a copy of the site,
+                    build the change, and put it up for a vote. Every round, whatever the community votes for gets built
+                    into the real thing. Nothing here is permanent — including this.
+                  </p>
+                  <a
+                    href="/ideas"
+                    className="mt-3 inline-flex items-center gap-1.5 font-mono text-[13px] text-emerald-300 transition hover:underline"
+                  >
+                    See what people are proposing <ArrowRight size={14} aria-hidden />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <button
                 onClick={close}
                 className="min-h-[46px] cursor-pointer rounded-lg bg-emerald-400 px-7 font-mono text-sm font-bold text-black transition hover:bg-emerald-300"

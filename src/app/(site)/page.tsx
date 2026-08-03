@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Rss, Compass, Plus } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
-import { getUserVotes, getFollowedIds } from "@/lib/queries";
+import { getUserVotes, getFollowedIds, getBadgesFor } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { ButtonLink } from "@/components/ui";
 
@@ -15,7 +15,7 @@ export default async function FeedPage() {
   const { env } = getCloudflareContext();
 
   const FEED_COLS = `p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
-    u.github_login, u.avatar_url,
+    u.github_login, u.avatar_url, p.owner_id,
     (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
     (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
               (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
@@ -39,6 +39,8 @@ export default async function FeedPage() {
         getFollowedIds(user.id),
       ])
     : [[], new Map<string, number>(), new Set<string>()];
+
+  const badges = await getBadgesFor(followed.map((p) => p.owner_id ?? ""));
 
   return (
     <div className="mx-auto w-full max-w-4xl">
@@ -71,7 +73,7 @@ export default async function FeedPage() {
       ) : (
         <div className="stagger space-y-3">
           {followed.map((p) => (
-            <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} />
+            <ProjectCard key={p.id} p={p} vote={votes.get(p.id) ?? 0} following={follows.has(p.id)} canFollow={!!user} badges={badges.get(p.owner_id ?? "")} />
           ))}
         </div>
       )}
