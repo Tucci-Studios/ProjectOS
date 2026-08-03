@@ -52,10 +52,14 @@ export async function GET(request: Request) {
 
   const now = Math.floor(Date.now() / 1000);
   const userId = `gh_${gh.id}`;
+  // Indexing creates a shadow user under this exact id, so the row may already
+  // exist before its owner has ever heard of Project OS. Signing in turns that
+  // shadow into a real account rather than making a second one.
   await env.DB.prepare(
-    `INSERT INTO users (id, github_login, display_name, avatar_url, github_created_at, created_at)
-     VALUES (?1, ?2, ?3, ?4, ?5, ?6)
-     ON CONFLICT(id) DO UPDATE SET github_login = ?2, display_name = ?3, avatar_url = ?4`,
+    `INSERT INTO users (id, github_login, display_name, avatar_url, github_created_at, created_at, is_shadow)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, 0)
+     ON CONFLICT(id) DO UPDATE SET github_login = ?2, display_name = ?3, avatar_url = ?4,
+       github_created_at = ?5, is_shadow = 0`,
   )
     .bind(
       userId,
@@ -67,7 +71,18 @@ export async function GET(request: Request) {
     )
     .run();
 
-  const res = NextResponse.redirect(`${url.origin}/projects`);
+  // ...and anything of theirs we indexed is genuinely theirs now. They arrive to
+  // find their own work already here, with nothing to fill in.
+  const claimed = await env.DB.prepare(
+    "UPDATE projects SET source = 'claimed', claimed_at = ?1 WHERE owner_id = ?2 AND source = 'indexed'",
+  )
+    .bind(now, userId)
+    .run();
+  const claimedCount = claimed.meta?.changes ?? 0;
+
+  const res = NextResponse.redirect(
+    claimedCount > 0 ? `${url.origin}/me?claimed=${claimedCount}` : `${url.origin}/projects`,
+  );
   res.cookies.set(sessionCookieName, await signSession(userId, env.SESSION_SECRET), {
     httpOnly: true,
     sameSite: "lax",

@@ -22,8 +22,19 @@ const payload = b64(Buffer.from(JSON.stringify({ uid: UID, exp: Math.floor(Date.
 const sig = b64(crypto.createHmac("sha256", vars.SESSION_SECRET).update(payload).digest());
 const cookie = `pos_session=${payload}.${sig}`;
 
+// The database holds real, re-importable data, so nothing may be assumed about
+// which ids exist. Find something live to poke at, and skip cleanly if the
+// table is empty rather than reporting a failure the app isn't responsible for.
+const pick = async (path, key) => {
+  const res = await fetch(`${BASE}${path}`, { headers: { Cookie: cookie } });
+  if (!res.ok) return null;
+  const body = await res.json();
+  return body?.[key] ?? null;
+};
+
 const fails = [];
 const ok = [];
+const skipped = [];
 
 async function api(path, body, { expect = 200, label } = {}) {
   const res = await fetch(BASE + path, {
@@ -63,25 +74,36 @@ await page("/submit");
 await page("/mod");
 
 // Voting
-await api("/api/likes", { projectId: "p_yeet", direction: "up" }, { label: "vote up" });
-await api("/api/likes", { projectId: "p_yeet", direction: "down" }, { label: "switch to down" });
-await api("/api/likes", { projectId: "p_yeet", direction: "down" }, { label: "clear vote" });
+const PROJECT = await pick("/api/smoke-target", "projectId");
+const IDEA = await pick("/api/smoke-target", "ideaId");
+
+if (!PROJECT) {
+  skipped.push("project write paths — no live projects in the database");
+} else {
+await api("/api/likes", { projectId: PROJECT, direction: "up" }, { label: "vote up" });
+await api("/api/likes", { projectId: PROJECT, direction: "down" }, { label: "switch to down" });
+await api("/api/likes", { projectId: PROJECT, direction: "down" }, { label: "clear vote" });
 await api("/api/likes", { projectId: "does-not-exist", direction: "up" }, { expect: 404, label: "vote on missing project" });
 
 // Follow
-await api("/api/follows", { projectId: "p_yeet" }, { label: "follow" });
-await api("/api/follows", { projectId: "p_yeet" }, { label: "unfollow" });
+await api("/api/follows", { projectId: PROJECT }, { label: "follow" });
+await api("/api/follows", { projectId: PROJECT }, { label: "unfollow" });
 
 // Comments — cleaned up at the end so the site isn't littered with test data.
-const c = await api("/api/project-comments", { projectId: "p_yeet", body: "smoke test comment" }, { label: "comment" });
-await api("/api/project-comments", { projectId: "p_yeet", body: "" }, { expect: 400, label: "empty comment rejected" });
+const c = await api("/api/project-comments", { projectId: PROJECT, body: "smoke test comment" }, { label: "comment" });
+await api("/api/project-comments", { projectId: PROJECT, body: "" }, { expect: 400, label: "empty comment rejected" });
+}
 
 // Ideas
-await api("/api/ideas/vote", { ideaId: "idea_dark", direction: "up" }, { label: "idea upvote" });
-await api("/api/ideas/vote", { ideaId: "idea_dark", direction: "down" }, { label: "idea downvote" });
+if (!IDEA) {
+  skipped.push("idea voting — no ideas in the database");
+} else {
+  await api("/api/ideas/vote", { ideaId: IDEA, direction: "up" }, { label: "idea upvote" });
+  await api("/api/ideas/vote", { ideaId: IDEA, direction: "down" }, { label: "idea downvote" });
+}
 
 // Reports
-await api("/api/reports", { targetType: "project", targetId: "p_yeet", reason: "smoke test report" }, { label: "report" });
+await api("/api/reports", { targetType: "project", targetId: PROJECT, reason: "smoke test report" }, { label: "report" });
 
 // Validation guards
 await api("/api/projects", { repo: "not a repo" }, { expect: 400, label: "bad repo rejected" });
@@ -90,7 +112,7 @@ await api("/api/projects", { repo: "not a repo" }, { expect: 400, label: "bad re
 const meRes = await fetch(BASE + "/api/whoami", { headers: { Cookie: cookie } });
 const me = meRes.ok ? await meRes.json() : { role: "user" };
 if (me.role !== "admin") {
-  await api("/api/projects/manage", { projectId: "p_yeet", description: "x".repeat(30) }, { expect: 403, label: "cannot edit someone else's project" });
+  await api("/api/projects/manage", { projectId: PROJECT, description: "x".repeat(30) }, { expect: 403, label: "cannot edit someone else's project" });
 } else {
   ok.push("skipped owner-guard check (this account is an admin)");
 }
@@ -100,6 +122,7 @@ await api("/api/mod", { reportId: "nope", action: "dismiss" }, { expect: [403, 4
 await fetch(BASE + "/api/smoke-cleanup", { method: "POST", headers: { Cookie: cookie } }).catch(() => {});
 
 console.log(`${ok.length} passed`);
+for (const sk of skipped) console.log(`  skipped: ${sk}`);
 if (fails.length) {
   console.log(`\n${fails.length} FAILED:`);
   for (const f of fails) console.log("  ✗ " + f);

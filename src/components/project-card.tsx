@@ -4,6 +4,7 @@ import { groupOf, timeAgo } from "@/lib/categories";
 import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
+import { Star } from "lucide-react";
 import { CardComments } from "./card-comments";
 import { UserChip } from "./user-chip";
 import type { Badges } from "./user-badges";
@@ -26,6 +27,9 @@ export type ProjectFeedRow = {
   comment_count?: number;
   owner_id?: string;
   image_urls?: string | null;
+  source?: string | null;
+  stars?: number | null;
+  language?: string | null;
 };
 
 /** Monochrome "PROJECT /" byline, then the name. The headliner. */
@@ -126,6 +130,20 @@ export function ProjectCard({
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
             <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} />
+            {p.source === "indexed" && (
+              <span
+                title="Found on GitHub and listed here. Its author hasn't signed in — if it's yours, sign in and it becomes yours."
+                className="cursor-help rounded border border-neutral-700 px-1.5 py-px text-[9px] font-bold uppercase tracking-wider text-neutral-500"
+              >
+                Indexed
+              </span>
+            )}
+            {p.stars ? (
+              <span className="inline-flex items-center gap-1" title={`${p.stars.toLocaleString()} stars on GitHub`}>
+                <Star size={11} aria-hidden /> {p.stars >= 1000 ? `${(p.stars / 1000).toFixed(1)}k` : p.stars}
+              </span>
+            ) : null}
+            {p.language && <span className="text-neutral-600">{p.language}</span>}
             <span>{timeAgo(p.created_at)}</span>
             <CardComments projectId={p.id} count={p.comment_count ?? 0} />
             <span

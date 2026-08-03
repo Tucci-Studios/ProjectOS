@@ -4,9 +4,9 @@ import type { ProjectFeedRow } from "@/components/project-card";
 export type FeedSort = "top" | "new" | "branched" | "followed";
 
 const ORDER_BY: Record<FeedSort, string> = {
-  top: "like_count DESC, p.created_at DESC",
+  top: "like_count DESC, p.stars DESC, p.created_at DESC",
   new: "p.created_at DESC",
-  branched: "fork_count DESC, like_count DESC",
+  branched: "fork_count DESC, like_count DESC, p.stars DESC",
   followed: "follower_count DESC, like_count DESC",
 };
 
@@ -24,7 +24,7 @@ export async function getProjectFeed(
   const order = ORDER_BY[sort] ?? ORDER_BY.new;
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
-            u.github_login, u.avatar_url,
+            u.github_login, u.avatar_url, p.owner_id, p.source, p.stars, p.language,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
             (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status = 'live') AS fork_count,
             (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
@@ -141,6 +141,7 @@ export async function getBadges(userId: string): Promise<import("@/components/us
         AND (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) =
             (SELECT MAX(s) FROM (SELECT COALESCE(SUM(l2.value),0) AS s FROM projects p2
               LEFT JOIN likes l2 ON l2.project_id = p2.id WHERE p2.status='live' GROUP BY p2.id))
+        AND (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) > 0
       ) AS number_one,
       (SELECT COUNT(*) FROM ideas WHERE author_id = ?1 AND status='shipped') AS ideas_shipped,
       (SELECT COALESCE(MAX(cnt),0) FROM (
@@ -175,6 +176,7 @@ export async function getBadgesFor(
          AND (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) =
              (SELECT MAX(s) FROM (SELECT COALESCE(SUM(l2.value),0) AS s FROM projects p2
                LEFT JOIN likes l2 ON l2.project_id = p2.id WHERE p2.status='live' GROUP BY p2.id))
+         AND (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) > 0
        ) AS number_one,
        (SELECT COUNT(*) FROM ideas i WHERE i.author_id = u.id AND i.status='shipped') AS ideas_shipped,
        (SELECT COALESCE(MAX(cnt),0) FROM (

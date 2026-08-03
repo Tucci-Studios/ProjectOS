@@ -18,7 +18,7 @@ export default async function SavesPage() {
     ? await Promise.all([
         env.DB.prepare(
           `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
-                  u.github_login, u.avatar_url, p.owner_id,
+                  u.github_login, u.avatar_url, p.owner_id, p.source, p.stars, p.language,
                   (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
                   (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
                   (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
