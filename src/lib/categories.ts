@@ -35,6 +35,12 @@ export type CategoryMeta = {
   use: string;
   group: GroupKey;
   Icon: LucideIcon;
+  /**
+   * Short text drawn in place of the icon. Preferred where the thing has an
+   * obvious written form — `.md` and `>_` need no explaining, and they sidestep
+   * borrowing a logo we have no right to use.
+   */
+  mark?: string;
 };
 
 export const GROUPS: Record<
@@ -80,16 +86,16 @@ export const GROUP_ORDER: GroupKey[] = ["ai", "build", "play"];
 
 export const CATEGORY_META: CategoryMeta[] = [
   { slug: "claude-skills", label: "Claude Skills", kind: "Skill", use: "Teaches Claude a new trick", group: "ai", Icon: Sparkles },
-  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", use: "Drops into your repo", group: "ai", Icon: FileText },
-  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", use: "Connects Claude to something", group: "ai", Icon: Plug },
-  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: HardDrive },
-  { slug: "codex", label: "Codex", kind: "Codex Setup", use: "Set up for Codex", group: "ai", Icon: SquareTerminal },
-  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot },
+  { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", use: "Drops into your repo", group: "ai", Icon: FileText, mark: ".md" },
+  { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", use: "Connects Claude to something", group: "ai", Icon: Plug, mark: "MCP" },
+  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: HardDrive, mark: "LLM" },
+  { slug: "codex", label: "Codex", kind: "Codex Setup", use: "Set up for Codex", group: "ai", Icon: SquareTerminal, mark: ">_" },
+  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot, mark: "Xai" },
 
   { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", use: "Clone it and keep building", group: "build", Icon: Code2 },
   { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", use: "Run it in your terminal", group: "build", Icon: Wrench },
 
-  { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow },
+  { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow, mark: "▢" },
   { slug: "games", label: "Games", kind: "Game", use: "Play it", group: "play", Icon: Gamepad2 },
 ];
 

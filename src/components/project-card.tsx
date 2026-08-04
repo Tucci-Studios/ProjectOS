@@ -85,7 +85,17 @@ export function GroupTile({ category, big = false }: { category: string; big?: b
       }`}
     >
       <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: g.hex }} aria-hidden />
-      <meta.Icon size={big ? 24 : 18} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
+      {meta.mark ? (
+        <span
+          className="font-mono font-bold leading-none tracking-tight"
+          style={{ color: g.hex, fontSize: (big ? 24 : 18) * (meta.mark.length > 2 ? 0.55 : 0.72) }}
+          aria-hidden
+        >
+          {meta.mark}
+        </span>
+      ) : (
+        <meta.Icon size={big ? 24 : 18} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
+      )}
     </span>
   );
 }
