@@ -18,12 +18,16 @@ export function SiteHeaderClient({
   unseenUpdate,
   firstTime,
   unreadCount = 0,
+  projectCount = 0,
+  forkCount = 0,
 }: {
   user: SessionUser | null;
   latestUpdate?: SplashUpdate | null;
   unseenUpdate?: boolean;
   firstTime?: boolean;
   unreadCount?: number;
+  projectCount?: number;
+  forkCount?: number;
 }) {
   const pathname = usePathname();
   const [splashTrigger, setSplashTrigger] = useState(0);
@@ -112,7 +116,7 @@ export function SiteHeaderClient({
         </div>
       </div>
     </header>
-    {latestUpdate && <UpdateSplash update={latestUpdate} unseen={!!unseenUpdate} firstTime={!!firstTime} trigger={splashTrigger} />}
+    {latestUpdate && <UpdateSplash update={latestUpdate} unseen={!!unseenUpdate} firstTime={!!firstTime} trigger={splashTrigger} projectCount={projectCount} forkCount={forkCount} />}
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, Plus, Wrench, Bug, Rocket, Download, GitFork, Vote, ArrowRight } from "lucide-react";
+import { X, Plus, Wrench, Bug, Rocket, Download, GitFork, Compass, ArrowRight } from "lucide-react";
 import { BrandMark } from "./brand";
 
 export type SplashUpdate = {
@@ -32,12 +32,16 @@ export function UpdateSplash({
   firstTime = false,
   trigger,
   onClosed,
+  projectCount = 0,
+  forkCount = 0,
 }: {
   update: SplashUpdate;
   unseen: boolean;
   firstTime?: boolean;
   trigger?: number;
   onClosed?: () => void;
+  projectCount?: number;
+  forkCount?: number;
 }) {
   const [open, setOpen] = useState(unseen || firstTime);
   const [mode, setMode] = useState<"welcome" | "new">(firstTime ? "welcome" : "new");
@@ -99,69 +103,99 @@ export function UpdateSplash({
         </button>
       </div>
 
-      <div className="flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-5 py-6">
+      <div className="flex min-h-0 flex-1 justify-center overflow-y-auto px-5 py-8">
+        <div className="my-auto w-full">
         {mode === "welcome" ? (
-          <div className="animate-rise w-full max-w-3xl">
-            {/* The pitch, first and biggest */}
+          <div className="animate-rise mx-auto w-full max-w-3xl">
+            {/* What this is, before why it's interesting. The old version led
+                with "fork the site itself", which is a second-order idea for
+                someone who doesn't yet know what the site holds. */}
             <p className="text-center font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-emerald-400">
               Project Open Source
             </p>
             <h1 className="mt-4 text-center font-mono text-3xl font-bold leading-tight tracking-tight text-white sm:text-[40px]">
-              This site is yours
+              Every project here
               <br />
-              to <span className="text-emerald-400">build and rebuild</span>.
+              came from <span className="text-emerald-400">somewhere</span>.
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-center text-[16px] leading-relaxed text-neutral-300">
-              Project OS is open source on itself. Don&apos;t like how something works here — forking, the feed, any
-              of it? Take a copy of the site, build the change, and put it up for a vote.{" "}
-              <span className="text-white">Whatever the community votes for gets built into the real thing.</span>{" "}
-              Nothing here is permanent, including this.
+              {projectCount.toLocaleString()} open-source projects — skills, MCP servers, tools, games.{" "}
+              <span className="text-white">Take any of them, change it, and put your version up.</span> Every copy
+              stays linked to the one it came from, so you can see how an idea travelled.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            {/* The mechanic, drawn rather than described. */}
+            <div className="mx-auto mt-8 flex max-w-md flex-col items-center">
+              <span className="rounded-lg border border-emerald-400/60 bg-emerald-400/10 px-3 py-1.5 font-mono text-[12px] font-bold text-white">
+                someone&apos;s project
+              </span>
+              <span className="h-4 w-px bg-neutral-700" />
+              <div className="relative w-full">
+                <span className="absolute left-[16.6%] right-[16.6%] top-0 h-px bg-neutral-700" />
+                <div className="grid grid-cols-3 gap-2 pt-0">
+                  {["a fork", "yours", "a fork"].map((label, i) => (
+                    <span key={i} className="flex flex-col items-center">
+                      <span className="h-4 w-px bg-neutral-700" />
+                      <span
+                        className={`w-full truncate rounded-lg border px-2 py-1.5 text-center font-mono text-[11px] ${
+                          i === 1
+                            ? "border-emerald-400/60 bg-emerald-400/[0.07] font-bold text-emerald-200"
+                            : "border-neutral-700 bg-neutral-900/70 text-neutral-400"
+                        }`}
+                      >
+                        {label}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p className="mt-3 text-center font-mono text-[11px] text-neutral-400">
+                {forkCount >= 1000
+                  ? `${Math.round(forkCount / 1000).toLocaleString()}k forks already exist across these projects`
+                  : "Forks are tracked from GitHub automatically"}
+              </p>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/ideas"
+                href="/explore"
                 onClick={close}
                 className="inline-flex min-h-[46px] items-center gap-2 rounded-lg bg-emerald-400 px-6 font-mono text-sm font-bold text-black transition hover:bg-emerald-300"
               >
-                <Vote size={16} aria-hidden /> See what people are proposing
+                <Compass size={16} aria-hidden /> Look around
               </Link>
               <Link
-                href="/ideas/build"
+                href="/submit"
                 onClick={close}
                 className="inline-flex min-h-[46px] items-center gap-2 rounded-lg border border-neutral-700 px-5 font-mono text-sm text-neutral-300 transition hover:border-emerald-400/50 hover:text-emerald-300"
               >
-                Get the code <ArrowRight size={15} aria-hidden />
+                Publish yours <ArrowRight size={15} aria-hidden />
               </Link>
             </div>
 
-            {/* Then the mechanic that makes it work */}
-            <div className="mt-10 border-t border-neutral-800 pt-7">
-              <p className="mb-4 text-center font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
-                And the same goes for everything on it
-              </p>
-              <div className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
-                <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-300">
-                    <Download size={18} aria-hidden />
-                  </span>
-                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">Take anything</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
-                    Skills, MCP servers, tools, games — every project installs with one copy-paste command. All free,
-                    all open, none of it for sale.
-                  </p>
-                </div>
-                <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-300">
-                    <GitFork size={18} aria-hidden />
-                  </span>
-                  <p className="mt-3.5 font-mono text-[15px] font-bold text-white">Fork anything</p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
-                    A <span className="text-neutral-200">fork</span> is your own version of someone&apos;s project. It
-                    keeps their name and adds yours — Subwolf // Cyber — and joins a public family tree showing where
-                    every idea came from.
-                  </p>
-                </div>
+            <div className="mt-10 grid gap-4 border-t border-neutral-800 pt-7 sm:grid-cols-2">
+              <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-300">
+                  <Download size={18} aria-hidden />
+                </span>
+                <p className="mt-3.5 font-mono text-[15px] font-bold text-white">Nothing here is for sale</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
+                  Every project is open source and stays that way, including anything forked from it. That rule is
+                  the site, not a policy on it.
+                </p>
+              </div>
+              <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-800 text-neutral-300">
+                  <GitFork size={18} aria-hidden />
+                </span>
+                <p className="mt-3.5 font-mono text-[15px] font-bold text-white">The site is one of the projects</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-neutral-400">
+                  Don&apos;t like how something works here? Fork Project OS, build the change, and{" "}
+                  <Link href="/ideas" onClick={close} className="text-emerald-400 hover:underline">
+                    put it up for a vote
+                  </Link>
+                  .
+                </p>
               </div>
             </div>
 
@@ -223,6 +257,7 @@ export function UpdateSplash({
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

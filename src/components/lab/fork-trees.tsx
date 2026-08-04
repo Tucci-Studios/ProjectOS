@@ -3,17 +3,15 @@
 import { GitFork, Star } from "lucide-react";
 
 /**
- * The lineage tree, three ways, drawn from real GitHub forks.
+ * The lineage tree, drawn from forks that actually exist.
  *
- * The site's whole premise is that lineage is visible, and today the tree
- * renders on one project page out of 655 — because it only counts forks that
- * were published back to Project OS, and almost nobody has. Meanwhile 13,761
- * real fork rows are already synced and sitting unused.
+ * The site's premise is that lineage is visible, and the tree currently renders
+ * on one project page out of 655 — because it only counts forks published back
+ * to Project OS, and almost nobody has. Meanwhile 13,761 real fork rows sit
+ * synced and unused.
  *
- * So each of these draws the same thing: the root, then its actual GitHub
- * forks, with the ones not listed here shown as unclaimed. The question isn't
- * whether the data exists — it's which shape makes a stranger understand what
- * they're looking at in about a second.
+ * So this draws the root and its real GitHub forks, with anything not listed
+ * here shown as unclaimed. Grey isn't a gap in the data; it's the ask.
  */
 
 export type ForkNode = {
@@ -30,136 +28,123 @@ export type TreeRoot = {
   totalForks: number;
 };
 
-const k = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+const k = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : n.toLocaleString());
 
-function Chip({ n }: { n: ForkNode }) {
+/**
+ * Four across, so the stems below the rail line up with the chips no matter how
+ * long the names are. The earlier version let the chips wrap freely and the
+ * connectors stopped making sense on the second row.
+ */
+const COLS = 4;
+
+function Node({ n, weight }: { n: ForkNode; weight: number }) {
   return (
-    <span
-      className={`inline-flex max-w-full items-center gap-1.5 truncate rounded-lg border px-2 py-1 font-mono text-[11px] ${
-        n.published
-          ? "border-emerald-400/50 bg-emerald-400/[0.07] text-emerald-200"
-          : "border-neutral-700 bg-neutral-900/60 text-neutral-400"
-      }`}
-      title={`${n.full_name}${n.published ? "" : " — not listed on Project OS"}`}
-    >
-      <span className="truncate">{n.owner_login}</span>
-      {n.stars > 0 && (
-        <span className="inline-flex shrink-0 items-center gap-0.5 text-amber-300/70">
+    <span className="flex min-w-0 flex-col items-center">
+      {/* the stem up to the rail */}
+      <span className="h-4 w-px shrink-0 bg-neutral-700" />
+      <span
+        className={`flex w-full min-w-0 flex-col gap-0.5 rounded-lg border px-2.5 py-1.5 text-center transition ${
+          n.published
+            ? "border-emerald-400/60 bg-emerald-400/[0.07]"
+            : "border-neutral-700 bg-neutral-900/70 hover:border-neutral-500"
+        }`}
+        title={n.published ? n.full_name : `${n.full_name} — on GitHub, not listed here`}
+        style={{ borderTopWidth: `${1 + weight * 2}px` }}
+      >
+        <span
+          className={`truncate font-mono text-[11.5px] ${
+            n.published ? "font-bold text-emerald-200" : "text-neutral-300"
+          }`}
+        >
+          {n.owner_login}
+        </span>
+        <span className="flex items-center justify-center gap-1 font-mono text-[10px] text-amber-300/70">
           <Star size={8} className="fill-current" aria-hidden />
           {k(n.stars)}
         </span>
-      )}
-    </span>
-  );
-}
-
-function RootBadge({ root, size = "big" }: { root: TreeRoot; size?: "big" | "small" }) {
-  return (
-    <span
-      className={`inline-flex items-center gap-2 rounded-xl border border-emerald-400/60 bg-emerald-400/10 font-mono font-bold text-white ${
-        size === "big" ? "px-3.5 py-2 text-[13px]" : "px-2.5 py-1.5 text-[12px]"
-      }`}
-    >
-      {root.name}
-      <span className="inline-flex items-center gap-1 font-normal text-emerald-300">
-        <GitFork size={11} aria-hidden />
-        {k(root.totalForks)}
       </span>
     </span>
   );
 }
 
-/** A — the family tree everyone pictures: root on top, children hanging below. */
-export function TreeVertical({ root, forks }: { root: TreeRoot; forks: ForkNode[] }) {
-  const shown = forks.slice(0, 12);
+/**
+ * One row of forks: a rail, then a stem down to each chip.
+ *
+ * Every row hangs off the same trunk rather than off the row above it. They are
+ * all siblings — twelve forks of one project, not four generations — and the
+ * first version read as descent purely because the chips had to wrap.
+ */
+function Row({ nodes, top }: { nodes: ForkNode[]; top: number }) {
   return (
-    <div className="flex flex-col items-center py-2">
-      <RootBadge root={root} />
+    <div className="relative w-full">
+      <span
+        className="absolute top-0 h-px bg-neutral-700"
+        style={{
+          left: `${(100 / COLS) * 0.5}%`,
+          width: `${(100 / COLS) * (Math.min(nodes.length, COLS) - 1)}%`,
+        }}
+      />
+      <div className="grid gap-x-2.5" style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}>
+        {nodes.map((n) => (
+          <Node key={n.full_name} n={n} weight={Math.min(1, n.stars / top)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ForkTree({ root, forks }: { root: TreeRoot; forks: ForkNode[] }) {
+  const shown = forks.slice(0, 12);
+  const top = Math.max(1, shown[0]?.stars ?? 1);
+  const rows: ForkNode[][] = [];
+  for (let i = 0; i < shown.length; i += COLS) rows.push(shown.slice(i, i + COLS));
+
+  const listed = forks.filter((f) => f.published).length;
+  const rest = Math.max(0, root.totalForks - shown.length);
+
+  return (
+    <div className="flex flex-col items-center">
+      <span className="inline-flex items-center gap-2.5 rounded-xl border border-emerald-400/60 bg-emerald-400/10 px-4 py-2.5">
+        <span className="font-mono text-[14px] font-bold text-white">{root.name}</span>
+        <span className="font-mono text-[12px] text-neutral-400">@{root.owner}</span>
+        <span className="inline-flex items-center gap-1 font-mono text-[12px] text-amber-300/80">
+          <Star size={10} className="fill-current" aria-hidden />
+          {k(root.stars)}
+        </span>
+      </span>
+
       <span className="h-5 w-px bg-neutral-700" />
+
+      {/* The trunk runs the whole height so each rail is visibly a branch off
+          the root, not off the row above it. */}
       <div className="relative w-full">
-        <span className="absolute left-[8%] right-[8%] top-0 h-px bg-neutral-700" />
-        <div className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 px-2 pt-5">
-          {shown.map((n) => (
-            <span key={n.full_name} className="relative flex flex-col items-center">
-              <span className="absolute -top-5 h-5 w-px bg-neutral-700" />
-              <Chip n={n} />
-            </span>
+        <span
+          aria-hidden
+          className="absolute left-1/2 top-0 w-px -translate-x-1/2 bg-neutral-700"
+          style={{ height: `${Math.max(0, rows.length - 1) * 100}px` }}
+        />
+        <div className="w-full space-y-6">
+          {rows.map((r, i) => (
+            <Row key={i} nodes={r} top={top} />
           ))}
         </div>
       </div>
-      {forks.length > shown.length && (
-        <p className="mt-3 font-mono text-[11px] text-neutral-400">
-          and {k(root.totalForks - shown.length)} more
+
+      {rest > 0 && (
+        <p className="mt-5 flex items-center gap-1.5 font-mono text-[11.5px] text-neutral-400">
+          <GitFork size={11} aria-hidden />
+          {k(rest)} more forks on GitHub
         </p>
       )}
-    </div>
-  );
-}
 
-/** B — a ring. Reads as one thing with many descendants rather than a hierarchy. */
-export function TreeRadial({ root, forks }: { root: TreeRoot; forks: ForkNode[] }) {
-  const shown = forks.slice(0, 10);
-  const R = 116;
-  return (
-    <div className="relative mx-auto h-[300px] w-full max-w-[420px]">
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 420 300" aria-hidden>
-        {shown.map((_, i) => {
-          const a = (i / shown.length) * Math.PI * 2 - Math.PI / 2;
-          return (
-            <line
-              key={i}
-              x1={210}
-              y1={150}
-              x2={Math.round(210 + Math.cos(a) * R)}
-              y2={Math.round(150 + Math.sin(a) * R)}
-              stroke="#404040"
-              strokeWidth="1"
-            />
-          );
-        })}
-      </svg>
-      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <RootBadge root={root} size="small" />
-      </span>
-      {shown.map((n, i) => {
-        const a = (i / shown.length) * Math.PI * 2 - Math.PI / 2;
-        return (
-          <span
-            key={n.full_name}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${210 + Math.cos(a) * R}px`, top: `${150 + Math.sin(a) * R}px` }}
-          >
-            <Chip n={n} />
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-/** C — a ranked list. Least pretty, most readable, survives a phone. */
-export function TreeList({ root, forks }: { root: TreeRoot; forks: ForkNode[] }) {
-  const shown = forks.slice(0, 8);
-  const top = Math.max(1, shown[0]?.stars ?? 1);
-  return (
-    <div className="py-1">
-      <RootBadge root={root} />
-      <div className="mt-3 space-y-1 border-l border-neutral-700 pl-3">
-        {shown.map((n) => (
-          <div key={n.full_name} className="flex items-center gap-2.5">
-            <span className="w-24 shrink-0 truncate font-mono text-[11.5px] text-neutral-300">{n.owner_login}</span>
-            <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-800">
-              <span
-                className={`block h-full rounded-full ${n.published ? "bg-emerald-400" : "bg-neutral-600"}`}
-                style={{ width: `${Math.max(4, (n.stars / top) * 100)}%` }}
-              />
-            </span>
-            <span className="w-10 shrink-0 text-right font-mono text-[10.5px] text-neutral-400">{k(n.stars)}</span>
-          </div>
-        ))}
-      </div>
-      <p className="mt-2.5 pl-3 font-mono text-[11px] text-neutral-400">
-        {k(root.totalForks)} forks on GitHub · showing the {shown.length} most starred
+      <p className="mt-1.5 font-mono text-[11px] text-neutral-400">
+        {listed > 0 ? (
+          <>
+            <span className="text-emerald-300">{listed}</span> of these are listed on Project OS
+          </>
+        ) : (
+          "None of these are listed on Project OS yet"
+        )}
       </p>
     </div>
   );
