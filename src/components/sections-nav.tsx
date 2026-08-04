@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio } from "lucide-react";
+import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio, HeartHandshake } from "lucide-react";
 import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
 /**
@@ -33,6 +33,7 @@ export function SectionsNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const MINE = [
     { href: "/saves", label: "Saves", Icon: Bookmark, tone: "text-sky-300", bg: "bg-sky-400/10" },
     { href: "/ideas", label: "Ideas", Icon: Lightbulb, tone: "text-amber-300", bg: "bg-amber-400/10" },
+    { href: "/help", label: "Help wanted", Icon: HeartHandshake, tone: "text-emerald-300", bg: "bg-emerald-400/10" },
     { href: "/lab", label: "Lab", Icon: FlaskConical, tone: "text-amber-300", bg: "bg-amber-400/10" },
     // The moderation queue was a URL you had to remember.
     ...(isAdmin
