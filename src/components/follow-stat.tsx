@@ -13,6 +13,11 @@ const compact = (n: number) => (n >= 10000 ? `${(n / 1000).toFixed(n >= 100000 ?
  * These used to be bare icons and digits crammed into the byline — you had to
  * hover to learn what any of them meant, which is no help at all on a phone.
  * The label is the explanation now; the tooltip just adds detail.
+ *
+ * A counter only appears once it has something to say. Votes and followers are
+ * zero on nearly every project here, and printing "0 votes · 0 followers" on
+ * 655 pages is a site-wide announcement that the place is empty. Nothing is
+ * hidden that exists — the moment a number is real, it shows up.
  */
 export function ProjectStats({
   projectId,
@@ -35,8 +40,15 @@ export function ProjectStats({
 }) {
   const [followers, setFollowers] = useState(initialFollowers);
 
+  // A brand-new project can have nothing to report at all. An empty bordered
+  // strip is worse than no strip, so it only exists if it holds something —
+  // the follow and save buttons count.
+  const hasNumbers = forkCount > 0 || voteCount !== 0 || followers > 0 || !!stars;
+  if (!hasNumbers && !signedIn) return null;
+
   return (
     <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-neutral-800 bg-neutral-900/40 px-4 py-2.5">
+      {forkCount > 0 && (
       <Stat
         Icon={GitFork}
         value={forkCount}
@@ -48,18 +60,23 @@ export function ProjectStats({
         }
         highlight
       />
-      <Stat
-        Icon={ChevronUp}
-        value={voteCount}
-        label={Math.abs(voteCount) === 1 ? "vote" : "votes"}
-        explain="Upvotes minus downvotes from the community."
-      />
-      <Stat
-        Icon={Users}
-        value={followers}
-        label={followers === 1 ? "follower" : "followers"}
-        explain="People who get told when this posts an update or someone forks it."
-      />
+      )}
+      {voteCount !== 0 && (
+        <Stat
+          Icon={ChevronUp}
+          value={voteCount}
+          label={Math.abs(voteCount) === 1 ? "vote" : "votes"}
+          explain="Upvotes minus downvotes from the community."
+        />
+      )}
+      {followers > 0 && (
+        <Stat
+          Icon={Users}
+          value={followers}
+          label={followers === 1 ? "follower" : "followers"}
+          explain="People who get told when this posts an update or someone forks it."
+        />
+      )}
       {stars ? (
         <Stat
           Icon={Star}
