@@ -47,7 +47,7 @@ const add = (level, area, what) => findings.push({ level, area, what });
 const seen = new Map(); // path -> { status, ms, html }
 const linkedFrom = new Map(); // path -> Set of pages linking to it
 const queue = ["/"];
-const seedPaths = ["/explore", "/news", "/ideas", "/saves", "/lab", "/mod", "/wire", "/submit", "/settings", "/me", "/notifications", "/terms", "/search?q=agent"];
+const seedPaths = ["/explore", "/updates", "/ideas", "/saves", "/lab", "/mod", "/wire", "/submit", "/settings", "/me", "/notifications", "/terms", "/search?q=agent"];
 queue.push(...seedPaths);
 
 const rows = d1("SELECT id FROM projects WHERE status='live' ORDER BY stars DESC LIMIT 12");

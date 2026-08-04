@@ -50,9 +50,21 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: "Bad request." }, { status: 400 });
 
   const { env } = getCloudflareContext();
+  const app = await env.DB.prepare("SELECT user_id, role FROM help_applications WHERE id = ?1")
+    .bind(id)
+    .first<{ user_id: string; role: string }>();
+  if (!app) return NextResponse.json({ error: "No such application." }, { status: 404 });
+
   await env.DB.prepare("UPDATE help_applications SET status = ?1, decided_at = ?2 WHERE id = ?3")
     .bind(action, Math.floor(Date.now() / 1000), id)
     .run();
+
+  // Accepting a moderator has to actually make them one, or the queue stays a
+  // note to self. Admins are never demoted by this.
+  if (action === "accepted" && app.role === "mod")
+    await env.DB.prepare("UPDATE users SET role = 'mod' WHERE id = ?1 AND role != 'admin'")
+      .bind(app.user_id)
+      .run();
 
   return NextResponse.json({ ok: true });
 }

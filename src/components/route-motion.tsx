@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 // Nav has an order. Moving to a page further down slides content up from below;
 // moving back up slides it down. Direction carries meaning, so the site feels
 // like one surface instead of a stack of unrelated screens.
-const ORDER = ["/", "/explore", "/news", "/s/", "/p/", "/ideas", "/saves", "/me", "/notifications", "/settings"];
+const ORDER = ["/", "/explore", "/updates", "/s/", "/p/", "/ideas", "/saves", "/me", "/notifications", "/settings"];
 
 function rank(path: string) {
   const i = ORDER.findIndex((p) => (p === "/" ? path === "/" : path.startsWith(p)));

@@ -2,19 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio, HeartHandshake, GraduationCap } from "lucide-react";
+import { ScrollText, Compass, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio, HeartHandshake, GraduationCap } from "lucide-react";
 import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
 /**
- * The rail: three fixed rows for the site, three for the groups, three for
- * personal things.
+ * The rail: where you browse at the top, the three groups in the middle, and
+ * the housekeeping — ideas, updates, help wanted, the lab, moderation — kept
+ * together at the bottom, out of the way of the reading.
  *
  * The groups used to unfold their sections here. They're pages now — clicking
  * AI takes you to AI, where the sections are laid out with their counts — so
  * the rail stays the same height whatever you're looking at, and the sections
  * get room to explain themselves instead of being a cramped list.
  */
-export function SectionsNav({ isAdmin = false }: { isAdmin?: boolean }) {
+export function SectionsNav({ isMod = false }: { isMod?: boolean }) {
   const pathname = usePathname();
   const activeSlug = pathname.startsWith("/s/") ? pathname.split("/")[2] : undefined;
   const activeGroup = pathname.startsWith("/g/")
@@ -28,16 +29,16 @@ export function SectionsNav({ isAdmin = false }: { isAdmin?: boolean }) {
     { href: "/explore", label: "Explore", Icon: Compass },
     { href: "/wire", label: "Wire", Icon: Radio, tone: "text-sky-300", bg: "bg-sky-400/10" },
     { href: "/tutorials", label: "Tutorials", Icon: GraduationCap, tone: "text-amber-300", bg: "bg-amber-400/10" },
-    { href: "/news", label: "News", Icon: Megaphone },
   ];
 
+  // Saves moved to the header, next to your avatar — it's yours, not a section.
   const MINE = [
-    { href: "/saves", label: "Saves", Icon: Bookmark, tone: "text-sky-300", bg: "bg-sky-400/10" },
     { href: "/ideas", label: "Ideas", Icon: Lightbulb, tone: "text-amber-300", bg: "bg-amber-400/10" },
+    { href: "/updates", label: "Updates", Icon: Megaphone, tone: "text-neutral-200", bg: "bg-neutral-700/40" },
     { href: "/help", label: "Help wanted", Icon: HeartHandshake, tone: "text-emerald-300", bg: "bg-emerald-400/10" },
     { href: "/lab", label: "Lab", Icon: FlaskConical, tone: "text-amber-300", bg: "bg-amber-400/10" },
-    // The moderation queue was a URL you had to remember.
-    ...(isAdmin
+    // Moderators only — for everyone else this row isn't here.
+    ...(isMod
       ? [{ href: "/mod", label: "Mod", Icon: ShieldCheck, tone: "text-rose-300", bg: "bg-rose-400/10" }]
       : []),
   ];

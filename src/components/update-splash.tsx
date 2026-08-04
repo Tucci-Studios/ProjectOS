@@ -167,7 +167,7 @@ export function UpdateSplash({
 
             <p className="mt-7 text-center text-xs text-neutral-600">
               Code lives on GitHub — projects here are community-submitted, so read before you run.{" "}
-              <Link href="/news" onClick={close} className="text-neutral-400 hover:text-emerald-300 hover:underline">
+              <Link href="/updates" onClick={close} className="text-neutral-400 hover:text-emerald-300 hover:underline">
                 See what&apos;s new →
               </Link>
             </p>
@@ -217,7 +217,7 @@ export function UpdateSplash({
               >
                 Got it
               </button>
-              <Link href="/news" onClick={close} className="font-mono text-[13px] text-neutral-500 transition hover:text-neutral-300">
+              <Link href="/updates" onClick={close} className="font-mono text-[13px] text-neutral-500 transition hover:text-neutral-300">
                 All past updates
               </Link>
             </div>

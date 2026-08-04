@@ -3,15 +3,19 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ScrollText, Compass, Bookmark, Menu, X, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
+import { ScrollText, Compass, Menu, X, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical, Radio, GraduationCap, HeartHandshake } from "lucide-react";
 import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
+// Same order as the rail, so the phone and the desktop agree. Saves isn't here
+// because it lives next to your avatar in the header, on both.
 const MAIN = [
   { href: "/", label: "Feed", Icon: ScrollText, exact: true },
   { href: "/explore", label: "Explore", Icon: Compass },
-  { href: "/news", label: "News", Icon: Megaphone },
-  { href: "/saves", label: "Saves", Icon: Bookmark },
+  { href: "/wire", label: "Wire", Icon: Radio },
+  { href: "/tutorials", label: "Tutorials", Icon: GraduationCap },
   { href: "/ideas", label: "Ideas", Icon: Lightbulb },
+  { href: "/updates", label: "Updates", Icon: Megaphone },
+  { href: "/help", label: "Help wanted", Icon: HeartHandshake },
   { href: "/lab", label: "Lab", Icon: FlaskConical },
 ];
 

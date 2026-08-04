@@ -180,7 +180,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
                     <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{idea.body_md}</p>
                     <p className="mt-2 font-mono text-[11px] text-neutral-500">
                       built by @{idea.github_login} · lands in{" "}
-                      <Link href="/news" className="relative z-[2] text-amber-300 hover:underline">
+                      <Link href="/updates" className="relative z-[2] text-amber-300 hover:underline">
                         News
                       </Link>{" "}
                       when it ships
@@ -229,7 +229,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
               </div>
             )}
             <Link
-              href="/news"
+              href="/updates"
               className="mt-3 inline-block font-mono text-[12px] text-neutral-500 transition hover:text-emerald-300"
             >
               Read the release notes in News →

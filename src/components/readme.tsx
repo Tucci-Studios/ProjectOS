@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { BookOpen, X, Loader2 } from "lucide-react";
 
 /**
@@ -19,6 +20,42 @@ import { BookOpen, X, Loader2 } from "lucide-react";
 
 const INLINE =
   /(!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*\n]+\*|_[^_\n]+_|https?:\/\/[^\s<>"')\]]+)/g;
+
+/**
+ * Turns the HTML that READMEs are full of into plain markdown-ish text.
+ *
+ * GitHub renders HTML, so people write it — centred logo blocks, badge tables,
+ * <details> sections. Showing those tags as literal text was safe and awful to
+ * read. This keeps the safety, because tags are *removed* rather than trusted:
+ * the few that carry meaning become their markdown equivalent and everything
+ * else is dropped, so a <script> body never survives to be rendered at all.
+ */
+function detag(md: string): string {
+  return md
+    .replace(/<(script|style|iframe|object|embed|svg|noscript)\b[\s\S]*?<\/\1>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|h[1-6]|tr|li|details|summary|table|blockquote)>/gi, "\n")
+    .replace(/<img\b[^>]*?\balt=["']([^"']*)["'][^>]*?\bsrc=["']([^"']+)["'][^>]*>/gi, "![$1]($2)")
+    .replace(/<img\b[^>]*?\bsrc=["']([^"']+)["'][^>]*>/gi, "![]($1)")
+    .replace(/<a\b[^>]*?\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, (_m, href, text) => {
+      const label = String(text).replace(/<[^>]+>/g, "").trim();
+      // A link wrapped round a badge or logo: keep the image, drop the wrapper.
+      // Nesting one inside the other just yields a broken image.
+      if (label.startsWith("![")) return label;
+      return label ? `[${label}](${href})` : "";
+    })
+    .replace(/<(strong|b)>([\s\S]*?)<\/\1>/gi, "**$2**")
+    .replace(/<(em|i)>([\s\S]*?)<\/\1>/gi, "*$2*")
+    .replace(/<code>([\s\S]*?)<\/code>/gi, "`$1`")
+    .replace(/<[^>]+>/g, "")            // whatever is left carries no meaning
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\n{3,}/g, "\n\n");
+}
 
 /** Absolute-ises repo-relative image paths so they resolve off GitHub. */
 function absolute(src: string, repo: string) {
@@ -42,6 +79,11 @@ function Inline({ text, repo }: { text: string; repo: string }) {
               src={absolute(img[2], repo)}
               alt={img[1]}
               loading="lazy"
+              // Badge rows are half dead links in most READMEs. A broken-image
+              // icon is worse than no image, so anything that fails disappears.
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
               className="my-2 inline-block max-h-80 max-w-full rounded-lg border border-neutral-800"
             />
           );
@@ -101,7 +143,7 @@ function Inline({ text, repo }: { text: string; repo: string }) {
 }
 
 export function Readme({ md, repo }: { md: string; repo: string }) {
-  const lines = md.split("\n");
+  const lines = detag(md).split("\n");
   const out: React.ReactNode[] = [];
 
   let i = 0;
@@ -221,8 +263,9 @@ export function Readme({ md, repo }: { md: string; repo: string }) {
  *
  * Loaded when asked for, never during the page render — a project page must not
  * wait on GitHub, and making it do so was enough to take the dev server down
- * under a crawl. Opens as a full overlay with its own close, the same way the
- * welcome screen does.
+ * under a crawl. Takes the whole window when it opens: a README is the document
+ * you came to read, not a preview of one, and reading it shouldn't mean peering
+ * through a hole in the page behind it.
  */
 export function ReadmeButton({
   projectId,
@@ -236,6 +279,8 @@ export function ReadmeButton({
   const [open, setOpen] = useState(false);
   const [md, setMd] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "loading" | "empty">("idle");
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open || md !== null || state === "loading") return;
@@ -272,15 +317,15 @@ export function ReadmeButton({
         {!hasReadme && <span className="text-neutral-600">· from GitHub</span>}
       </button>
 
-      {open && (
-        <div
-          role="dialog"
+      {open && mounted &&
+        createPortal(
+          <div
+            role="dialog"
           aria-label={`Readme for ${repo}`}
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 p-4 backdrop-blur-sm sm:p-8"
-          onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+          className="fixed inset-0 z-50 flex flex-col bg-[#0f1411]"
         >
-          <div className="flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-neutral-700 bg-[#0f1411]">
-            <header className="flex shrink-0 items-center gap-3 border-b border-neutral-800 px-5 py-3">
+          <div className="flex h-full w-full flex-col overflow-hidden">
+            <header className="flex shrink-0 items-center gap-3 border-b border-neutral-800 px-4 py-3 sm:px-6">
               <BookOpen size={15} className="text-emerald-400" aria-hidden />
               <p className="min-w-0 flex-1 truncate font-mono text-[13px] text-neutral-300">{repo}</p>
               <button
@@ -292,7 +337,11 @@ export function ReadmeButton({
               </button>
             </header>
 
-            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+            {/* The text stays a readable column even though the panel is the
+                whole window — full screen is about getting the page out of the
+                way, not about setting line lengths nobody can follow. */}
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+              <div className="mx-auto w-full max-w-3xl">
               {state === "loading" && (
                 <p className="flex items-center gap-2 py-8 font-mono text-[13px] text-neutral-500">
                   <Loader2 size={14} className="animate-spin" aria-hidden /> Fetching it from GitHub...
@@ -302,16 +351,18 @@ export function ReadmeButton({
                 <p className="py-8 text-center text-sm text-neutral-500">This project has no readme on GitHub.</p>
               )}
               {md && <Readme md={md} repo={repo} />}
+              </div>
             </div>
 
-            <footer className="shrink-0 border-t border-neutral-800 px-5 py-2.5">
-              <p className="font-mono text-[11px] text-neutral-600">
-                Formatting is simplified, and any HTML in it is shown as text rather than run.
+            <footer className="shrink-0 border-t border-neutral-800 px-4 py-2.5 sm:px-6">
+              <p className="mx-auto max-w-3xl font-mono text-[11px] text-neutral-600">
+                Formatting is simplified. Any HTML is stripped out rather than run.
               </p>
             </footer>
           </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

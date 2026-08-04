@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Plus, Bell } from "lucide-react";
+import { Search, Plus, Bell, Bookmark } from "lucide-react";
 import type { SessionUser } from "@/lib/auth";
 import { ButtonLink } from "./ui";
 import { BrandMark } from "./brand";
@@ -72,6 +72,17 @@ export function SiteHeaderClient({
           <ButtonLink href="/submit" variant="primary" className="!min-h-[34px] !rounded-full !px-3 !text-[13px]">
             <Plus size={14} aria-hidden /> <span className="hidden sm:inline">Publish</span>
           </ButtonLink>
+
+          {user && (
+            <Link
+              href="/saves"
+              aria-label="My saves"
+              title="My saves"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-neutral-400 outline-none transition hover:bg-neutral-800 hover:text-sky-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+            >
+              <Bookmark size={17} aria-hidden />
+            </Link>
+          )}
 
           {user && (
             <Link

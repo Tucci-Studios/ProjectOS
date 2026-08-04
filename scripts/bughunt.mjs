@@ -8,7 +8,7 @@
  *   node scripts/bughunt.mjs [baseUrl]
  */
 const BASE = process.argv[2] ?? "http://localhost:3000";
-const SEEDS = ["/", "/popular", "/explore", "/news", "/ideas", "/ideas/build", "/ideas/new", "/submit", "/submit/wizard", "/me", "/settings", "/notifications", "/terms", "/search?q=fridge", "/mod"];
+const SEEDS = ["/", "/popular", "/explore", "/updates", "/ideas", "/ideas/build", "/ideas/new", "/submit", "/submit/wizard", "/me", "/settings", "/notifications", "/terms", "/search?q=fridge", "/mod"];
 
 const seen = new Set();
 const queue = [...SEEDS];

@@ -76,7 +76,7 @@ export default function BuildAChangePage() {
       <p className="mt-8 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-xs leading-relaxed text-neutral-500">
         <span className="text-neutral-300">What happens after you win:</span> your diff is public for anyone to read
         before it goes anywhere. Nothing deploys itself — a human reviews the code, then it ships and shows up in{" "}
-        <Link href="/news" className="text-emerald-400 hover:underline">
+        <Link href="/updates" className="text-emerald-400 hover:underline">
           News
         </Link>
         . Votes decide what gets built; review decides that it&apos;s safe.

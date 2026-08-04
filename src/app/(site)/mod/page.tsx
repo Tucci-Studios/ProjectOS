@@ -1,4 +1,5 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ShieldAlert, HeartHandshake, ArrowUpRight } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
@@ -12,16 +13,10 @@ export const dynamic = "force-dynamic";
 
 export default async function ModPage() {
   const user = await getSessionUser();
-  if (!user || user.role !== "admin") {
-    return (
-      <div className="mx-auto max-w-lg">
-        <PageHeader crumbs={[{ label: "Moderation" }]} title="Moderation" purpose="Reports from the community." Icon={ShieldAlert} />
-        <p className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-8 text-center text-sm text-neutral-400">
-          This queue is for admins.
-        </p>
-      </div>
-    );
-  }
+  // Not a locked door with a sign on it. If you aren't a moderator this page
+  // doesn't exist, which is also the honest answer — it's a tool, not a feature.
+  const isMod = user?.role === "admin" || user?.role === "mod";
+  if (!isMod) notFound();
 
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
@@ -38,7 +33,7 @@ export default async function ModPage() {
     reporter: string;
   }>();
 
-  const { results: apps } = await env.DB.prepare(
+  const { results: apps } = user!.role === "admin" ? await env.DB.prepare(
     `SELECT a.id, a.role, a.body, a.contact, a.created_at, u.github_login, u.avatar_url
      FROM help_applications a JOIN users u ON u.id = a.user_id
      WHERE a.status = 'open' ORDER BY a.created_at DESC LIMIT 50`,
@@ -50,7 +45,7 @@ export default async function ModPage() {
     created_at: number;
     github_login: string;
     avatar_url: string | null;
-  }>();
+  }>() : { results: [] as never[] };
 
   const open = results.filter((r) => r.status === "open");
   const closed = results.filter((r) => r.status !== "open");
@@ -67,6 +62,7 @@ export default async function ModPage() {
         Icon={ShieldAlert}
       />
 
+      {user!.role === "admin" && (
       <section className="mb-7 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <HeartHandshake size={17} className="shrink-0 text-emerald-400" aria-hidden />
@@ -109,6 +105,7 @@ export default async function ModPage() {
           </div>
         )}
       </section>
+      )}
 
       {open.length === 0 ? (
         <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
