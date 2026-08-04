@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { GitFork } from "lucide-react";
-import { groupOf, timeAgo } from "@/lib/categories";
+import { categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
 import { Star, TrendingUp } from "lucide-react";
@@ -67,33 +67,29 @@ export function ProjectHeadline({
 
 /** Minimal group symbol — AI, Build, or Play — sitting quietly on the right. */
 /**
- * The group, as a block where the vote arrows used to be.
+ * The section, as a block where the vote arrows used to be.
  *
- * Colour alone can't carry this — three hues are hard to tell apart at a
- * glance and impossible for some people — so the icon does the work and the
- * colour reinforces it.
+ * Spine plus section icon: a coloured stripe down the edge keeps a page of
+ * cards calm, while the icon is the SECTION's rather than the group's, so Games
+ * and Apps look different from each other instead of both just being Play.
  */
 export function GroupTile({ category, big = false }: { category: string; big?: boolean }) {
   const g = groupOf(category);
+  const meta = categoryMeta(category);
   return (
     <span
-      title={`${g.label} — ${g.blurb}`}
-      aria-label={g.label}
-      className={`flex shrink-0 flex-col items-center justify-center gap-1 rounded-lg ${
-        big ? "h-16 w-14" : "h-11 w-11"
+      title={`${meta.label} — ${meta.use}`}
+      aria-label={meta.label}
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 ${
+        big ? "h-16 w-14" : "h-11 w-10"
       }`}
-      style={{ background: `${g.hex}14`, border: `1px solid ${g.hex}44` }}
     >
-      <g.Icon size={big ? 20 : 14} strokeWidth={1.7} style={{ color: g.hex }} aria-hidden />
-      <span
-        className={`font-mono font-bold uppercase leading-none tracking-wider ${big ? "text-[9px]" : "text-[7px]"}`}
-        style={{ color: g.hex }}
-      >
-        {g.label}
-      </span>
+      <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: g.hex }} aria-hidden />
+      <meta.Icon size={big ? 21 : 16} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
     </span>
   );
 }
+
 
 export function ProjectCard({
   p,

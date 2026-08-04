@@ -10,6 +10,7 @@ import {
   type FeedSort,
 } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
+import { Strip } from "@/components/discover";
 import { GROUPS, GROUP_ORDER, CATEGORY_META, categoryMeta, type GroupKey } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
@@ -18,35 +19,30 @@ const PER_PAGE = 24;
 
 const SORTS: { key: FeedSort; label: string; blurb: string }[] = [
   { key: "top", label: "Popular", blurb: "Big on GitHub and still being worked on" },
-  { key: "new", label: "New", blurb: "Most recently published" },
+  { key: "builtOn", label: "Most built on", blurb: "Most forks per star — started from, not just starred" },
+  { key: "new", label: "New", blurb: "Most recently indexed" },
   { key: "forked", label: "Most forked", blurb: "Most forked on GitHub" },
   { key: "starred", label: "Most starred", blurb: "Most starred on GitHub" },
 ];
 
-/**
- * One place to browse everything.
- *
- * Popular and Explore were the same list of projects with one difference —
- * the order — so they're one page with a sort control. The filters stack: a
- * group or section narrows what's counted, the sort decides the order, and both
- * live in the URL so any view can be linked.
- */
-const WHENS: { key: string; label: string; days?: number; blurb: string }[] = [
-  { key: "all", label: "Any time", blurb: "Everything, however long ago it was last touched" },
-  { key: "today", label: "Today", days: 1, blurb: "Worked on in the last day" },
-  { key: "week", label: "This week", days: 7, blurb: "Worked on in the last seven days" },
-  { key: "month", label: "This month", days: 30, blurb: "Worked on in the last thirty days" },
-];
+type Href = (next: { sort?: FeedSort; in?: string; page?: number }) => string;
 
+/**
+ * Explore, in two modes.
+ *
+ * Land on it with nothing chosen and it's a set of edited rows — 462 projects
+ * sorted by one column is a query result, not discovery. Pick a sort or a group
+ * and it becomes the full filtered list, which is what you want once you know
+ * what you're after.
+ */
 export default async function ExplorePage({
   searchParams,
 }: {
-  searchParams: Promise<{ sort?: string; in?: string; when?: string; page?: string }>;
+  searchParams: Promise<{ sort?: string; in?: string; page?: string }>;
 }) {
   const sp = await searchParams;
   const sort: FeedSort = SORTS.some((s) => s.key === sp.sort) ? (sp.sort as FeedSort) : "top";
   const requested = sp.in ?? "";
-  const when = WHENS.find((w) => w.key === sp.when) ?? WHENS[0];
   const page = Math.max(1, Number(sp.page) || 1);
   const meta = SORTS.find((s) => s.key === sort)!;
 
@@ -55,13 +51,76 @@ export default async function ExplorePage({
   const active = isGroup || isSection ? requested : "";
   const openGroup = isGroup ? (active as GroupKey) : isSection ? categoryMeta(active).group : null;
 
+  const href: Href = (next) => {
+    const q = new URLSearchParams();
+    const s = next.sort ?? sort;
+    const f = next.in !== undefined ? next.in : active;
+    if (s !== "top") q.set("sort", s);
+    if (f) q.set("in", f);
+    if (next.page && next.page > 1) q.set("page", String(next.page));
+    const qs = q.toString();
+    return qs ? `/explore?${qs}` : "/explore";
+  };
+
   const user = await getSessionUser();
+
+  // Nothing chosen yet — show something edited rather than everything at once.
+  if (!active && sort === "top" && page === 1) {
+    const [builtOn, fresh, ai, build, play, alive] = await Promise.all([
+      getProjectFeed(undefined, "builtOn", { limit: 4 }),
+      getProjectFeed(undefined, "new", { limit: 4 }),
+      getProjectFeed("ai", "top", { limit: 4 }),
+      getProjectFeed("build", "top", { limit: 4 }),
+      getProjectFeed("play", "top", { limit: 4 }),
+      getProjectFeed(undefined, "top", { limit: 4 }),
+    ]);
+
+    return (
+      <div className="mx-auto w-full max-w-4xl">
+        <Header total={alive.total} tail="Start anywhere." />
+        <Sorts sort={sort} href={href} />
+        <Groups active={active} openGroup={openGroup} href={href} />
+
+        <Strip
+          title="Most built on"
+          blurb="The highest ratio of forks to stars. People don't just star these — they start from them."
+          href={href({ sort: "builtOn" })}
+          items={builtOn.results}
+        />
+        <Strip
+          title="Big and still moving"
+          blurb="Large on GitHub and pushed to recently, rather than large and abandoned."
+          href={href({ sort: "starred" })}
+          items={alive.results}
+        />
+        <Strip
+          title="AI"
+          blurb="Skills, CLAUDE.md files, MCP servers — anything that makes a model better at its job."
+          href={href({ in: "ai" })}
+          items={ai.results}
+        />
+        <Strip
+          title="Build"
+          blurb="Code and tools to build with."
+          href={href({ in: "build" })}
+          items={build.results}
+        />
+        <Strip title="Play" blurb="Things you run and enjoy." href={href({ in: "play" })} items={play.results} />
+        <Strip
+          title="Just arrived"
+          blurb="Most recently pulled in from GitHub."
+          href={href({ sort: "new" })}
+          items={fresh.results}
+        />
+      </div>
+    );
+  }
+
   const [{ results, total }, votes, follows, saved] = await Promise.all([
     getProjectFeed(active || undefined, sort, {
       limit: PER_PAGE,
       offset: (page - 1) * PER_PAGE,
       viewerId: user?.id,
-      sinceDays: when.days,
     }),
     getUserVotes(user?.id),
     getFollowedIds(user?.id),
@@ -70,89 +129,13 @@ export default async function ExplorePage({
   const badges = await getBadgesFor(results.map((p) => p.owner_id ?? ""));
 
   const pages = Math.max(1, Math.ceil(total / PER_PAGE));
-  const href = (next: { sort?: FeedSort; in?: string; when?: string; page?: number }) => {
-    const q = new URLSearchParams();
-    const s = next.sort ?? sort;
-    const f = next.in !== undefined ? next.in : active;
-    const w = next.when ?? when.key;
-    if (s !== "top") q.set("sort", s);
-    if (f) q.set("in", f);
-    if (w !== "all") q.set("when", w);
-    if (next.page && next.page > 1) q.set("page", String(next.page));
-    const qs = q.toString();
-    return qs ? `/explore?${qs}` : "/explore";
-  };
-
-  const where = isGroup
-    ? GROUPS[active as GroupKey].label
-    : isSection
-      ? categoryMeta(active).label
-      : null;
+  const where = isGroup ? GROUPS[active as GroupKey].label : isSection ? categoryMeta(active).label : null;
 
   return (
     <div className="mx-auto w-full max-w-4xl">
-      <header className="mb-4">
-        <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
-          <Compass size={22} className="text-emerald-400" aria-hidden /> Explore
-        </h1>
-        <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-400">
-          <span className="text-neutral-200">{total.toLocaleString()}</span> project{total === 1 ? "" : "s"}
-          {where && <> in {where}</>}
-          {when.days && <> touched in the last {when.days === 1 ? "day" : `${when.days} days`}</>}. {meta.blurb}.
-        </p>
-      </header>
-
-      {/* order */}
-      <div className="flex gap-1 overflow-x-auto border-b border-neutral-800">
-        {SORTS.map(({ key, label, blurb }) => {
-          const on = key === sort;
-          return (
-            <Link
-              key={key}
-              href={href({ sort: key, page: 1 })}
-              aria-current={on ? "page" : undefined}
-              title={blurb}
-              className={`-mb-px flex min-h-[42px] shrink-0 items-center border-b-2 px-3.5 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                on
-                  ? "border-emerald-400 font-bold text-white"
-                  : "border-transparent text-neutral-500 hover:text-neutral-200"
-              }`}
-            >
-              {label}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* what's included — sections appear once you pick their group */}
-      <div className="mt-3 flex flex-wrap items-center gap-1.5">
-        <Pill href={href({ in: "", page: 1 })} on={!active}>
-          Everything
-        </Pill>
-        {GROUP_ORDER.map((key) => (
-          <Pill key={key} href={href({ in: key, page: 1 })} on={active === key}>
-            {GROUPS[key].label}
-          </Pill>
-        ))}
-      </div>
-
-      <div className="mt-2 flex flex-wrap items-center gap-1.5">
-        {WHENS.map((w) => (
-          <Pill key={w.key} href={href({ when: w.key, page: 1 })} on={when.key === w.key} small title={w.blurb}>
-            {w.label}
-          </Pill>
-        ))}
-      </div>
-
-      {openGroup && (
-        <div className="mt-2 flex flex-wrap items-center gap-1.5 border-l-2 border-neutral-800 pl-3">
-          {CATEGORY_META.filter((c) => c.group === openGroup).map((c) => (
-            <Pill key={c.slug} href={href({ in: c.slug, page: 1 })} on={active === c.slug} small>
-              {c.label}
-            </Pill>
-          ))}
-        </div>
-      )}
+      <Header total={total} where={where} tail={`${meta.blurb}.`} />
+      <Sorts sort={sort} href={href} />
+      <Groups active={active} openGroup={openGroup} href={href} />
 
       <div className="mt-5">
         {results.length === 0 ? (
@@ -201,23 +184,86 @@ export default async function ExplorePage({
   );
 }
 
+function Header({ total, where, tail }: { total: number; where?: string | null; tail: string }) {
+  return (
+    <header className="mb-4">
+      <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
+        <Compass size={22} className="text-emerald-400" aria-hidden /> Explore
+      </h1>
+      <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-400">
+        <span className="text-neutral-200">{total.toLocaleString()}</span> project{total === 1 ? "" : "s"}
+        {where && <> in {where}</>}. {tail}
+      </p>
+    </header>
+  );
+}
+
+function Sorts({ sort, href }: { sort: FeedSort; href: Href }) {
+  return (
+    <div className="flex gap-1 overflow-x-auto border-b border-neutral-800">
+      {SORTS.map(({ key, label, blurb }) => {
+        const on = key === sort;
+        return (
+          <Link
+            key={key}
+            href={href({ sort: key, page: 1 })}
+            aria-current={on ? "page" : undefined}
+            title={blurb}
+            className={`-mb-px flex min-h-[42px] shrink-0 items-center border-b-2 px-3.5 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+              on
+                ? "border-emerald-400 font-bold text-white"
+                : "border-transparent text-neutral-500 hover:text-neutral-200"
+            }`}
+          >
+            {label}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function Groups({ active, openGroup, href }: { active: string; openGroup: GroupKey | null; href: Href }) {
+  return (
+    <>
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <Pill href={href({ in: "", page: 1 })} on={!active}>
+          Everything
+        </Pill>
+        {GROUP_ORDER.map((key) => (
+          <Pill key={key} href={href({ in: key, page: 1 })} on={active === key}>
+            {GROUPS[key].label}
+          </Pill>
+        ))}
+      </div>
+
+      {openGroup && (
+        <div className="mt-2 flex flex-wrap items-center gap-1.5 border-l-2 border-neutral-800 pl-3">
+          {CATEGORY_META.filter((c) => c.group === openGroup).map((c) => (
+            <Pill key={c.slug} href={href({ in: c.slug, page: 1 })} on={active === c.slug} small>
+              {c.label}
+            </Pill>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
 function Pill({
   href,
   on,
   small,
-  title,
   children,
 }: {
   href: string;
   on: boolean;
   small?: boolean;
-  title?: string;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
-      title={title}
       aria-current={on ? "page" : undefined}
       className={`flex shrink-0 items-center rounded-full border px-3 font-mono outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-400 ${
         small ? "min-h-[30px] text-[11px]" : "min-h-[34px] text-[12px]"

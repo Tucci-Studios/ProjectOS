@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { GROUP_ORDER, sectionsIn, type GroupKey } from "./categories";
 import type { ProjectFeedRow } from "@/components/project-card";
 
-export type FeedSort = "top" | "new" | "forked" | "starred" | "followed";
+export type FeedSort = "top" | "new" | "forked" | "starred" | "builtOn" | "followed";
 
 const ORDER_BY: Record<FeedSort, string> = {
   top: `(p.stars / (1.0 + (strftime('%s','now') - COALESCE(p.pushed_at, p.created_at)) / 2592000.0)) DESC,
@@ -10,6 +10,10 @@ const ORDER_BY: Record<FeedSort, string> = {
   new: "p.created_at DESC",
   forked: "p.github_forks DESC, fork_count DESC, p.stars DESC",
   starred: "p.stars DESC, p.github_forks DESC",
+  // Forks per star: who people BUILD on rather than merely admire. The floor
+  // keeps a repo with three stars and two forks off the top of the list.
+  builtOn: `CASE WHEN p.stars >= 200 THEN CAST(p.github_forks AS REAL) / p.stars ELSE 0 END DESC,
+            p.github_forks DESC`,
   followed: "follower_count DESC, like_count DESC",
 };
 
