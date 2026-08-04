@@ -25,9 +25,12 @@ export async function GET(request: Request) {
   if (p.readme_at) return NextResponse.json({ md: p.readme_md, repo: p.github_repo });
 
   const md = await getReadme(p.github_repo);
-  await env.DB.prepare("UPDATE projects SET readme_md = ?1, readme_at = ?2 WHERE id = ?3")
-    .bind(md, Math.floor(Date.now() / 1000), p.id)
-    .run();
+  // Only cache a real answer. Stamping readme_at on a failed fetch turned one
+  // bad minute at GitHub into "this project has no readme" forever.
+  if (md)
+    await env.DB.prepare("UPDATE projects SET readme_md = ?1, readme_at = ?2 WHERE id = ?3")
+      .bind(md, Math.floor(Date.now() / 1000), p.id)
+      .run();
 
   return NextResponse.json({ md, repo: p.github_repo });
 }

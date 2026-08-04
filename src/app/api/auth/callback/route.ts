@@ -90,7 +90,7 @@ export async function GET(request: Request) {
   const res = NextResponse.redirect(
     firstTime
       ? `${url.origin}/me?verified=1${claimedCount > 0 ? `&claimed=${claimedCount}` : ""}`
-      : `${url.origin}/projects`,
+      : `${url.origin}/explore`,
   );
   res.cookies.set(sessionCookieName, await signSession(userId, env.SESSION_SECRET), {
     httpOnly: true,

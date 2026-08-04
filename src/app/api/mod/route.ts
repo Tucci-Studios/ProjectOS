@@ -5,7 +5,8 @@ import { getSessionUser } from "@/lib/auth";
 /** Act on a report: remove the thing, or dismiss the complaint. */
 export async function POST(request: Request) {
   const user = await getSessionUser();
-  if (!user || user.role !== "admin") return NextResponse.json({ error: "Admins only." }, { status: 403 });
+  const isMod = user?.role === "admin" || user?.role === "mod";
+  if (!isMod) return NextResponse.json({ error: "Moderators only." }, { status: 403 });
 
   let body: { reportId?: unknown; action?: unknown };
   try {
