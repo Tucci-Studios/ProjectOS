@@ -6,6 +6,7 @@ import { getSessionUser } from "@/lib/auth";
 import { getProjectFeed, getUserVotes, getFollowedIds, getBadgesFor, type FeedSort , getSavedIds } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
 import { PageHeader } from "@/components/page-header";
+import { SectionMark } from "@/components/section-mark";
 import { SortTabs } from "@/components/sort-tabs";
 import { ButtonLink } from "@/components/ui";
 import { CATEGORY_META, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
@@ -200,7 +201,7 @@ export default async function SectionPage({
         title={meta.label}
         purpose={activeTab.blurb ?? `Everything published under ${meta.label}.`}
         accent={g.text}
-        Icon={Boxes}
+        glyph={<SectionMark category={category} size={24} color={g.hex} />}
         action={
           tab !== "projects" ? (
             <ButtonLink

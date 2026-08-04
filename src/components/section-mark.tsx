@@ -1,0 +1,79 @@
+import { categoryMeta } from "@/lib/categories";
+
+/**
+ * Marks drawn here rather than pulled from the icon set, where nothing in a
+ * library says the thing properly.
+ *
+ * Apps is a file with APP written on it — a page with a folded corner, which
+ * pairs with the `.md` mark next to it: both say "this is a kind of file".
+ */
+const DRAWN: Record<string, (color: string) => React.ReactNode> = {
+  apps: (c) => (
+    <>
+      <path
+        d="M5.5 2.5h8L19 8v13.5H5.5z"
+        fill="none"
+        stroke={c}
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path d="M13.5 2.5V8H19" fill="none" stroke={c} strokeWidth="1.7" strokeLinejoin="round" />
+      <text
+        x="12.2"
+        y="18.4"
+        textAnchor="middle"
+        fill={c}
+        fontSize="7.4"
+        fontWeight="700"
+        fontFamily="ui-monospace, SFMono-Regular, monospace"
+        letterSpacing="-0.3"
+      >
+        APP
+      </text>
+    </>
+  ),
+};
+
+/**
+ * A section's mark — short type where it has an obvious written form, its icon
+ * where it doesn't.
+ *
+ * One component so the card tile and the sidebar can't drift apart: change a
+ * mark in the category table and both follow.
+ */
+export function SectionMark({
+  category,
+  size = 18,
+  color,
+  className = "",
+}: {
+  category: string;
+  size?: number;
+  color: string;
+  className?: string;
+}) {
+  const meta = categoryMeta(category);
+
+  const drawn = DRAWN[category];
+  if (drawn)
+    return (
+      <svg width={size} height={size} viewBox="0 0 24 24" className={className} aria-hidden>
+        {drawn(color)}
+      </svg>
+    );
+
+  if (meta.mark)
+    return (
+      <span
+        className={`font-mono font-bold leading-none tracking-tight ${className}`}
+        // Longer marks step down so "MCP" and ".md" occupy the same optical
+        // width as a single glyph would.
+        style={{ color, fontSize: size * (meta.mark.length > 2 ? 0.62 : 0.8) }}
+        aria-hidden
+      >
+        {meta.mark}
+      </span>
+    );
+
+  return <meta.Icon size={size} strokeWidth={1.7} style={{ color }} className={className} aria-hidden />;
+}

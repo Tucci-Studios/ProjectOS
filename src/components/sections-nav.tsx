@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ScrollText, Compass, Bookmark, FlaskConical, ChevronRight, Lightbulb, Flame, Sparkles, Megaphone } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
+import { SectionMark } from "./section-mark";
 
 // Three doors: AI, Build, Play. Each opens to its sections. The group you're in
 // stays open and wears its color down the whole spine, so an expanded group is
@@ -18,6 +19,14 @@ export function SectionsNav() {
   const [open, setOpen] = useState<Record<string, boolean>>(
     Object.fromEntries(GROUP_ORDER.map((g) => [g, g === activeGroup])),
   );
+
+  // The initial state is set once, but navigation doesn't remount this — so
+  // landing on a section from anywhere else would leave its group shut and the
+  // highlighted row hidden inside it. Opening it on every route change is what
+  // makes the sidebar say where you are.
+  useEffect(() => {
+    if (activeGroup) setOpen((o) => (o[activeGroup] ? o : { ...o, [activeGroup]: true }));
+  }, [activeGroup]);
 
   const MAIN = [
     { href: "/", label: "Feed", Icon: ScrollText, exact: true },
@@ -108,7 +117,7 @@ export function SectionsNav() {
                             aria-hidden
                           />
                         )}
-                        <c.Icon size={13} strokeWidth={2} className="mr-2 shrink-0 opacity-80" aria-hidden />
+                        <SectionMark category={c.slug} size={15} color={g.hex} className="mr-2 w-5 shrink-0 text-center opacity-90" />
                         {c.label}
                       </Link>
                     );

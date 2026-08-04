@@ -14,6 +14,7 @@ export function PageHeader({
   purpose,
   Icon,
   accent = "text-emerald-400",
+  glyph,
   action,
 }: {
   crumbs?: Crumb[];
@@ -21,6 +22,8 @@ export function PageHeader({
   purpose: string;
   Icon?: LucideIcon;
   accent?: string;
+  /** Rendered instead of Icon — for sections whose mark is type, not a drawing. */
+  glyph?: React.ReactNode;
   action?: React.ReactNode;
 }) {
   return (
@@ -44,7 +47,7 @@ export function PageHeader({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
-            {Icon && <Icon size={22} className={accent} aria-hidden />}
+            {glyph ?? (Icon && <Icon size={22} className={accent} aria-hidden />)}
             {title}
           </h1>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">{purpose}</p>

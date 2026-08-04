@@ -95,7 +95,7 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", use: "Clone it and keep building", group: "build", Icon: Code2, mark: "</>" },
   { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", use: "Run it in your terminal", group: "build", Icon: Binary },
 
-  { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow, mark: "▢" },
+  { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow },
   { slug: "games", label: "Games", kind: "Game", use: "Play it", group: "play", Icon: Gamepad2 },
 ];
 

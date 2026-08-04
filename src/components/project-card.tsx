@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GitFork } from "lucide-react";
 import { categoryMeta, groupOf, timeAgo } from "@/lib/categories";
+import { SectionMark } from "./section-mark";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
 import { Star, TrendingUp } from "lucide-react";
@@ -81,21 +82,11 @@ export function GroupTile({ category, big = false }: { category: string; big?: b
       title={`${meta.label} — ${meta.use}`}
       aria-label={meta.label}
       className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 pl-[3px] ${
-        big ? "h-20 w-16" : "h-full min-h-[52px] w-11"
+        big ? "h-20 w-[74px]" : "h-full min-h-[52px] w-14"
       }`}
     >
       <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: g.hex }} aria-hidden />
-      {meta.mark ? (
-        <span
-          className="font-mono font-bold leading-none tracking-tight"
-          style={{ color: g.hex, fontSize: (big ? 24 : 18) * (meta.mark.length > 2 ? 0.55 : 0.72) }}
-          aria-hidden
-        >
-          {meta.mark}
-        </span>
-      ) : (
-        <meta.Icon size={big ? 24 : 18} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
-      )}
+      <SectionMark category={category} size={big ? 30 : 24} color={g.hex} />
     </span>
   );
 }
