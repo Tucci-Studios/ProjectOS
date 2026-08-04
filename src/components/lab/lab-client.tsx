@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FlaskConical } from "lucide-react";
-import { Swarm } from "./swarm";
+import { ForkSwarm } from "../fork-swarm";
 import { LogRings, Tiles, Counter } from "./scale-views";
 
 type View = {
@@ -18,7 +18,7 @@ const VIEWS: View[] = [
     label: "Swarm",
     blurb:
       "One point of light per fork — all of them, really drawn. Fifty dots can't express thirty thousand, and nothing abstract can either, so this stops abstracting. Canvas, so the count is the only limit that matters.",
-    Panel: ({ count, known }) => <Swarm count={count} known={known} />,
+    Panel: ({ count, known }) => <ForkSwarm count={count} known={known} />,
   },
   {
     key: "tiles",

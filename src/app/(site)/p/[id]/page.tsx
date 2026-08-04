@@ -271,10 +271,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         tree={
           <>
             <ForkTrophy
-              lineage={lineage}
-              unpublished={forkPicture.unpublished}
               total={forkCount}
               published={publishedForks}
+              known={forkPicture.unpublished.length + publishedForks}
               projectName={p.base_name}
             />
 

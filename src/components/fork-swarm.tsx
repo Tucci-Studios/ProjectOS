@@ -18,7 +18,7 @@ const ACCENT = [52, 211, 153] as const;
  * by name, and the rest are anonymous. They're real in COUNT, not identity, and
  * the caption says so.
  */
-export function Swarm({
+export function ForkSwarm({
   count,
   known = 0,
   height = 420,

@@ -1,92 +1,50 @@
 import { GitFork } from "lucide-react";
-import type { LineageNode } from "@/lib/queries";
-import type { UnpublishedFork } from "@/lib/forks";
-import { ForkOrbit, type OrbitNode } from "./fork-orbit";
-
-/** Past this it stops being readable and starts being a fog of dots. */
-const MAX_NODES = 140;
+import { ForkSwarm } from "./fork-swarm";
 
 /**
  * The forks of a project, as something to be a bit proud of.
  *
- * Built from BOTH sources, because they're the same thing at different levels
- * of proof: forks published here sit on the tree with votes and a page, and
- * forks that only exist on GitHub are drawn hollow. Nothing is invented — if we
- * don't hold a fork's details, it isn't on the picture, only in the count.
+ * The number and the picture are the same fact told twice: the count says
+ * 7,790 and the swarm draws 7,790 points of light. Neither works alone — a
+ * number that big doesn't land, and a picture without the number is just
+ * decoration.
  */
 export function ForkTrophy({
-  lineage,
-  unpublished,
   total,
   published,
+  known,
   projectName,
 }: {
-  lineage: LineageNode[];
-  unpublished: UnpublishedFork[];
   total: number;
   published: number;
+  /** How many we hold names for — those are drawn brighter. */
+  known: number;
   projectName: string;
 }) {
-  const nodes: OrbitNode[] = [];
-  const rootId = lineage.find((n) => !n.parent_id)?.id ?? "root";
-
-  for (const n of lineage) {
-    nodes.push({
-      id: n.id,
-      label: n.variant_name ?? n.base_name,
-      parentId: n.parent_id,
-      depth: n.depth,
-      score: n.like_count,
-      published: true,
-      meta: `@${n.github_login}`,
-    });
-  }
-
-  // GitHub-only forks hang off the original as one more generation.
-  for (const f of unpublished.slice(0, MAX_NODES - nodes.length)) {
-    nodes.push({
-      id: `gh:${f.full_name}`,
-      label: f.full_name,
-      parentId: rootId,
-      depth: 1,
-      score: f.stars,
-      published: false,
-      meta: f.stars > 0 ? `${f.stars}★` : undefined,
-    });
-  }
-
-  // A single dot is not a trophy.
-  if (nodes.length < 2) return null;
-
-  const generations = Math.max(...nodes.map((n) => n.depth));
-  const drawn = nodes.length - 1;
+  // Two forks and a picture of two forks is not a trophy, it's a diagram.
+  if (total < 3) return null;
 
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-5 rounded-xl border border-emerald-400/25 bg-emerald-400/[0.03] p-4">
-      <div className="shrink-0">
-        <ForkOrbit nodes={nodes} size={150} interactive />
-      </div>
+    <div className="relative mb-4 overflow-hidden rounded-xl border border-emerald-400/25 bg-emerald-400/[0.03]">
+      <ForkSwarm count={total} known={known} height={210} />
 
-      <div className="min-w-0 flex-1">
-        <p className="font-mono text-[34px] font-bold leading-none text-white tabular-nums">
+      {/* The number sits over the swarm, with a scrim so it stays readable
+          however dense the field behind it gets. */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex w-[62%] flex-col justify-center bg-gradient-to-r from-[#0f1411] via-[#0f1411]/85 to-transparent p-5">
+        <p className="font-mono text-[40px] font-bold leading-none text-white tabular-nums">
           {total.toLocaleString()}
         </p>
-        <p className="mt-1 flex flex-wrap items-center gap-x-2 font-mono text-[11px] uppercase tracking-[0.18em] text-emerald-400">
+        <p className="mt-1.5 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-emerald-400">
           <GitFork size={11} aria-hidden />
           fork{total === 1 ? "" : "s"}
-          {generations > 1 && <span className="text-neutral-500">· {generations} generations</span>}
         </p>
-        <p className="mt-2 text-[13px] leading-relaxed text-neutral-400">
+        <p className="mt-2 max-w-[280px] text-[13px] leading-relaxed text-neutral-400">
           {published > 0 ? (
             <>
-              <span className="text-neutral-200">{published}</span> published here and on the tree.{" "}
+              <span className="text-neutral-200">{published}</span> published here.{" "}
             </>
           ) : null}
-          {drawn < total ? (
-            <>Showing the {drawn} most recent — the rest are on GitHub.</>
-          ) : (
-            <>Every one of them came from {projectName}.</>
-          )}
+          Every one of them came from {projectName}.
         </p>
       </div>
     </div>
