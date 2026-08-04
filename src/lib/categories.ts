@@ -3,6 +3,7 @@ import {
   FileText,
   Plug,
   Cpu,
+  HardDrive,
   SquareTerminal,
   Bot,
   Code2,
@@ -81,7 +82,7 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "claude-skills", label: "Claude Skills", kind: "Skill", use: "Teaches Claude a new trick", group: "ai", Icon: Sparkles },
   { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", use: "Drops into your repo", group: "ai", Icon: FileText },
   { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", use: "Connects Claude to something", group: "ai", Icon: Plug },
-  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: Cpu },
+  { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: HardDrive },
   { slug: "codex", label: "Codex", kind: "Codex Setup", use: "Set up for Codex", group: "ai", Icon: SquareTerminal },
   { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot },
 
