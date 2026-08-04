@@ -5,9 +5,9 @@ import {
   Cpu,
   HardDrive,
   SquareTerminal,
+  Binary,
   Bot,
   Code2,
-  Wrench,
   AppWindow,
   Gamepad2,
   Hammer,
@@ -85,7 +85,7 @@ export const GROUPS: Record<
 export const GROUP_ORDER: GroupKey[] = ["ai", "build", "play"];
 
 export const CATEGORY_META: CategoryMeta[] = [
-  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", use: "Teaches Claude a new trick", group: "ai", Icon: Sparkles },
+  { slug: "claude-skills", label: "Claude Skills", kind: "Skill", use: "Teaches Claude a new trick", group: "ai", Icon: Sparkles, mark: "SKL" },
   { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", use: "Drops into your repo", group: "ai", Icon: FileText, mark: ".md" },
   { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", use: "Connects Claude to something", group: "ai", Icon: Plug, mark: "MCP" },
   { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: HardDrive, mark: "LLM" },
@@ -93,7 +93,7 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot },
 
   { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", use: "Clone it and keep building", group: "build", Icon: Code2, mark: "</>" },
-  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", use: "Run it in your terminal", group: "build", Icon: Wrench },
+  { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", use: "Run it in your terminal", group: "build", Icon: Binary },
 
   { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow, mark: "▢" },
   { slug: "games", label: "Games", kind: "Game", use: "Play it", group: "play", Icon: Gamepad2 },
