@@ -2,6 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { Megaphone, Plus, Wrench, Bug, Rocket, ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { getSessionUser } from "@/lib/auth";
 import { BrandMark } from "@/components/brand";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +31,7 @@ function dateLabel(epoch: number) {
 }
 
 export default async function UpdatesPage() {
+  const user = await getSessionUser();
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT u.id, u.version, u.title, u.intro, u.body_md, u.published_at, au.github_login
@@ -45,6 +47,15 @@ export default async function UpdatesPage() {
         purpose="Every change to Project OS, posted as it ships. Ideas the community voted for show up here when they go live."
         Icon={Megaphone}
       />
+
+      {user?.role === "admin" && (
+        <Link
+          href="/updates/new"
+          className="mb-5 inline-flex min-h-[38px] items-center gap-2 rounded-lg border border-neutral-700 px-3.5 font-mono text-[13px] text-neutral-200 outline-none transition hover:border-emerald-400/50 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+        >
+          <Plus size={14} aria-hidden /> Post an update
+        </Link>
+      )}
 
       {results.length === 0 ? (
         <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">

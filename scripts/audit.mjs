@@ -109,6 +109,7 @@ const tables = d1("SELECT name FROM sqlite_master WHERE type='table' AND name NO
 const src = execFileSync("grep", ["-rho", "-E", "(FROM|JOIN|INTO|UPDATE) [a-z_]+", "src", "scripts"], { encoding: "utf8" });
 // A trigger is a writer too — without this every FTS index looks abandoned.
 const triggerSrc = d1("SELECT COALESCE(GROUP_CONCAT(sql, ' '), '') AS s FROM sqlite_master WHERE type='trigger'")[0].s;
+const schemaSrc = d1("SELECT COALESCE(GROUP_CONCAT(sql, ' '), '') AS s FROM sqlite_master WHERE type IN ('view','index','table')")[0].s;
 const fts = new Set(
   d1("SELECT name FROM sqlite_master WHERE type='table' AND sql LIKE '%fts5%'").flatMap((r) => [
     r.name, `${r.name}_data`, `${r.name}_idx`, `${r.name}_content`, `${r.name}_docsize`, `${r.name}_config`,
@@ -117,10 +118,13 @@ const fts = new Set(
 for (const t of tables) {
   if (["d1_migrations", "sqlite_sequence"].includes(t) || fts.has(t)) continue;
   const n = d1(`SELECT COUNT(*) AS n FROM ${t}`)[0].n;
-  const reads = new RegExp(`(FROM|JOIN) ${t}\\b`).test(src);
+  const reads = new RegExp(`(FROM|JOIN) ${t}\\b`).test(src + triggerSrc);
   const writes = new RegExp(`(INTO|UPDATE) ${t}\\b`).test(src + triggerSrc);
   if (reads && !writes) add("hollow", t, `read by the UI, never written (${n} rows)`);
-  else if (!reads && !writes) add("dead", t, `nothing references this table (${n} rows)`);
+  // "dead" is a suggestion to delete something, so it has to be right. Check
+  // views and indexes as well as triggers before saying nothing needs it.
+  else if (!reads && !writes && !schemaSrc.includes(t))
+    add("dead", t, `nothing references this table (${n} rows)`);
   else if (reads && n === 0) add("empty", t, "queried everywhere, zero rows");
 }
 

@@ -51,8 +51,19 @@ const SOURCES = [
   { category: "local-llms", q: "topic:local-llm", min: 5 },
   { category: "local-llms", q: "topic:ollama", min: 20 },
   { category: "scripts-tools", q: "topic:developer-tools topic:cli", min: 30 },
+  { category: "scripts-tools", q: "topic:cli-tool topic:productivity", min: 20 },
+  { category: "scripts-tools", q: "topic:automation topic:script", min: 15 },
   { category: "apps", q: "topic:ai-app", min: 10 },
+  // apps was the thinnest section on the site at twelve. One query for it was
+  // never going to be enough — these are the topics people actually tag a
+  // finished, runnable thing with, rather than a library.
+  { category: "apps", q: "topic:desktop-app topic:open-source", min: 40 },
+  { category: "apps", q: "topic:tauri topic:app", min: 15 },
+  { category: "apps", q: "topic:electron-app", min: 30 },
+  { category: "apps", q: "topic:llm topic:chatbot", min: 50 },
   { category: "games", q: "topic:ai-game", min: 3 },
+  { category: "games", q: "topic:game topic:opensource-game", min: 20 },
+  { category: "games", q: "topic:godot topic:game", min: 15 },
 ];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

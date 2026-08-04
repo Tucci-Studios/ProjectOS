@@ -43,7 +43,20 @@ export async function searchProjects(
          JOIN projects p ON p.id = s.project_id
          JOIN users u ON u.id = p.owner_id
          WHERE project_search MATCH ?1 AND p.status = 'live'
-         ORDER BY bm25(project_search, 3.0, 1.0, 2.0), like_count DESC
+         -- bm25 alone put a 36-star starter above awesome-claude-skills for
+         -- "claude", and a 224k-star project fifth for "agent". It was breaking
+         -- ties on likes, and every project here has zero. bm25 is negative and
+         -- lower is better, so multiplying by a bounded star factor pulls the
+         -- well-known ones up without letting popularity beat relevance — a
+         -- weak match with 50k stars still loses to a strong one.
+         ORDER BY bm25(project_search, 3.0, 1.0, 2.0) * CASE
+             WHEN p.stars >= 10000 THEN 2.0
+             WHEN p.stars >= 1000  THEN 1.6
+             WHEN p.stars >= 100   THEN 1.3
+             WHEN p.stars >= 10    THEN 1.1
+             ELSE 1.0
+           END,
+                  p.stars DESC
          LIMIT ?2 OFFSET ?3`,
       )
         .bind(match, limit, offset)
