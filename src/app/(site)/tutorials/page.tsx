@@ -55,14 +55,15 @@ export default async function TutorialsPage() {
       {tutorials.length === 0 ? (
         <div className="rounded-xl border border-dashed border-amber-400/25 p-10 text-center">
           <Target size={22} className="mx-auto text-amber-400/50" aria-hidden />
-          <p className="mt-3 text-sm text-neutral-400">
-            No tutorials yet. The first one sets the tone for the rest.
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-neutral-400">
+            Tutorials are coming. They&apos;re the point of this place — how you got something working, so the next
+            person doesn&apos;t lose an afternoon to it. Write one and you&apos;ve helped everybody who comes after.
           </p>
           <Link
             href="/wire/new?kind=tutorial"
             className="mt-3 inline-block font-mono text-[13px] font-bold text-amber-300 hover:underline"
           >
-            Write the first one →
+            Write one now →
           </Link>
         </div>
       ) : (

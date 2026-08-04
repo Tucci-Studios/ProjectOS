@@ -103,40 +103,43 @@ export function ForksPanel({
 
       {unpublished.length > 0 && (
         <>
-          <ol className="divide-y divide-neutral-800/70 overflow-hidden rounded-lg border border-neutral-800">
+          {/* Drawn as a terminal listing rather than a diagram. A tree of
+              boxes kept reading as generations of descent when these are all
+              siblings, and this is the shape a developer already parses
+              without being taught it. */}
+          <div className="overflow-x-auto rounded-lg border border-neutral-800 bg-[#0f1411] px-3.5 py-3 font-mono text-[12.5px] leading-[1.8]">
+            <p className="truncate">
+              <span className="text-emerald-400">{repo.split("/")[1]}</span>
+              <span className="text-neutral-400">/ @{repo.split("/")[0]}</span>
+            </p>
             {unpublished.slice(0, show).map((f, i) => {
               // Every fork is "someone/the-same-name", so repeating the project
               // name fifty times is noise. The owner is the part that differs.
               const suffix = f.full_name.slice(f.owner_login.length + 1);
               const renamed = suffix.toLowerCase() !== repo.split("/")[1].toLowerCase();
+              const last = i === Math.min(show, unpublished.length) - 1;
               return (
-                <li key={f.full_name}>
-                  <a
-                    href={`https://github.com/${f.full_name}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={`${f.full_name} — not published on Project OS, this opens GitHub`}
-                    className="flex items-center gap-3 px-3 py-2.5 outline-none transition hover:bg-neutral-800/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
-                  >
-                    <span className="w-5 shrink-0 text-right font-mono text-[11px] tabular-nums text-neutral-700">
-                      {i + 1}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-neutral-200">
-                      {f.owner_login}
-                      {renamed && <span className="text-neutral-400">/{suffix}</span>}
-                    </span>
-                    {f.stars > 0 && (
-                      <span className="flex shrink-0 items-center gap-1 font-mono text-[12px] tabular-nums text-amber-300/70">
-                        <Star size={10} className="fill-amber-300/70" aria-hidden />
-                        {f.stars.toLocaleString()}
-                      </span>
-                    )}
-                    <ExternalLink size={11} className="shrink-0 text-neutral-700" aria-hidden />
-                  </a>
-                </li>
+                <a
+                  key={f.full_name}
+                  href={`https://github.com/${f.full_name}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`${f.full_name} — not published on Project OS, this opens GitHub`}
+                  className="flex items-center gap-1.5 whitespace-pre rounded outline-none transition hover:bg-neutral-800/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
+                >
+                  <span className="shrink-0 text-neutral-700">{last ? "└── " : "├── "}</span>
+                  <span className="min-w-0 flex-1 truncate text-neutral-200">
+                    {f.owner_login}
+                    {renamed && <span className="text-neutral-400">/{suffix}</span>}
+                  </span>
+                  {f.stars > 0 && (
+                    <span className="shrink-0 tabular-nums text-amber-300/70">{f.stars.toLocaleString()}★</span>
+                  )}
+                  <ExternalLink size={10} className="shrink-0 text-neutral-700" aria-hidden />
+                </a>
               );
             })}
-          </ol>
+          </div>
 
           {show < unpublished.length && (
             <button

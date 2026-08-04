@@ -6,6 +6,7 @@ import Link from "next/link";
 import { MessageCircle, Trash2, CornerDownRight } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
 import { VerifiedMark } from "./verified-mark";
+import { SHOW_EVERYONE_VERIFIED } from "@/lib/flags";
 
 export type ProjectComment = {
   id: string;
@@ -146,7 +147,7 @@ function Comment({
           <Link href={`/u/${node.github_login}`} className="font-mono text-xs text-neutral-300 hover:text-white">
             @{node.github_login}
           </Link>
-          {node.is_shadow === 0 && <VerifiedMark size={10} />}
+          {(SHOW_EVERYONE_VERIFIED || node.is_shadow === 0) && <VerifiedMark size={10} />}
           <span className="font-mono text-[11px] text-neutral-400">{timeAgo(node.created_at)}</span>
 
           {viewerLogin === node.github_login && (

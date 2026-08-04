@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ClaimStep } from "./claim-step";
 
 /**
  * The moment someone's mark is granted.
@@ -19,6 +20,9 @@ export function VerifiedGrant() {
 
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState(0);
+  // The mark is the ceremony; claiming is the reason for it. Second screen, so
+  // neither has to share space with the other.
+  const [step, setStep] = useState<"mark" | "claim">("mark");
 
   useEffect(() => {
     if (!isNew) return;
@@ -49,13 +53,17 @@ export function VerifiedGrant() {
     <div
       role="dialog"
       aria-label="You're verified on Project OS"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm"
-      onClick={dismiss}
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-6 backdrop-blur-sm"
+      onClick={step === "mark" ? dismiss : undefined}
     >
       <div
-        className="flex max-w-md flex-col items-center text-center"
+        className={`flex w-full flex-col items-center text-center ${step === "mark" ? "max-w-md" : "max-w-xl"}`}
         onClick={(e) => e.stopPropagation()}
       >
+        {step === "claim" ? (
+          <ClaimStep onDone={dismiss} />
+        ) : (
+        <>
         <svg width="132" height="132" viewBox="0 0 16 16" fill="none" className="drop-shadow-[0_0_28px_rgba(52,211,153,0.35)]">
           {/* the ring draws itself */}
           <circle
@@ -118,12 +126,14 @@ export function VerifiedGrant() {
           </p>
 
           <button
-            onClick={dismiss}
+            onClick={() => setStep("claim")}
             className="mt-6 min-h-[44px] cursor-pointer rounded-lg bg-emerald-400 px-6 font-mono text-sm font-bold text-black outline-none transition hover:bg-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
-            {claimed > 0 ? "See my projects" : "Have a look around"}
+            Next
           </button>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

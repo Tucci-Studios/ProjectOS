@@ -47,6 +47,22 @@ export default async function WirePage() {
           </ButtonLink>
         }
       />
+      {results.length === 0 && (
+        <div className="rounded-xl border border-dashed border-sky-400/25 p-10 text-center">
+          <Radio size={22} className="mx-auto text-sky-400/50" aria-hidden />
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-neutral-400">
+            Nothing posted yet. This is where people say what they&apos;re building, what broke, and what they worked
+            out — the things a repo never tells you.
+          </p>
+          <Link
+            href="/wire/new"
+            className="mt-4 inline-block font-mono text-[13px] font-bold text-sky-300 hover:underline"
+          >
+            Start it off →
+          </Link>
+        </div>
+      )}
+
       <div className="space-y-3">
         {results.map((post) =>
           post.kind === "tutorial" ? (
