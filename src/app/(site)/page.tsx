@@ -1,6 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { Rss, Compass } from "lucide-react";
+import { ScrollText, Compass } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
 import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds , getSavedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
@@ -71,7 +71,7 @@ export default async function FeedPage() {
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-800 pb-5">
         <div>
           <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
-            <Rss size={22} className="text-emerald-400" aria-hidden /> Feed
+            <ScrollText size={22} className="text-emerald-400" aria-hidden /> Feed
           </h1>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
             Projects you follow — the updates their owners post, and every new fork someone makes of them.

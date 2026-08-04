@@ -80,12 +80,12 @@ export function GroupTile({ category, big = false }: { category: string; big?: b
     <span
       title={`${meta.label} — ${meta.use}`}
       aria-label={meta.label}
-      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 ${
-        big ? "h-16 w-14" : "h-11 w-10"
+      className={`relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 pl-[3px] ${
+        big ? "h-20 w-16" : "h-full min-h-[52px] w-11"
       }`}
     >
       <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: g.hex }} aria-hidden />
-      <meta.Icon size={big ? 21 : 16} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
+      <meta.Icon size={big ? 24 : 18} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
     </span>
   );
 }
@@ -114,7 +114,7 @@ export function ProjectCard({
   return (
     <article className="group relative rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
       <div className="flex items-start gap-3 px-4 py-4">
-        <div className="flex shrink-0 self-center">
+        <div className="flex shrink-0 self-stretch">
           <GroupTile category={p.category} />
         </div>
 

@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Compass, Bookmark, Menu, X, Rss, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
+import { ScrollText, Compass, Bookmark, Menu, X, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 const MAIN = [
-  { href: "/", label: "Feed", Icon: Rss, exact: true },
+  { href: "/", label: "Feed", Icon: ScrollText, exact: true },
   { href: "/explore", label: "Explore", Icon: Compass },
   { href: "/news", label: "News", Icon: Megaphone },
   { href: "/saves", label: "Saves", Icon: Bookmark },
