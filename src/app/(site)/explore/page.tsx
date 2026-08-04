@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 const PER_PAGE = 24;
 
 const SORTS: { key: FeedSort; label: string; blurb: string }[] = [
-  { key: "top", label: "Popular", blurb: "Voted up here, then big and still being worked on" },
+  { key: "top", label: "Popular", blurb: "Big on GitHub and still being worked on" },
   { key: "new", label: "New", blurb: "Most recently published" },
   { key: "forked", label: "Most forked", blurb: "Most forked on GitHub" },
   { key: "starred", label: "Most starred", blurb: "Most starred on GitHub" },

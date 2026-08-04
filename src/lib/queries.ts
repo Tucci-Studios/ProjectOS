@@ -5,11 +5,10 @@ import type { ProjectFeedRow } from "@/components/project-card";
 export type FeedSort = "top" | "new" | "forked" | "starred" | "followed";
 
 const ORDER_BY: Record<FeedSort, string> = {
-  top: `like_count DESC,
-        (p.stars / (1.0 + (strftime('%s','now') - COALESCE(p.pushed_at, p.created_at)) / 2592000.0)) DESC,
-        p.created_at DESC`,
+  top: `(p.stars / (1.0 + (strftime('%s','now') - COALESCE(p.pushed_at, p.created_at)) / 2592000.0)) DESC,
+        p.stars DESC, p.created_at DESC`,
   new: "p.created_at DESC",
-  forked: "p.github_forks DESC, fork_count DESC, like_count DESC",
+  forked: "p.github_forks DESC, fork_count DESC, p.stars DESC",
   starred: "p.stars DESC, p.github_forks DESC",
   followed: "follower_count DESC, like_count DESC",
 };

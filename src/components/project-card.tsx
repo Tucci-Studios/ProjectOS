@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { GitFork } from "lucide-react";
 import { groupOf, timeAgo } from "@/lib/categories";
-import { LikeButton } from "./like-button";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
 import { Star, TrendingUp } from "lucide-react";
@@ -67,15 +66,31 @@ export function ProjectHeadline({
 }
 
 /** Minimal group symbol — AI, Build, or Play — sitting quietly on the right. */
-export function GroupGlyph({ category, size = 20 }: { category: string; size?: number }) {
+/**
+ * The group, as a block where the vote arrows used to be.
+ *
+ * Colour alone can't carry this — three hues are hard to tell apart at a
+ * glance and impossible for some people — so the icon does the work and the
+ * colour reinforces it.
+ */
+export function GroupTile({ category, big = false }: { category: string; big?: boolean }) {
   const g = groupOf(category);
   return (
     <span
       title={`${g.label} — ${g.blurb}`}
       aria-label={g.label}
-      className="flex shrink-0 items-center justify-center opacity-60 transition-opacity duration-200 group-hover:opacity-100"
+      className={`flex shrink-0 flex-col items-center justify-center gap-1 rounded-lg ${
+        big ? "h-16 w-14" : "h-11 w-11"
+      }`}
+      style={{ background: `${g.hex}14`, border: `1px solid ${g.hex}44` }}
     >
-      <g.Icon size={size} strokeWidth={1.6} style={{ color: g.hex }} aria-hidden />
+      <g.Icon size={big ? 20 : 14} strokeWidth={1.7} style={{ color: g.hex }} aria-hidden />
+      <span
+        className={`font-mono font-bold uppercase leading-none tracking-wider ${big ? "text-[9px]" : "text-[7px]"}`}
+        style={{ color: g.hex }}
+      >
+        {g.label}
+      </span>
     </span>
   );
 }
@@ -103,8 +118,8 @@ export function ProjectCard({
   return (
     <article className="group relative rounded-xl border border-neutral-700/70 bg-neutral-900/40 transition duration-200 hover:border-neutral-500 hover:bg-neutral-800/40">
       <div className="flex items-start gap-3 px-4 py-4">
-        <div className="relative z-[2] flex shrink-0 self-center">
-          <LikeButton projectId={p.id} initialCount={p.like_count} initialVote={vote} />
+        <div className="flex shrink-0 self-center">
+          <GroupTile category={p.category} />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -188,8 +203,7 @@ export function ProjectCard({
           </div>
         </div>
 
-        <div className="relative z-[2] flex shrink-0 flex-col items-end justify-between self-stretch pt-1">
-          <GroupGlyph category={p.category} size={20} />
+        <div className="relative z-[2] flex shrink-0 flex-col items-end justify-end self-stretch">
           {canFollow && (
             <span className="flex items-center gap-1.5">
               <FollowButton projectId={p.id} initialFollowing={!!following} iconOnly />
