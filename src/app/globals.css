@@ -106,3 +106,102 @@ body {
   .route-in-up { animation: route-up 260ms var(--ease-out) both; }
   .route-in-down { animation: route-down 260ms var(--ease-out) both; }
 }
+
+/* ── Lab: candidate logo marks ──────────────────────────────────────────────
+   Animation for the ten header-mark experiments on /lab. All CSS, no JS loop:
+   this thing would sit in the header of every page, so it can't own a timer.
+   Everything stops for prefers-reduced-motion — a logo is decoration, and it's
+   the first thing that should hold still for someone who asked it to. */
+
+.m-d1 { animation-delay: 0.05s; }
+.m-d2 { animation-delay: 0.35s; }
+.m-d3 { animation-delay: 0.5s; }
+.m-d4 { animation-delay: 0.75s; }
+.m-d5 { animation-delay: 0.9s; }
+
+/* 01 Growth */
+.m-draw {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  animation: mk-draw 0.55s ease-out forwards;
+}
+@keyframes mk-draw { to { stroke-dashoffset: 0; } }
+.m-pop {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mk-pop 0.4s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+@keyframes mk-pop { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: scale(1); } }
+
+/* 02 Pulse */
+.m-flow {
+  stroke-dasharray: 6 10;
+  animation: mk-flow 2.4s linear infinite;
+}
+@keyframes mk-flow { from { stroke-dashoffset: 16; } to { stroke-dashoffset: 0; } }
+.m-blink { animation: mk-blink 2.4s ease-in-out infinite; }
+@keyframes mk-blink { 0%, 60%, 100% { opacity: 0.45; } 75% { opacity: 1; } }
+
+/* 03 Orbit */
+.m-spin { animation: mk-spin 14s linear infinite; }
+@keyframes mk-spin { to { transform: rotate(360deg); } }
+.m-breathe { animation: mk-breathe 3s ease-in-out infinite; }
+@keyframes mk-breathe { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+/* 04 Split */
+.m-split-l { animation: mk-split-l 3s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.m-split-r { animation: mk-split-r 3s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+@keyframes mk-split-l {
+  0%, 15% { transform: none; opacity: 0; }
+  45%, 75% { transform: translate(-3.8px, -3.4px); opacity: 1; }
+  95%, 100% { transform: none; opacity: 0; }
+}
+@keyframes mk-split-r {
+  0%, 15% { transform: none; opacity: 0; }
+  45%, 75% { transform: translate(3.8px, -3.4px); opacity: 1; }
+  95%, 100% { transform: none; opacity: 0; }
+}
+
+/* 05 Scan */
+.m-scan { animation: mk-scan 3.6s ease-in-out infinite; }
+@keyframes mk-scan { 0% { transform: translateY(0); } 55%, 100% { transform: translateY(17px); } }
+
+/* 06 Terminal */
+.m-caret { animation: mk-caret 1.1s steps(1) infinite; }
+@keyframes mk-caret { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+/* 07 Ring */
+.m-trace {
+  stroke-dasharray: 30 90;
+  animation: mk-trace 3.2s linear infinite;
+}
+@keyframes mk-trace { to { transform: rotate(360deg); } }
+
+/* 08 Stack */
+.m-lift { opacity: 0; animation: mk-lift 2.8s ease-out infinite; }
+@keyframes mk-lift {
+  0% { opacity: 0; transform: translateY(3px); }
+  20%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-2px); }
+}
+
+/* 09 Constellation */
+.m-twinkle { animation: mk-twinkle 3.4s ease-in-out infinite; }
+@keyframes mk-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* 10 On touch */
+.m-hv-l, .m-hv-r { transition: transform 0.35s cubic-bezier(0.2, 1.3, 0.4, 1); }
+.group\/mark:hover .m-hv-l { transform: translate(-1.4px, -1.2px); }
+.group\/mark:hover .m-hv-r { transform: translate(1.4px, -1.2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .m-draw, .m-pop, .m-flow, .m-blink, .m-spin, .m-breathe, .m-split-l, .m-split-r,
+  .m-scan, .m-caret, .m-trace, .m-lift, .m-twinkle {
+    animation: none;
+  }
+  .m-draw { stroke-dashoffset: 0; }
+  .m-pop, .m-lift { opacity: 1; transform: none; }
+  .m-split-l, .m-split-r { opacity: 0; }
+  .m-hv-l, .m-hv-r { transition: none; }
+}
