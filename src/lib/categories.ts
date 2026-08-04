@@ -89,10 +89,10 @@ export const CATEGORY_META: CategoryMeta[] = [
   { slug: "claude-md", label: "CLAUDE.md Files", kind: "Instructions", use: "Drops into your repo", group: "ai", Icon: FileText, mark: ".md" },
   { slug: "mcp-servers", label: "MCP Servers", kind: "MCP Server", use: "Connects Claude to something", group: "ai", Icon: Plug, mark: "MCP" },
   { slug: "local-llms", label: "Local LLMs", kind: "Local AI", use: "Runs AI on your machine", group: "ai", Icon: HardDrive, mark: "LLM" },
-  { slug: "codex", label: "Codex", kind: "Codex Setup", use: "Set up for Codex", group: "ai", Icon: SquareTerminal, mark: ">_" },
-  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot, mark: "Xai" },
+  { slug: "codex", label: "Codex", kind: "Codex Setup", use: "Set up for Codex", group: "ai", Icon: SquareTerminal },
+  { slug: "grok", label: "Grok / xAI", kind: "Grok Project", use: "Built on Grok", group: "ai", Icon: Bot },
 
-  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", use: "Clone it and keep building", group: "build", Icon: Code2 },
+  { slug: "claude-code", label: "Claude Code Projects", kind: "Codebase", use: "Clone it and keep building", group: "build", Icon: Code2, mark: "</>" },
   { slug: "scripts-tools", label: "Scripts & Tools", kind: "Tool", use: "Run it in your terminal", group: "build", Icon: Wrench },
 
   { slug: "apps", label: "Apps", kind: "App", use: "Install and use it", group: "play", Icon: AppWindow, mark: "▢" },
