@@ -4,6 +4,7 @@ import { Radio } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
+import { TutorialCard } from "@/components/tutorial-body";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,18 @@ export default async function WirePage() {
         }
       />
       <div className="space-y-3">
-        {results.map((post) => (
+        {results.map((post) =>
+          post.kind === "tutorial" ? (
+            <TutorialCard
+              key={post.id}
+              id={post.id}
+              title={post.title}
+              bodyMd={post.body_md}
+              author={post.github_login}
+              when={timeAgo(post.created_at)}
+              comments={post.comment_count}
+            />
+          ) : (
           <article
             key={post.id}
             className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-800/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]"
@@ -56,11 +68,6 @@ export default async function WirePage() {
               <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-emerald-400">
                 {post.title ?? "(untitled)"}
               </Link>
-              {post.kind === "tutorial" && (
-                <span className="rounded-md border border-amber-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-amber-400">
-                  tutorial
-                </span>
-              )}
               {post.kind === "request" && (
                 <span className="rounded-md border border-violet-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-violet-400">
                   request
@@ -83,7 +90,8 @@ export default async function WirePage() {
             </p>
             <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-neutral-300">{post.body_md}</p>
           </article>
-        ))}
+          ),
+        )}
       </div>
     </div>
   );

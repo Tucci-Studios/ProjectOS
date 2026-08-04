@@ -3,31 +3,12 @@
 import { useState } from "react";
 import { CATEGORY_SLUGS } from "@/lib/categories";
 import { useRouter } from "next/navigation";
+import { TutorialComposer } from "./tutorial-composer";
 
 const inputCls =
   "w-full rounded border border-neutral-700 bg-neutral-800 px-3 py-2 font-mono text-sm text-white placeholder-neutral-600 outline-none focus:border-emerald-400";
 
 const CATEGORIES = CATEGORY_SLUGS;
-
-// The tutorial template: a structure any human or AI can fill in.
-// "## Step N — title" lines render as neon step cards.
-export const TUTORIAL_TEMPLATE = `GOAL
-One sentence: what the reader will have working by the end.
-
-PREREQS
-- what they need installed / signed up for
-
-## Step 1 — Name the step
-What to do, exactly. Paste commands and screenshots (image URLs render inline).
-
-## Step 2 — Name the step
-Keep steps small. One action each.
-
-## Step 3 — Name the step
-...
-
-VERIFY
-How the reader knows it worked — what they should see.`;
 
 type Kind = "post" | "tutorial" | "request";
 
@@ -42,7 +23,7 @@ export function NewPostForm({
 }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [body, setBody] = useState(initialKind === "tutorial" ? TUTORIAL_TEMPLATE : "");
+  const [body, setBody] = useState("");
   const [kind, setKind] = useState<Kind>(initialKind);
   const [category, setCategory] = useState(initialCategory);
   const [projectId, setProjectId] = useState("");
@@ -51,7 +32,6 @@ export function NewPostForm({
 
   function switchKind(next: Kind) {
     setKind(next);
-    if (next === "tutorial" && !body.trim()) setBody(TUTORIAL_TEMPLATE);
   }
 
   async function submit(e: React.FormEvent) {
@@ -114,33 +94,26 @@ export function NewPostForm({
         </span>
         <input value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={120} className={inputCls} />
       </label>
-      <label className="block">
-        <div className="mb-1 flex items-center justify-between">
-          <span className="font-mono text-xs text-neutral-400">Body</span>
-          {kind === "tutorial" && (
-            <button
-              type="button"
-              onClick={() => setBody(TUTORIAL_TEMPLATE)}
-              className="font-mono text-[11px] text-amber-400 hover:underline"
-            >
-              ↺ reset to template
-            </button>
-          )}
-        </div>
-        <textarea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          required
-          rows={kind === "tutorial" ? 16 : 8}
-          maxLength={5000}
-          className={inputCls}
-          placeholder={
-            kind === "request"
-              ? "Describe what you're stuck on and what you already tried..."
-              : "Devlog, tip, hot take..."
-          }
-        />
-      </label>
+      {kind === "tutorial" ? (
+        <TutorialComposer value={body} onChange={setBody} />
+      ) : (
+        <label className="block">
+          <span className="mb-1 block font-mono text-xs text-neutral-400">Body</span>
+          <textarea
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            required
+            rows={8}
+            maxLength={5000}
+            className={inputCls}
+            placeholder={
+              kind === "request"
+                ? "Describe what you're stuck on and what you already tried..."
+                : "Devlog, tip, hot take..."
+            }
+          />
+        </label>
+      )}
       <label className="block">
         <span className="mb-1 block font-mono text-xs text-neutral-400">Attach a project (optional)</span>
         <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className={inputCls}>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio, HeartHandshake } from "lucide-react";
+import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio, HeartHandshake, GraduationCap } from "lucide-react";
 import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
 /**
@@ -27,6 +27,7 @@ export function SectionsNav({ isAdmin = false }: { isAdmin?: boolean }) {
     { href: "/", label: "Feed", Icon: ScrollText, exact: true },
     { href: "/explore", label: "Explore", Icon: Compass },
     { href: "/wire", label: "Wire", Icon: Radio, tone: "text-sky-300", bg: "bg-sky-400/10" },
+    { href: "/tutorials", label: "Tutorials", Icon: GraduationCap, tone: "text-amber-300", bg: "bg-amber-400/10" },
     { href: "/news", label: "News", Icon: Megaphone },
   ];
 
