@@ -82,7 +82,7 @@ let stoppedEarly = null;
 const sql = [];
 
 for (const p of pending) {
-  const res = await fetch(`https://api.github.com/repos/${p.github_repo}/forks?sort=newest&per_page=50`, {
+  const res = await fetch(`https://api.github.com/repos/${p.github_repo}/forks?sort=stargazers&per_page=50`, {
     headers: HEADERS,
   });
   if (res.status === 403 || res.status === 429) {

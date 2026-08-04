@@ -47,7 +47,7 @@ export type ForkInfo = {
  */
 export async function listForks(repo: string, max = 100): Promise<{ forks: ForkInfo[]; total: number } | null> {
   const perPage = Math.min(100, max);
-  const res = await fetch(`${GH}/repos/${repo}/forks?sort=newest&per_page=${perPage}`, {
+  const res = await fetch(`${GH}/repos/${repo}/forks?sort=stargazers&per_page=${perPage}`, {
     headers: headers(),
   });
   if (!res.ok) return null;

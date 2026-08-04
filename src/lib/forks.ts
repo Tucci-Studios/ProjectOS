@@ -46,7 +46,7 @@ export async function getForkPicture(projectId: string, repo: string): Promise<F
        FROM github_forks gf
        WHERE gf.project_id = ?1
          AND gf.full_name NOT IN (SELECT github_repo FROM projects WHERE status='live')
-       ORDER BY gf.pushed_at DESC NULLS LAST, gf.stars DESC
+       ORDER BY gf.stars DESC, gf.pushed_at DESC NULLS LAST
        LIMIT 50`,
     )
       .bind(projectId)

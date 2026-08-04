@@ -1,12 +1,14 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { GROUP_ORDER, sectionsIn, type GroupKey } from "./categories";
 import type { ProjectFeedRow } from "@/components/project-card";
 
-export type FeedSort = "top" | "new" | "forked" | "followed";
+export type FeedSort = "top" | "new" | "forked" | "starred" | "followed";
 
 const ORDER_BY: Record<FeedSort, string> = {
   top: "like_count DESC, p.stars DESC, p.created_at DESC",
   new: "p.created_at DESC",
-  forked: "fork_count DESC, like_count DESC, p.stars DESC",
+  forked: "p.github_forks DESC, fork_count DESC, like_count DESC",
+  starred: "p.stars DESC, p.github_forks DESC",
   followed: "follower_count DESC, like_count DESC",
 };
 
@@ -20,7 +22,16 @@ export async function getProjectFeed(
   const hideBlocked = viewerId
     ? ` AND p.owner_id NOT IN (SELECT blocked_id FROM blocks WHERE user_id = '${viewerId.replace(/'/g, "")}')`
     : "";
-  const where = (category ? "p.status = 'live' AND p.category = ?1" : "p.status = 'live'") + hideBlocked;
+  // A group like "ai" covers several categories, so it filters by an IN list
+  // built from the category table rather than a single equality.
+  const inGroup = category && GROUP_ORDER.includes(category as GroupKey);
+  const slugs = inGroup ? sectionsIn(category as GroupKey).map((c) => c.slug) : [];
+  const filter = inGroup
+    ? ` AND p.category IN (${slugs.map((sl) => `'${sl}'`).join(",")})`
+    : category
+      ? " AND p.category = ?1"
+      : "";
+  const where = "p.status = 'live'" + filter + hideBlocked;
   const order = ORDER_BY[sort] ?? ORDER_BY.new;
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
@@ -40,9 +51,10 @@ export async function getProjectFeed(
   );
 
   const countStmt = env.DB.prepare(`SELECT COUNT(*) AS n FROM projects p WHERE ${where}`);
+  const bindCategory = !!category && !inGroup;
   const [rows, count] = await Promise.all([
-    (category ? stmt.bind(category) : stmt).all<ProjectFeedRow>(),
-    (category ? countStmt.bind(category) : countStmt).first<{ n: number }>(),
+    (bindCategory ? stmt.bind(category) : stmt).all<ProjectFeedRow>(),
+    (bindCategory ? countStmt.bind(category) : countStmt).first<{ n: number }>(),
   ]);
   return { results: rows.results, total: count?.n ?? 0 };
 }

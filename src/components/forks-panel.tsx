@@ -77,7 +77,10 @@ export function ForksPanel({
             "Nobody has forked this on GitHub."
           ) : (
             <>
-              <span className="font-bold text-neutral-200">{total.toLocaleString()}</span> on GitHub
+              <span className="font-bold text-neutral-200">{total.toLocaleString()}</span> forks on GitHub
+              {unpublished.length > 0 && total > unpublished.length && (
+                <span className="text-neutral-600"> · top {unpublished.length} by stars</span>
+              )}
               {published > 0 && (
                 <>
                   <span className="text-neutral-700"> · </span>
@@ -100,46 +103,56 @@ export function ForksPanel({
 
       {unpublished.length > 0 && (
         <>
-          <ul className="space-y-1">
-            {unpublished.slice(0, show).map((f) => (
-              <li key={f.full_name}>
-                <a
-                  href={`https://github.com/${f.full_name}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Not published on Project OS — this link goes to GitHub"
-                  className="flex items-center gap-2 rounded-lg px-2 py-1.5 font-mono text-[12px] outline-none transition hover:bg-neutral-800/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
-                >
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full border border-neutral-700" aria-hidden />
-                  <span className="min-w-0 flex-1 truncate text-neutral-400">{f.full_name}</span>
-                  {f.stars > 0 && (
-                    <span className="flex shrink-0 items-center gap-1 text-[10px] text-neutral-600">
-                      <Star size={9} aria-hidden />
-                      {f.stars}
+          <ol className="divide-y divide-neutral-800/70 overflow-hidden rounded-lg border border-neutral-800">
+            {unpublished.slice(0, show).map((f, i) => {
+              // Every fork is "someone/the-same-name", so repeating the project
+              // name fifty times is noise. The owner is the part that differs.
+              const suffix = f.full_name.slice(f.owner_login.length + 1);
+              const renamed = suffix.toLowerCase() !== repo.split("/")[1].toLowerCase();
+              return (
+                <li key={f.full_name}>
+                  <a
+                    href={`https://github.com/${f.full_name}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`${f.full_name} — not published on Project OS, this opens GitHub`}
+                    className="flex items-center gap-3 px-3 py-2.5 outline-none transition hover:bg-neutral-800/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
+                  >
+                    <span className="w-5 shrink-0 text-right font-mono text-[11px] tabular-nums text-neutral-700">
+                      {i + 1}
                     </span>
-                  )}
-                  {f.pushed_at && <span className="shrink-0 text-[10px] text-neutral-600">{timeAgo(f.pushed_at)}</span>}
-                  <ExternalLink size={10} className="shrink-0 text-neutral-700" aria-hidden />
-                </a>
-              </li>
-            ))}
-          </ul>
+                    <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-neutral-200">
+                      {f.owner_login}
+                      {renamed && <span className="text-neutral-600">/{suffix}</span>}
+                    </span>
+                    {f.stars > 0 && (
+                      <span className="flex shrink-0 items-center gap-1 font-mono text-[12px] tabular-nums text-amber-300/70">
+                        <Star size={10} className="fill-amber-300/70" aria-hidden />
+                        {f.stars.toLocaleString()}
+                      </span>
+                    )}
+                    <ExternalLink size={11} className="shrink-0 text-neutral-700" aria-hidden />
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
 
           {show < unpublished.length && (
             <button
               onClick={() => setShow(show + 25)}
-              className="mt-1.5 w-full cursor-pointer rounded-lg border border-neutral-800 py-1.5 font-mono text-[11px] text-neutral-500 transition hover:border-neutral-600 hover:text-neutral-300"
+              className="mt-2 w-full cursor-pointer rounded-lg border border-neutral-800 py-2 font-mono text-[11px] text-neutral-500 transition hover:border-neutral-600 hover:text-neutral-300"
             >
-              show {Math.min(25, unpublished.length - show)} more of {unpublished.length}
+              show {Math.min(25, unpublished.length - show)} more
             </button>
           )}
 
-          <p className="mt-2.5 px-2 font-mono text-[11px] leading-relaxed text-neutral-600">
-            These have no page here because nobody claimed them.{" "}
+          <p className="mt-3 px-1 font-mono text-[11px] leading-relaxed text-neutral-600">
+            None of these have a page here — nobody claimed them.{" "}
             <a href="/submit" className="text-emerald-400 hover:underline">
               Publish yours
             </a>{" "}
-            and it joins the tree — we already know it came from {repo}.
+            and it joins the tree.
           </p>
         </>
       )}
