@@ -39,7 +39,7 @@ export function OwnerControls({
       });
       const data = (await res.json()) as { ok?: boolean; deleted?: boolean; error?: string };
       if (data.ok) {
-        if (data.deleted) router.push("/popular");
+        if (data.deleted) router.push("/explore");
         else {
           setEditing(false);
           router.refresh();

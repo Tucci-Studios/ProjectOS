@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bookmark, FlaskConical, ChevronRight, Lightbulb, Rss, Flame, Sparkles, Megaphone } from "lucide-react";
+import { Compass, Bookmark, FlaskConical, ChevronRight, Lightbulb, Rss, Flame, Sparkles, Megaphone } from "lucide-react";
 import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
 
 // Three doors: AI, Build, Play. Each opens to its sections. The group you're in
@@ -21,8 +21,7 @@ export function SectionsNav() {
 
   const MAIN = [
     { href: "/", label: "Feed", Icon: Rss, exact: true },
-    { href: "/popular", label: "Popular", Icon: Flame },
-    { href: "/explore", label: "Explore", Icon: Sparkles },
+      { href: "/explore", label: "Explore", Icon: Compass },
     { href: "/news", label: "News", Icon: Megaphone },
   ];
 

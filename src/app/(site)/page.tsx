@@ -89,7 +89,7 @@ export default async function FeedPage() {
         <EmptyHome
           title="You're not following anything yet"
           body="Open any project and hit Follow. Its updates and any new forks of it land here automatically, so you can watch an idea evolve without checking back."
-          cta={{ href: "/popular", label: "Find something to follow" }}
+          cta={{ href: "/explore", label: "Find something to follow" }}
         />
       ) : (
         <div className="stagger space-y-3">

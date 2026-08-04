@@ -5,7 +5,9 @@ import type { ProjectFeedRow } from "@/components/project-card";
 export type FeedSort = "top" | "new" | "forked" | "starred" | "followed";
 
 const ORDER_BY: Record<FeedSort, string> = {
-  top: "like_count DESC, p.stars DESC, p.created_at DESC",
+  top: `like_count DESC,
+        (p.stars / (1.0 + (strftime('%s','now') - COALESCE(p.pushed_at, p.created_at)) / 2592000.0)) DESC,
+        p.created_at DESC`,
   new: "p.created_at DESC",
   forked: "p.github_forks DESC, fork_count DESC, like_count DESC",
   starred: "p.stars DESC, p.github_forks DESC",
@@ -16,7 +18,12 @@ const ORDER_BY: Record<FeedSort, string> = {
 export async function getProjectFeed(
   category?: string,
   sort: FeedSort = "new",
-  { limit, offset = 0, viewerId }: { limit?: number; offset?: number; viewerId?: string } = {},
+  {
+    limit,
+    offset = 0,
+    viewerId,
+    sinceDays,
+  }: { limit?: number; offset?: number; viewerId?: string; sinceDays?: number } = {},
 ): Promise<{ results: ProjectFeedRow[]; total: number }> {
   const { env } = getCloudflareContext();
   const hideBlocked = viewerId
@@ -31,7 +38,12 @@ export async function getProjectFeed(
     : category
       ? " AND p.category = ?1"
       : "";
-  const where = "p.status = 'live'" + filter + hideBlocked;
+  // "This week" means worked on this week — true for every sort, and the only
+  // reading that doesn't need history we haven't collected yet.
+  const recent = sinceDays
+    ? ` AND COALESCE(p.pushed_at, p.created_at) >= strftime('%s','now') - ${Math.floor(sinceDays) * 86400}`
+    : "";
+  const where = "p.status = 'live'" + filter + recent + hideBlocked;
   const order = ORDER_BY[sort] ?? ORDER_BY.new;
   const stmt = env.DB.prepare(
     `SELECT p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,

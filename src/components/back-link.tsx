@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 // Uses browser history so you land back at the exact scroll position you left,
 // with a sane fallback for people arriving from a shared link.
-export function BackLink({ fallback = "/popular", label = "Back" }: { fallback?: string; label?: string }) {
+export function BackLink({ fallback = "/explore", label = "Back" }: { fallback?: string; label?: string }) {
   const router = useRouter();
 
   return (

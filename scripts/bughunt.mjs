@@ -46,6 +46,11 @@ async function visit(path) {
   if (res.status >= 500) note("server-error", path, `HTTP ${res.status}`);
   else if (res.status === 404) note("not-found", path, "HTTP 404");
 
+  // A redirect's body carries Next's internal NEXT_REDIRECT markup, which looks
+  // exactly like a crashed page to the checks below. The status is the answer
+  // here, not the HTML.
+  if (res.status >= 300 && res.status < 400) return;
+
   // Next.js renders its error overlay markup on runtime errors
   if (/__next_error__|Runtime Error|Application error: a server-side exception/i.test(html))
     note("runtime-error", path, "error boundary rendered");

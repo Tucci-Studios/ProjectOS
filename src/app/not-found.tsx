@@ -23,7 +23,7 @@ export default function NotFound() {
             Back to the feed
           </Link>
           <Link
-            href="/popular"
+            href="/explore"
             className="inline-flex min-h-[44px] items-center rounded-lg border border-neutral-600 px-5 font-mono text-sm text-neutral-200 transition hover:border-neutral-400"
           >
             Explore projects

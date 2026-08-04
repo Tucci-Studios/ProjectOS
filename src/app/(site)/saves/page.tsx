@@ -62,7 +62,7 @@ export default async function SavesPage() {
         <Empty
           title="Nothing saved yet"
           body="Hit the bookmark on any project and it lands here. Nobody is told, and the author never sees it."
-          cta={{ href: "/popular", label: "Find something to save" }}
+          cta={{ href: "/explore", label: "Find something to save" }}
         />
       ) : (
         <div className="stagger space-y-3">
