@@ -22,12 +22,15 @@ export function ForkSwarm({
   count,
   known = 0,
   height = 420,
+  caption = true,
 }: {
   /** How many forks exist. Every one of them gets a particle. */
   count: number;
   /** How many we hold names for — drawn brighter. */
   known?: number;
   height?: number;
+  /** Off when the surrounding layout supplies its own words. */
+  caption?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -140,11 +143,13 @@ export function ForkSwarm({
   return (
     <div className="relative w-full overflow-hidden" style={{ height }}>
       <canvas ref={canvasRef} className="h-full w-full" />
+      {caption && (
       <p className="pointer-events-none absolute bottom-2 left-3 right-3 font-mono text-[11px] text-neutral-500">
         One dot per fork
         {count > 40000 && <span className="text-neutral-600"> · capped at 40,000 drawn</span>}
         {known > 0 && <span className="text-neutral-600"> · the {known} we hold names for are brighter</span>}
       </p>
+      )}
     </div>
   );
 }
