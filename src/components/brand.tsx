@@ -1,7 +1,15 @@
 import Link from "next/link";
 
-// The Project OS mark: a forking trunk inside a circle — monochrome, matching
-// the glyph treatment used on project cards.
+/**
+ * The Project OS mark: a prompt and a blinking cursor, in a circle.
+ *
+ * Picked from the ten in the lab. It's the only one of them that drops the
+ * forking trunk, which trades the literal "lineage" read for something that
+ * looks like the thing the site is about — a terminal you build in.
+ *
+ * The cursor is the only moving part, and it holds still for anyone whose
+ * system asks for reduced motion (see .m-caret in globals.css).
+ */
 export function BrandMark({ size = 34, className = "" }: { size?: number; className?: string }) {
   return (
     <span
@@ -9,12 +17,15 @@ export function BrandMark({ size = 34, className = "" }: { size?: number; classN
       style={{ width: size, height: size }}
       aria-hidden
     >
-      <svg width={size * 0.56} height={size * 0.56} viewBox="0 0 16 16" fill="none">
-        <path d="M8 15V9.5" stroke="#fafafa" strokeWidth="1.5" strokeLinecap="round" />
-        <path d="M8 10 L4.2 6.6 M8 10 L11.8 6.6" stroke="#fafafa" strokeWidth="1.35" strokeLinecap="round" />
-        <circle cx="8" cy="10" r="1.35" fill="#fafafa" />
-        <circle cx="4" cy="5.4" r="1.5" fill="none" stroke="#fafafa" strokeWidth="1.25" />
-        <circle cx="12" cy="5.4" r="1.5" fill="none" stroke="#fafafa" strokeWidth="1.25" />
+      <svg width={size * 0.58} height={size * 0.58} viewBox="0 0 16 16" fill="none" overflow="visible">
+        <path
+          d="M3.6 5.4 L6.6 8 L3.6 10.6"
+          stroke="#fafafa"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <rect x="8.4" y="9.4" width="4.4" height="1.5" rx="0.5" fill="#4ade80" className="m-caret" />
       </svg>
     </span>
   );
