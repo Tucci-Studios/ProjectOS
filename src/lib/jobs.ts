@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { syncForks } from "./forks";
+import { getReadme } from "./github";
 import { snapshotStars } from "./ranking";
 
 /**
@@ -154,11 +155,11 @@ export async function discover(perQuery = 30): Promise<JobResult> {
 export async function refresh(batch = 150): Promise<JobResult> {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
-    `SELECT id, github_repo, source FROM projects
+    `SELECT id, github_repo, source, readme_at FROM projects
      WHERE status='live' ORDER BY updated_at ASC LIMIT ?1`,
   )
     .bind(batch)
-    .all<{ id: string; github_repo: string; source: string }>();
+    .all<{ id: string; github_repo: string; source: string; readme_at: number | null }>();
 
   const now = Math.floor(Date.now() / 1000);
   let updated = 0;
@@ -213,6 +214,15 @@ export async function refresh(batch = 150): Promise<JobResult> {
         )
         .run();
     }
+    // Warm the README while we're here, so the first person to open the page
+    // isn't the one who pays for fetching it.
+    if (!p.readme_at) {
+      const md = await getReadme(p.github_repo);
+      await env.DB.prepare("UPDATE projects SET readme_md = ?1, readme_at = ?2 WHERE id = ?3")
+        .bind(md, now, p.id)
+        .run();
+    }
+
     updated++;
     // GitHub throttles bursts even well inside the hourly budget.
     await sleep(90);

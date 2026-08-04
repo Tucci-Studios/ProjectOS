@@ -11,6 +11,7 @@ import { LineageBadge } from "@/components/lineage-badge";
 import { VerifiedMark } from "@/components/verified-mark";
 import { ConfirmLineage } from "@/components/confirm-lineage";
 import { ForksPanel } from "@/components/forks-panel";
+import { ReadmeButton } from "@/components/readme";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
@@ -22,7 +23,6 @@ import { BackLink } from "@/components/back-link";
 import { accentHex, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { getSessionUser } from "@/lib/auth";
 import { getLineage, getBadges } from "@/lib/queries";
-import { LikeButton } from "@/components/like-button";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +48,8 @@ type Row = {
   release_downloads: number | null;
   stars: number | null;
   github_forks: number | null;
+  readme_md: string | null;
+  readme_at: number | null;
   image_url: string | null;
   owner_id: string;
 };
@@ -62,7 +64,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url, u.is_shadow,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks,
+            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at,
             (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      LEFT JOIN repo_stats rs ON rs.project_id = p.id
@@ -76,11 +78,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const g = groupOf(p.category);
 
   const [myVote, lineage, followRows, parent, followerRow, commentRows, imageRows, badges, updateRows] = await Promise.all([
-    user
-      ? env.DB.prepare("SELECT value FROM likes WHERE user_id = ?1 AND project_id = ?2")
-          .bind(user.id, p.id)
-          .first<{ value: number }>()
-      : Promise.resolve(null),
+    Promise.resolve(null),
     getLineage(p.root_id),
     user
       ? env.DB.prepare("SELECT project_id FROM follows WHERE user_id = ?1").bind(user.id).all<{ project_id: string }>()
@@ -138,7 +136,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
 
       {/* Identity */}
       <div className="flex items-start gap-4">
-        <LikeButton projectId={p.id} initialCount={p.like_count} initialVote={myVote?.value ?? 0} />
         <div className="min-w-0 flex-1">
           <h1 className="font-mono text-[26px] font-bold leading-tight tracking-tight text-white">
             {p.base_name}
@@ -256,6 +253,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           childDisplay={p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name}
         />
       )}
+
+      <ReadmeButton projectId={p.id} repo={p.github_repo} hasReadme={p.readme_at !== null && !!p.readme_md} />
 
       {(updateRows.results.length > 0 || user?.id === p.owner_id) && (
         <div className="mt-7 border-t border-neutral-800 pt-6">

@@ -97,3 +97,19 @@ export async function getFileText(repo: string, path: string): Promise<string | 
     return null;
   }
 }
+
+/**
+ * A repo's README as raw markdown.
+ *
+ * GitHub finds it whatever it's called — README.md, readme.rst, docs/README —
+ * so we ask for "the readme" rather than guessing a filename.
+ */
+export async function getReadme(repo: string): Promise<string | null> {
+  const res = await fetch(`${GH}/repos/${repo}/readme`, {
+    headers: { ...headers(), Accept: "application/vnd.github.raw" },
+  });
+  if (!res.ok) return null;
+  const text = await res.text();
+  // Some READMEs are whole books. Past this nobody is reading on a project page.
+  return text.slice(0, 60000);
+}
