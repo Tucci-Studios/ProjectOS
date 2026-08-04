@@ -11,8 +11,28 @@
  *   node scripts/audit.mjs
  */
 import { execFileSync } from "node:child_process";
+import crypto from "node:crypto";
+import fs from "node:fs";
 
 const BASE = process.env.BASE ?? "http://localhost:3000";
+
+/**
+ * Crawl as somebody.
+ *
+ * Signed out, half the site is a login wall — /me, /settings, /notifications
+ * and every follow, save and comment control are simply absent, so a clean run
+ * proved nothing about them. Same locally-minted session the smoke test uses.
+ */
+const vars = Object.fromEntries(
+  fs.readFileSync(".dev.vars", "utf8").split("\n").filter(Boolean).map((l) => {
+    const i = l.indexOf("=");
+    return [l.slice(0, i), l.slice(i + 1)];
+  }),
+);
+const b64 = (b) => b.toString("base64").replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+const payload = b64(Buffer.from(JSON.stringify({ uid: "gh_120062744", exp: Math.floor(Date.now() / 1000) + 3600 })));
+const sig = b64(crypto.createHmac("sha256", vars.SESSION_SECRET).update(payload).digest());
+const COOKIE = { Cookie: `pos_session=${payload}.${sig}` };
 const d1 = (sql) =>
   JSON.parse(
     execFileSync("npx", ["wrangler", "d1", "execute", "project-os", "--local", "--json", "--command", sql], {
@@ -40,7 +60,7 @@ while (queue.length) {
   const t0 = Date.now();
   let res, html = "";
   try {
-    res = await fetch(BASE + path, { redirect: "manual" });
+    res = await fetch(BASE + path, { redirect: "manual", headers: COOKIE });
     if (res.status < 300 || res.status >= 400) html = await res.text();
   } catch (e) {
     add("bug", path, `request failed: ${e.message}`);
@@ -75,8 +95,12 @@ const routes = execFileSync("find", ["src/app", "-name", "page.tsx"], { encoding
   .trim().split("\n")
   .map((f) => f.replace(/^src\/app/, "").replace(/\/\([^)]+\)/g, "").replace(/\/page\.tsx$/, "") || "/")
   .filter((r) => !r.includes("["));
+// Reachable, just not from server-rendered HTML: two live behind the avatar
+// dropdown, one is a redirect kept for old links, one is the pre-launch page
+// that is unlinked on purpose.
+const REACHABLE = new Set(["/me", "/settings", "/popular", "/coming-soon"]);
 for (const r of routes) {
-  if (r === "/") continue;
+  if (r === "/" || REACHABLE.has(r)) continue;
   if (!linkedFrom.has(r) || linkedFrom.get(r).size === 0) add("orphan", r, "no page links here");
 }
 
@@ -124,7 +148,7 @@ for (const c of declared) if (!known.has(c)) add("thin", `/explore?in=${c}`, "ze
 
 // ── accessibility + polish, on the pages we actually fetched ─────────────
 for (const [path, { html, status }] of seen) {
-  if (status !== 200) continue;
+  if (status !== 200 || /\.(ico|png|svg|txt|xml)$/.test(path)) continue;
   const imgs = [...html.matchAll(/<img\b[^>]*>/g)];
   const noAlt = imgs.filter((m) => !/\balt=/.test(m[0])).length;
   if (noAlt) add("a11y", path, `${noAlt} image${noAlt === 1 ? "" : "s"} with no alt text`);
