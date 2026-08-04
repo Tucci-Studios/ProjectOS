@@ -241,8 +241,8 @@ export function ReadmeButton({
     if (!open || md !== null || state === "loading") return;
     setState("loading");
     fetch(`/api/readme?projectId=${encodeURIComponent(projectId)}`)
-      .then((r) => r.json())
-      .then((d: { md?: string | null }) => {
+      .then((r) => r.json() as Promise<{ md?: string | null }>)
+      .then((d) => {
         if (d.md?.trim()) {
           setMd(d.md);
           setState("idle");

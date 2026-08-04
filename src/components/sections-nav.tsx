@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone } from "lucide-react";
+import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone, ShieldCheck, Radio } from "lucide-react";
 import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
 /**
@@ -14,7 +14,7 @@ import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
  * the rail stays the same height whatever you're looking at, and the sections
  * get room to explain themselves instead of being a cramped list.
  */
-export function SectionsNav() {
+export function SectionsNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const activeSlug = pathname.startsWith("/s/") ? pathname.split("/")[2] : undefined;
   const activeGroup = pathname.startsWith("/g/")
@@ -26,6 +26,7 @@ export function SectionsNav() {
   const MAIN = [
     { href: "/", label: "Feed", Icon: ScrollText, exact: true },
     { href: "/explore", label: "Explore", Icon: Compass },
+    { href: "/wire", label: "Wire", Icon: Radio, tone: "text-sky-300", bg: "bg-sky-400/10" },
     { href: "/news", label: "News", Icon: Megaphone },
   ];
 
@@ -33,6 +34,10 @@ export function SectionsNav() {
     { href: "/saves", label: "Saves", Icon: Bookmark, tone: "text-sky-300", bg: "bg-sky-400/10" },
     { href: "/ideas", label: "Ideas", Icon: Lightbulb, tone: "text-amber-300", bg: "bg-amber-400/10" },
     { href: "/lab", label: "Lab", Icon: FlaskConical, tone: "text-amber-300", bg: "bg-amber-400/10" },
+    // The moderation queue was a URL you had to remember.
+    ...(isAdmin
+      ? [{ href: "/mod", label: "Mod", Icon: ShieldCheck, tone: "text-rose-300", bg: "bg-rose-400/10" }]
+      : []),
   ];
 
   const row =

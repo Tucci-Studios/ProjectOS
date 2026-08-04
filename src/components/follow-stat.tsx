@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GitFork, Users, Download, ChevronUp, Star } from "lucide-react";
+import { GitFork, Users, ChevronUp, Star } from "lucide-react";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
 
@@ -20,7 +20,6 @@ export function ProjectStats({
   initialFollowers,
   forkCount,
   voteCount,
-  downloads,
   stars,
   saved,
   signedIn,
@@ -30,7 +29,6 @@ export function ProjectStats({
   initialFollowers: number;
   forkCount: number;
   voteCount: number;
-  downloads: number | null;
   stars?: number | null;
   saved?: boolean;
   signedIn: boolean;
@@ -69,14 +67,6 @@ export function ProjectStats({
           label={stars === 1 ? "star" : "stars"}
           explain="Stars on GitHub. Not a Project OS number — it's how the wider world rates it."
           tone="text-amber-400"
-        />
-      ) : null}
-      {downloads ? (
-        <Stat
-          Icon={Download}
-          value={downloads}
-          label="downloads"
-          explain="Times this was downloaded from its GitHub releases."
         />
       ) : null}
 

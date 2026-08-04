@@ -16,7 +16,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <div className="mx-auto flex max-w-7xl gap-0 px-4 md:px-5">
         <aside className="hidden w-56 shrink-0 border-r border-neutral-800 py-8 pr-6 md:block">
           <div className="sticky top-24">
-            <SectionsNav />
+            <SectionsNav isAdmin={user?.role === "admin"} />
           </div>
         </aside>
         <div className="min-w-0 flex-1 py-6 md:py-8 md:pl-8">

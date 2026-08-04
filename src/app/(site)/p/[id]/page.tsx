@@ -12,6 +12,7 @@ import { VerifiedMark } from "@/components/verified-mark";
 import { ConfirmLineage } from "@/components/confirm-lineage";
 import { ForksPanel } from "@/components/forks-panel";
 import { ReadmeButton } from "@/components/readme";
+import { ClaimBanner } from "@/components/claim-banner";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
@@ -45,7 +46,6 @@ type Row = {
   avatar_url: string | null;
   is_shadow: number;
   like_count: number;
-  release_downloads: number | null;
   stars: number | null;
   github_forks: number | null;
   readme_md: string | null;
@@ -64,10 +64,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url, u.is_shadow,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            rs.release_downloads, p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at,
+            p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at,
             (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
-     LEFT JOIN repo_stats rs ON rs.project_id = p.id
      WHERE p.id = ?1 AND p.status = 'live'`,
   )
     .bind(id)
@@ -202,13 +201,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         </ButtonLink>
       </div>
 
+      {!!p.is_shadow && <ClaimBanner login={p.github_login} signedIn={!!user} />}
+
       <ProjectStats
         projectId={p.id}
         initialFollowing={following.has(p.id)}
         initialFollowers={followerRow?.n ?? 0}
         forkCount={forkCount}
         voteCount={p.like_count}
-        downloads={p.release_downloads}
         stars={p.stars}
         saved={savedHere}
         signedIn={!!user}
