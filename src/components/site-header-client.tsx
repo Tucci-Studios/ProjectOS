@@ -31,19 +31,19 @@ export function SiteHeaderClient({
   return (
     <>
     <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
-      <div className="grid h-[60px] w-full grid-cols-[1fr_minmax(0,520px)_1fr] items-center gap-6 px-4">
+      <div className="flex h-[60px] w-full items-center gap-2 px-4 md:grid md:grid-cols-[1fr_minmax(0,520px)_1fr] md:gap-6">
         {/* Left: brand */}
-        <span className="flex min-w-0 select-none items-center gap-2.5 justify-self-start">
+        <span className="flex min-w-0 shrink select-none items-center gap-2 justify-self-start md:gap-2.5">
           <MobileNav />
           <BrandMark size={34} />
-          <span className="flex flex-col leading-none">
-            <span className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
+          <span className="hidden min-w-0 flex-col leading-none sm:flex">
+            <span className="truncate font-mono text-[17px] font-bold tracking-[0.16em] text-white">
               PROJECT<span className="text-emerald-400">_</span>OS
             </span>
             <button
               onClick={() => setSplashTrigger((t) => t + 1)}
               title="What is Project OS?"
-              className="mt-[3px] w-fit cursor-pointer rounded font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-500 outline-none transition-colors duration-200 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="mt-[3px] hidden w-fit cursor-pointer rounded py-1.5 font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-400 outline-none transition-colors duration-200 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 sm:block"
             >
               open source
             </button>
@@ -52,7 +52,7 @@ export function SiteHeaderClient({
 
         {/* Center: the two places you go */}
         <form action="/search" method="get" className="relative hidden w-full md:block">
-          <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" aria-hidden />
+          <Search size={16} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" aria-hidden />
           <input
             name="q"
             placeholder="Search projects, posts, people"
@@ -61,7 +61,7 @@ export function SiteHeaderClient({
           />
         </form>
 
-        <div className="ml-auto flex items-center justify-end gap-1.5 md:ml-0 md:gap-2">
+        <div className="ml-auto flex shrink-0 items-center justify-end gap-0.5 md:ml-0 md:gap-2">
           <Link
             href="/search"
             aria-label="Search"
@@ -69,8 +69,8 @@ export function SiteHeaderClient({
           >
             <Search size={18} aria-hidden />
           </Link>
-          <ButtonLink href="/submit" variant="primary" className="!min-h-[34px] !rounded-full !px-3 !text-[13px]">
-            <Plus size={14} aria-hidden /> <span className="hidden sm:inline">Publish</span>
+          <ButtonLink href="/submit" variant="primary" aria-label="Publish a project" className="!min-h-[40px] !rounded-full !px-3.5 !text-[13px]">
+            <Plus size={15} aria-hidden /> <span className="hidden sm:inline">Publish</span>
           </ButtonLink>
 
           {user && (
@@ -101,7 +101,7 @@ export function SiteHeaderClient({
           )}
 
           {user ? (
-            <div className="border-l border-neutral-800 pl-3">
+            <div className="border-l border-neutral-800 pl-1.5 md:pl-3">
               <UserMenu user={user} />
             </div>
           ) : (

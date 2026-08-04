@@ -28,12 +28,12 @@ export function LabClient() {
 
       <section className="mt-9">
         <h2 className="font-mono text-[15px] font-bold text-white">Header mark — ten takes</h2>
-        <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-neutral-500">
+        <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-neutral-400">
           All original geometry, nobody else&apos;s marks. Pure CSS, so none of them run a timer in the header.
-          Every one holds still for reduced-motion. Click one to see it in a mock header at real size.
+          Click one to see it in a mock header at real size. If your system is set to reduce motion, these still play here so you can judge them — everywhere the mark actually ships, it holds still.
         </p>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <div className="motion-demo mt-5 grid gap-3 sm:grid-cols-2">
           {LOGO_MARKS.map(({ key, n, name, Mark, note }) => {
             const on = key === picked;
             return (
@@ -53,7 +53,7 @@ export function LabClient() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-baseline gap-2">
-                    <span className="font-mono text-[11px] text-neutral-600">{n}</span>
+                    <span className="font-mono text-[11px] text-neutral-400">{n}</span>
                     <span className="font-mono text-[14px] font-bold text-white">{name}</span>
                   </span>
                   <span className="mt-1.5 block text-[12.5px] leading-relaxed text-neutral-400">{note}</span>
@@ -64,17 +64,17 @@ export function LabClient() {
         </div>
 
         <div className="mt-6">
-          <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-neutral-500">
+          <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-neutral-400">
             {current.n} {current.name} — in a header, at 34px
           </p>
-          <div className="overflow-hidden rounded-xl border border-neutral-800">
+          <div className="motion-demo overflow-hidden rounded-xl border border-neutral-800">
             <div className="flex items-center gap-3 border-b border-neutral-800 bg-[#141a16] px-4 py-3">
               <current.Mark size={34} />
               <span className="flex flex-col leading-none">
                 <span className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
                   PROJECT<span className="text-emerald-400">_</span>OS
                 </span>
-                <span className="mt-[3px] font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-500">
+                <span className="mt-[3px] font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-400">
                   open source
                 </span>
               </span>

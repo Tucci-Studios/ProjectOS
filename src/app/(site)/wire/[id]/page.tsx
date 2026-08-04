@@ -56,7 +56,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="max-w-3xl">
       <p className="mb-3 font-mono text-sm">
-        <Link href="/wire" className="text-neutral-500 transition hover:text-neutral-300">
+        <Link href="/wire" className="text-neutral-400 transition hover:text-neutral-300">
           &larr; wire
         </Link>
       </p>
@@ -82,9 +82,9 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             </Link>
           )}
         </div>
-        <p className="mt-1 font-mono text-xs text-neutral-500">
+        <p className="mt-1 font-mono text-xs text-neutral-400">
           by <span className="text-neutral-400">@{post.github_login}</span> · {timeAgo(post.created_at)} ·{" "}
-          <span className="text-neutral-500">#{post.id}</span>
+          <span className="text-neutral-400">#{post.id}</span>
         </p>
         <div className="mt-4 text-[15px] leading-relaxed text-neutral-200">
           {post.kind === "tutorial" ? (
@@ -96,13 +96,13 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       </article>
 
       <section className="mt-6">
-        <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-500">
+        <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-400">
           {comments.length} comment{comments.length === 1 ? "" : "s"}
         </h2>
         <div className="space-y-3">
           {comments.map((c) => (
             <div key={c.id} className="rounded-xl border border-neutral-700/60 bg-neutral-900/40 p-4">
-              <p className="font-mono text-xs text-neutral-500">
+              <p className="font-mono text-xs text-neutral-400">
                 <span className="text-neutral-400">@{c.github_login}</span> · {timeAgo(c.created_at)}
               </p>
               <div className="mt-1.5 text-[15px] leading-relaxed text-neutral-300">

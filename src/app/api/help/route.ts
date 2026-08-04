@@ -11,11 +11,13 @@ export async function POST(request: Request) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "Sign in first." }, { status: 401 });
 
-  const { role, body, contact } = (await request.json()) as {
-    role?: string;
-    body?: string;
-    contact?: string;
-  };
+  let payload: { role?: string; body?: string; contact?: string };
+  try {
+    payload = (await request.json()) as typeof payload;
+  } catch {
+    return NextResponse.json({ error: "Bad request." }, { status: 400 });
+  }
+  const { role, body, contact } = payload;
   if (!roleByKey(role ?? "")) return NextResponse.json({ error: "Unknown role." }, { status: 400 });
 
   const text = (body ?? "").trim();
@@ -45,7 +47,13 @@ export async function PATCH(request: Request) {
   const user = await getSessionUser();
   if (!user || user.role !== "admin") return NextResponse.json({ error: "Admins only." }, { status: 403 });
 
-  const { id, action } = (await request.json()) as { id?: string; action?: string };
+  let payload: { id?: string; action?: string };
+  try {
+    payload = (await request.json()) as typeof payload;
+  } catch {
+    return NextResponse.json({ error: "Bad request." }, { status: 400 });
+  }
+  const { id, action } = payload;
   if (!id || !["accepted", "declined"].includes(action ?? ""))
     return NextResponse.json({ error: "Bad request." }, { status: 400 });
 

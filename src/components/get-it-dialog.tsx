@@ -43,7 +43,7 @@ export function GetItDialog({ category, repo }: { category: string; repo: string
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close"
-                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-neutral-500 transition hover:bg-neutral-800 hover:text-white"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
               >
                 <X size={16} aria-hidden />
               </button>

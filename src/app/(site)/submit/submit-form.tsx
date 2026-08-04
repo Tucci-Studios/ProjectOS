@@ -46,7 +46,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
         >
           Write it <ArrowRight size={15} aria-hidden />
         </button>
-        {!category && <p className="font-mono text-xs text-neutral-500">Pick a section first.</p>}
+        {!category && <p className="font-mono text-xs text-neutral-400">Pick a section first.</p>}
       </div>
     );
   }
@@ -118,7 +118,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
       <label className="block">
         <span className="mb-1.5 block font-mono text-xs text-neutral-400">GitHub repo</span>
         <input value={repo} onChange={(e) => setRepo(e.target.value)} placeholder="owner/repo" required className={input} />
-        <span className="mt-1.5 block text-xs text-neutral-500">
+        <span className="mt-1.5 block text-xs text-neutral-400">
           Needs project.json and AGENTS.md in the root — the{" "}
           <a href="/submit/wizard" className="text-emerald-400 hover:underline">
             wizard
@@ -136,7 +136,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
 
       <label className="block">
         <span className="mb-1.5 block font-mono text-xs text-neutral-400">
-          Describe it <span className="text-neutral-600">— what it does, in plain words</span>
+          Describe it <span className="text-neutral-400">— what it does, in plain words</span>
         </span>
         <textarea
           value={description}
@@ -146,7 +146,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
           placeholder="Finds every node_modules on your machine, shows the damage in GB, and yeets them with one keypress."
           className={input}
         />
-        <span className="mt-1 block text-xs text-neutral-600">
+        <span className="mt-1 block text-xs text-neutral-400">
           Blank uses the description from your project.json. {description.length}/500
         </span>
       </label>
@@ -154,7 +154,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
       {(isFork || forkOf || claimParent) && (
         <label className="block">
           <span className="mb-1.5 block font-mono text-xs text-neutral-400">
-            What did you change? <span className="text-neutral-600">— vs. {parentName}</span>
+            What did you change? <span className="text-neutral-400">— vs. {parentName}</span>
           </span>
           <input
             value={changeSummary}
@@ -163,7 +163,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
             placeholder="Added a desktop UI with checkboxes and a size chart."
             className={input}
           />
-          <span className="mt-1 block text-xs text-neutral-600">
+          <span className="mt-1 block text-xs text-neutral-400">
             This is the line people read in the tree to tell your fork apart.
           </span>
         </label>
@@ -171,7 +171,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
 
       <div>
         <span className="mb-2 block font-mono text-xs text-neutral-400">
-          Images <span className="text-neutral-600">— screenshots of it working</span>
+          Images <span className="text-neutral-400">— screenshots of it working</span>
         </span>
         <ImageUploader value={images} onChange={setImages} />
       </div>
@@ -233,11 +233,11 @@ function KindPicker({
                   : "border-neutral-700 bg-neutral-900/40 hover:border-neutral-500"
               }`}
             >
-              <k.Icon size={16} className={active ? "text-emerald-300" : "text-neutral-500"} aria-hidden />
+              <k.Icon size={16} className={active ? "text-emerald-300" : "text-neutral-400"} aria-hidden />
               <span className={`mt-2 block font-mono text-sm font-bold ${active ? "text-white" : "text-neutral-200"}`}>
                 {k.label}
               </span>
-              <span className="mt-0.5 block text-xs leading-snug text-neutral-500">{k.blurb}</span>
+              <span className="mt-0.5 block text-xs leading-snug text-neutral-400">{k.blurb}</span>
             </button>
           );
         })}
@@ -272,7 +272,7 @@ function SectionPicker({
           </optgroup>
         ))}
       </select>
-      <span className="mt-1 block text-xs text-neutral-600">
+      <span className="mt-1 block text-xs text-neutral-400">
         Is it a Claude skill? An MCP server? A Grok project? This decides where people find it.
       </span>
     </label>
@@ -301,7 +301,7 @@ function DetectionNote({
 
   if (busy)
     return (
-      <p className="flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/40 px-3.5 py-3 font-mono text-[12px] text-neutral-500">
+      <p className="flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/40 px-3.5 py-3 font-mono text-[12px] text-neutral-400">
         <Loader2 size={14} className="animate-spin" aria-hidden /> Checking what this repo is...
       </p>
     );
@@ -329,7 +329,7 @@ function DetectionNote({
         <p className="flex items-center gap-2 font-mono text-[13px] text-neutral-200">
           <Sparkles size={14} className="text-emerald-400" aria-hidden /> This will be published as its own project
         </p>
-        <p className="mt-1 text-[13px] leading-relaxed text-neutral-500">
+        <p className="mt-1 text-[13px] leading-relaxed text-neutral-400">
           {detection.kind === "orphan-fork" ? (
             <>
               GitHub says it&apos;s a fork of{" "}
@@ -346,7 +346,7 @@ function DetectionNote({
           <button
             type="button"
             onClick={() => setPicking(true)}
-            className="mt-2 cursor-pointer font-mono text-[12px] text-neutral-500 underline-offset-2 hover:text-emerald-300 hover:underline"
+            className="mt-2 cursor-pointer font-mono text-[12px] text-neutral-400 underline-offset-2 hover:text-emerald-300 hover:underline"
           >
             Built this on top of something already here? Say so →
           </button>
@@ -356,7 +356,7 @@ function DetectionNote({
           <div className="mt-2.5 border-t border-neutral-800 pt-2.5">
             <label className="block">
               <span className="mb-1.5 block font-mono text-[11px] text-neutral-400">
-                Project ID it came from <span className="text-neutral-600">— from that project&apos;s URL</span>
+                Project ID it came from <span className="text-neutral-400">— from that project&apos;s URL</span>
               </span>
               <input
                 value={claimParent}
@@ -365,7 +365,7 @@ function DetectionNote({
                 className="w-full rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 font-mono text-[13px] text-white placeholder-neutral-600 outline-none focus:border-emerald-400"
               />
             </label>
-            <p className="mt-1.5 text-[12px] leading-relaxed text-neutral-500">
+            <p className="mt-1.5 text-[12px] leading-relaxed text-neutral-400">
               We can&apos;t verify this — GitHub has no fork record. It&apos;ll show as a{" "}
               <span className="text-neutral-300">claimed fork</span> until that project&apos;s owner confirms it.
             </p>
@@ -385,7 +385,7 @@ function DetectionNote({
     );
 
   return (
-    <p className="rounded-xl border border-neutral-700 bg-neutral-900/40 px-3.5 py-3 font-mono text-[12px] text-neutral-500">
+    <p className="rounded-xl border border-neutral-700 bg-neutral-900/40 px-3.5 py-3 font-mono text-[12px] text-neutral-400">
       {detection.message}
     </p>
   );

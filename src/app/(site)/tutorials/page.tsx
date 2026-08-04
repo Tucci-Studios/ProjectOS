@@ -84,7 +84,7 @@ export default async function TutorialsPage() {
       {requests.length > 0 && (
         <section className="mt-9 border-t border-neutral-800 pt-6">
           <h2 className="font-mono text-[15px] font-bold text-white">Asked for, not written yet</h2>
-          <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-500">
+          <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-400">
             People stuck on something specific. Pick one off and you know somebody wants it.
           </p>
           <div className="mt-3 space-y-2">
@@ -95,7 +95,7 @@ export default async function TutorialsPage() {
                 className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-lg border border-neutral-800 bg-neutral-900/30 p-3 transition hover:border-violet-400/40"
               >
                 <span className="font-mono text-[14px] text-neutral-200">{r.title ?? "(untitled)"}</span>
-                <span className="font-mono text-[11px] text-neutral-600">
+                <span className="font-mono text-[11px] text-neutral-400">
                   @{r.github_login} · {timeAgo(r.created_at)}
                 </span>
               </Link>

@@ -65,7 +65,7 @@ export function ImageUploader({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="flex h-[74px] w-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-neutral-600 text-neutral-500 outline-none transition hover:border-emerald-400/60 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+            className="flex h-[74px] w-28 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-neutral-600 text-neutral-400 outline-none transition hover:border-emerald-400/60 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
             {busy > 0 ? (
               <Loader2 size={16} className="animate-spin" aria-hidden />
@@ -91,7 +91,7 @@ export function ImageUploader({
         }}
       />
 
-      <p className="mt-2 text-xs leading-relaxed text-neutral-500">
+      <p className="mt-2 text-xs leading-relaxed text-neutral-400">
         PNG, JPEG, WebP or GIF · up to 5 MB each · {value.length}/{max} added
       </p>
       {error && <p className="mt-1 font-mono text-xs text-rose-400">{error}</p>}

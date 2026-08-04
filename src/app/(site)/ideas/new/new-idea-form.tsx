@@ -85,7 +85,7 @@ export function NewIdeaForm() {
         </p>
         <label className="block">
           <span className="mb-1.5 block font-mono text-xs text-neutral-400">
-            Live demo URL <span className="text-neutral-600">— your deployed fork (https only)</span>
+            Live demo URL <span className="text-neutral-400">— your deployed fork (https only)</span>
           </span>
           <input
             value={demoUrl}
@@ -97,7 +97,7 @@ export function NewIdeaForm() {
         </label>
         <label className="block">
           <span className="mb-1.5 block flex items-center gap-1.5 font-mono text-xs text-neutral-400">
-            <Code2 size={12} aria-hidden /> Code link <span className="text-neutral-600">— your fork or pull request</span>
+            <Code2 size={12} aria-hidden /> Code link <span className="text-neutral-400">— your fork or pull request</span>
           </span>
           <input
             value={repoUrl}
@@ -110,7 +110,7 @@ export function NewIdeaForm() {
         <label className="block">
           <span className="mb-1.5 block flex items-center gap-1.5 font-mono text-xs text-neutral-400">
             <ImageIcon size={12} aria-hidden /> Screenshot URL{" "}
-            <span className="text-neutral-600">— optional, used if there&apos;s no demo</span>
+            <span className="text-neutral-400">— optional, used if there&apos;s no demo</span>
           </span>
           <input
             value={shotUrl}

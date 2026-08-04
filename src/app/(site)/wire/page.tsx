@@ -82,7 +82,7 @@ export default async function WirePage() {
                 </Link>
               )}
             </div>
-            <p className="mt-1 font-mono text-xs text-neutral-500">
+            <p className="mt-1 font-mono text-xs text-neutral-400">
               by <span className="text-neutral-400">@{post.github_login}</span> · {timeAgo(post.created_at)} ·{" "}
               <Link href={`/wire/${post.id}`} className="transition hover:text-neutral-300">
                 {post.comment_count} comment{post.comment_count === 1 ? "" : "s"}

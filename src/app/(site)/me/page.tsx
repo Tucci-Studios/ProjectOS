@@ -102,7 +102,7 @@ export default async function MyStuffPage() {
                 href={`/wire/${c.post_id}`}
                 className="block rounded-xl border border-neutral-700/80 bg-neutral-900/50 p-3.5 outline-none transition hover:border-neutral-500 hover:bg-neutral-800/40 focus-visible:ring-2 focus-visible:ring-emerald-400"
               >
-                <p className="font-mono text-[11px] text-neutral-500">
+                <p className="font-mono text-[11px] text-neutral-400">
                   <span className="text-neutral-300">@{c.github_login}</span> on{" "}
                   <span className="text-neutral-300">{c.post_title}</span> · {timeAgo(c.created_at)}
                 </p>
@@ -140,11 +140,11 @@ export default async function MyStuffPage() {
               >
                 <span className="min-w-0">
                   <span className="block truncate font-mono text-sm text-neutral-200">{post.title ?? "(untitled)"}</span>
-                  <span className="font-mono text-[11px] text-neutral-500">
+                  <span className="font-mono text-[11px] text-neutral-400">
                     {post.kind} · {timeAgo(post.created_at)}
                   </span>
                 </span>
-                <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] text-neutral-500">
+                <span className="inline-flex shrink-0 items-center gap-1 font-mono text-[11px] text-neutral-400">
                   <MessageCircle size={12} aria-hidden /> {post.comment_count}
                 </span>
               </Link>
@@ -183,9 +183,9 @@ function Section({
   return (
     <section className="mb-8">
       <h2 className="mb-3 flex items-center gap-2 font-mono text-sm font-bold text-neutral-200">
-        <Icon size={15} className="text-neutral-500" aria-hidden />
+        <Icon size={15} className="text-neutral-400" aria-hidden />
         {title}
-        <span className="font-normal text-neutral-500">{count}</span>
+        <span className="font-normal text-neutral-400">{count}</span>
       </h2>
       {children}
     </section>
@@ -194,6 +194,6 @@ function Section({
 
 function Empty({ text }: { text: string }) {
   return (
-    <p className="rounded-xl border border-dashed border-neutral-700 p-6 text-center text-sm text-neutral-500">{text}</p>
+    <p className="rounded-xl border border-dashed border-neutral-700 p-6 text-center text-sm text-neutral-400">{text}</p>
   );
 }

@@ -24,9 +24,12 @@ export async function checkRate(userId: string, action: keyof typeof LIMITS): Pr
   const since = now - rule.windowS;
 
   // Prune this user's expired rows while we're here — keeps the table small
-  // without needing a cron.
-  await env.DB.prepare("DELETE FROM rate_events WHERE user_id = ?1 AND created_at < ?2")
-    .bind(userId, since)
+  // without needing a cron. Only THIS action's rows: each action has its own
+  // window, and a cutoff from the shortest one (detect, ten minutes) would
+  // delete publish and post events that are still inside their hour, handing
+  // anyone a rate-limit reset for the price of one extra request.
+  await env.DB.prepare("DELETE FROM rate_events WHERE user_id = ?1 AND action = ?2 AND created_at < ?3")
+    .bind(userId, action, since)
     .run();
 
   const row = await env.DB.prepare(

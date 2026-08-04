@@ -56,7 +56,7 @@ export function ReportButton({
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex min-h-[32px] cursor-pointer items-center gap-1.5 rounded-md px-2 font-mono text-[11px] text-neutral-600 outline-none transition hover:bg-neutral-800 hover:text-rose-300 focus-visible:ring-2 focus-visible:ring-rose-400"
+        className="inline-flex min-h-[32px] cursor-pointer items-center gap-1.5 rounded-md px-2 font-mono text-[11px] text-neutral-400 outline-none transition hover:bg-neutral-800 hover:text-rose-300 focus-visible:ring-2 focus-visible:ring-rose-400"
       >
         <Flag size={12} aria-hidden /> {label}
       </button>
@@ -87,7 +87,7 @@ export function ReportButton({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="min-h-[34px] cursor-pointer px-2 font-mono text-xs text-neutral-500 transition hover:text-neutral-300"
+              className="min-h-[34px] cursor-pointer px-2 font-mono text-xs text-neutral-400 transition hover:text-neutral-300"
             >
               Cancel
             </button>

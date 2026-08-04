@@ -35,7 +35,7 @@ export function CardComments({ projectId, count }: { projectId: string; count: n
         onClick={toggle}
         aria-expanded={open}
         className={`inline-flex min-h-[30px] cursor-pointer items-center gap-1.5 rounded-md px-2 font-mono text-[11px] outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-          open ? "bg-neutral-800 text-neutral-200" : "text-neutral-500 hover:bg-neutral-800 hover:text-neutral-200"
+          open ? "bg-neutral-800 text-neutral-200" : "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
         }`}
       >
         <MessageCircle size={12} aria-hidden /> {total}
@@ -44,9 +44,9 @@ export function CardComments({ projectId, count }: { projectId: string; count: n
 
       {open && (
         <div className="animate-rise mt-2 rounded-lg border border-neutral-800 bg-neutral-900/70 p-3">
-          {busy && <p className="font-mono text-[11px] text-neutral-500">Loading…</p>}
+          {busy && <p className="font-mono text-[11px] text-neutral-400">Loading…</p>}
           {comments && comments.length === 0 && (
-            <p className="font-mono text-[11px] text-neutral-500">No comments yet.</p>
+            <p className="font-mono text-[11px] text-neutral-400">No comments yet.</p>
           )}
           {comments && comments.length > 0 && (
             <>
@@ -62,7 +62,7 @@ export function CardComments({ projectId, count }: { projectId: string; count: n
                       </span>
                     )}
                     <p className="min-w-0 text-[13px] leading-snug text-neutral-300">
-                      <span className="font-mono text-[11px] text-neutral-500">
+                      <span className="font-mono text-[11px] text-neutral-400">
                         @{c.github_login} · {timeAgo(c.created_at)}
                       </span>
                       <br />

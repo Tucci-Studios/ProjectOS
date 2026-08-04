@@ -125,7 +125,7 @@ export function OwnerControls({
           </button>
           <button
             onClick={() => setConfirming(false)}
-            className="min-h-[34px] cursor-pointer px-2 font-mono text-[12px] text-neutral-500 transition hover:text-neutral-300"
+            className="min-h-[34px] cursor-pointer px-2 font-mono text-[12px] text-neutral-400 transition hover:text-neutral-300"
           >
             Never mind
           </button>
@@ -133,12 +133,12 @@ export function OwnerControls({
       ) : (
         <button
           onClick={() => setConfirming(true)}
-          className="inline-flex min-h-[34px] cursor-pointer items-center gap-1.5 rounded-lg border border-neutral-700 px-2.5 font-mono text-[12px] text-neutral-500 transition hover:border-rose-400/50 hover:text-rose-300"
+          className="inline-flex min-h-[34px] cursor-pointer items-center gap-1.5 rounded-lg border border-neutral-700 px-2.5 font-mono text-[12px] text-neutral-400 transition hover:border-rose-400/50 hover:text-rose-300"
         >
           <Trash2 size={12} aria-hidden /> Take it down
         </button>
       )}
-      <span className="font-mono text-[11px] text-neutral-600">Forks off this keep their history.</span>
+      <span className="font-mono text-[11px] text-neutral-400">Forks off this keep their history.</span>
     </div>
   );
 }

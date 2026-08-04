@@ -142,10 +142,10 @@ export function InstallBlock({ category, repo }: { category: string; repo: strin
         {steps.map((s, i) => (
           <li key={i}>
             <p className="font-mono text-xs text-neutral-300">
-              <span className="text-neutral-500">{i + 1}.</span> {s.label}
+              <span className="text-neutral-400">{i + 1}.</span> {s.label}
             </p>
             {s.code && <CodeLine code={s.code} />}
-            {s.note && <p className="mt-1.5 text-xs leading-relaxed text-neutral-500">{s.note}</p>}
+            {s.note && <p className="mt-1.5 text-xs leading-relaxed text-neutral-400">{s.note}</p>}
           </li>
         ))}
       </ol>

@@ -34,7 +34,7 @@ export function TutorialBody({ text, projects }: { text: string; projects: Proje
           <ul className="mt-2 space-y-1">
             {t.needs.map((n, i) => (
               <li key={i} className="flex gap-2.5 text-[14px] text-neutral-300">
-                <span className="select-none text-neutral-600">·</span>
+                <span className="select-none text-neutral-400">·</span>
                 <span className="min-w-0">{n}</span>
               </li>
             ))}
@@ -109,7 +109,7 @@ export function TutorialCard({
           {title ?? "(untitled)"}
         </h3>
         {t.goal && <p className="mt-1 line-clamp-2 text-[14px] leading-relaxed text-neutral-400">{t.goal}</p>}
-        <p className="mt-2 font-mono text-[11.5px] text-neutral-500">
+        <p className="mt-2 font-mono text-[11.5px] text-neutral-400">
           @{author} · {when} · {comments} comment{comments === 1 ? "" : "s"}
         </p>
       </div>

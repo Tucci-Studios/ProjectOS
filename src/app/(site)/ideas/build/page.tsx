@@ -30,7 +30,7 @@ export default function BuildAChangePage() {
           Fork it on GitHub so your copy is yours, then pull it down.
         </p>
         <CopyLine code={`git clone https://github.com/YOUR-USERNAME/project-os.git`} />
-        <p className="mt-2 text-xs text-neutral-500">
+        <p className="mt-2 text-xs text-neutral-400">
           Or grab it read-only:{" "}
           <code className="text-neutral-400">git clone {SOURCE_URL}.git</code>
         </p>
@@ -41,7 +41,7 @@ export default function BuildAChangePage() {
           Installs everything, sets up a local database, and starts the site at localhost:3000.
         </p>
         <CopyLine code="npm install && npm run db:migrate:local && npm run dev" />
-        <p className="mt-2 text-xs leading-relaxed text-neutral-500">
+        <p className="mt-2 text-xs leading-relaxed text-neutral-400">
           It runs on Next.js and Tailwind, with a local SQLite database. The AGENTS.md in the repo tells Claude Code (or
           any coding AI) how everything is laid out — point your AI at it and describe the change you want.
         </p>
@@ -53,7 +53,7 @@ export default function BuildAChangePage() {
           deploy a fork for free.
         </p>
         <CopyLine code="npm run deploy" />
-        <p className="mt-2 text-xs text-neutral-500">
+        <p className="mt-2 text-xs text-neutral-400">
           Any host works — all that matters is a public https link people can open.
         </p>
       </Step>
@@ -73,7 +73,7 @@ export default function BuildAChangePage() {
         </div>
       </Step>
 
-      <p className="mt-8 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-xs leading-relaxed text-neutral-500">
+      <p className="mt-8 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-xs leading-relaxed text-neutral-400">
         <span className="text-neutral-300">What happens after you win:</span> your diff is public for anyone to read
         before it goes anywhere. Nothing deploys itself — a human reviews the code, then it ships and shows up in{" "}
         <Link href="/updates" className="text-emerald-400 hover:underline">
@@ -102,7 +102,7 @@ function Step({
         <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
           <Icon size={14} aria-hidden />
         </span>
-        <span className="text-neutral-600">{n}.</span> {title}
+        <span className="text-neutral-400">{n}.</span> {title}
       </h2>
       {children}
     </section>

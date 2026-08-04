@@ -58,7 +58,7 @@ export default async function UpdatesPage() {
       )}
 
       {results.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
+        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
           No updates posted yet.
         </p>
       ) : (
@@ -75,7 +75,7 @@ export default async function UpdatesPage() {
                 <BrandMark size={30} />
                 <div className="min-w-0 flex-1">
                   <h2 className="font-mono text-base font-bold leading-tight text-white">{u.title}</h2>
-                  <p className="font-mono text-[11px] text-neutral-500">
+                  <p className="font-mono text-[11px] text-neutral-400">
                     {u.version && <span className="text-neutral-400">{u.version} · </span>}
                     {dateLabel(u.published_at)} · @{u.github_login}
                   </p>

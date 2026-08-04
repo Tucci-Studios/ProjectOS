@@ -22,7 +22,7 @@ export function TermsGate({ login }: { login: string }) {
             <p className="font-mono text-[17px] font-bold tracking-[0.16em] text-white">
               PROJECT<span className="text-emerald-400">_</span>OS
             </p>
-            <p className="font-mono text-[8.5px] uppercase tracking-[0.42em] text-neutral-500">open source</p>
+            <p className="font-mono text-[8.5px] uppercase tracking-[0.42em] text-neutral-400">open source</p>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ export function TermsGate({ login }: { login: string }) {
           ))}
         </ul>
 
-        <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-neutral-500">
+        <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-neutral-400">
           <ShieldCheck size={14} className="mt-0.5 shrink-0" aria-hidden />
           Your code lives on GitHub under GitHub&apos;s terms — we only list it here. Projects are community-submitted:
           read before you run anything. Full text in the{" "}
@@ -65,7 +65,7 @@ export function TermsGate({ login }: { login: string }) {
           <form action="/api/auth/logout" method="post">
             <button
               type="submit"
-              className="min-h-[46px] cursor-pointer rounded-lg px-4 font-mono text-sm text-neutral-500 transition hover:text-neutral-300"
+              className="min-h-[46px] cursor-pointer rounded-lg px-4 font-mono text-sm text-neutral-400 transition hover:text-neutral-300"
             >
               No thanks, sign me out
             </button>

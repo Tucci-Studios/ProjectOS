@@ -22,31 +22,34 @@ export function ButtonLink({
   className = "",
   children,
   external = false,
+  "aria-label": ariaLabel,
 }: {
   href: string;
   variant?: Variant;
   className?: string;
   children: React.ReactNode;
   external?: boolean;
+  /** Needed when the label inside is hidden at some breakpoint. */
+  "aria-label"?: string;
 }) {
   const cls = `${BASE} ${VARIANTS[variant]} ${className}`;
   // An absolute URL always leaves the site, whether or not the caller said so.
   if (external || /^https?:\/\//.test(href)) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+      <a href={href} target="_blank" rel="noopener noreferrer" aria-label={ariaLabel} className={cls}>
         {children}
       </a>
     );
   }
   if (href.startsWith("/api/")) {
     return (
-      <a href={href} className={cls}>
+      <a href={href} aria-label={ariaLabel} className={cls}>
         {children}
       </a>
     );
   }
   return (
-    <Link href={href} className={cls}>
+    <Link href={href} aria-label={ariaLabel} className={cls}>
       {children}
     </Link>
   );

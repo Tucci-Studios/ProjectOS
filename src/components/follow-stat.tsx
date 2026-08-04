@@ -101,18 +101,23 @@ function Stat({
       <Icon
         size={13}
         aria-hidden
-        className={`self-center ${tone ?? (highlight ? "text-emerald-400" : "text-neutral-500")} ${tone ? "fill-current" : ""}`}
+        className={`self-center ${tone ?? (highlight ? "text-emerald-400" : "text-neutral-400")} ${tone ? "fill-current" : ""}`}
       />
       <span className={`font-mono text-[15px] font-bold ${tone ?? (highlight ? "text-emerald-400" : "text-neutral-200")}`}>
         {compact(value)}
       </span>
-      <span className="cursor-help font-mono text-[12px] text-neutral-500 underline decoration-dotted underline-offset-4">
+      <button
+        type="button"
+        title={explain}
+        aria-label={`${label}: ${explain}`}
+        className="inline-flex min-h-[24px] cursor-help items-center rounded font-mono text-[12px] text-neutral-400 underline decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+      >
         {label}
-      </span>
+      </button>
 
       <span
         role="tooltip"
-        className="pointer-events-none absolute left-0 top-[calc(100%+9px)] z-40 w-56 translate-y-1 rounded-lg border border-neutral-700 bg-[#1a221d] px-3 py-2 text-left opacity-0 shadow-xl transition-all duration-150 group-hover/chip:translate-y-0 group-hover/chip:opacity-100"
+        className="pointer-events-none invisible absolute left-0 top-[calc(100%+9px)] z-40 max-w-[min(14rem,calc(100vw-2.5rem))] translate-y-1 rounded-lg border border-neutral-700 bg-[#1a221d] px-3 py-2 text-left opacity-0 shadow-xl transition-all duration-150 group-hover/chip:visible group-hover/chip:translate-y-0 group-hover/chip:opacity-100 group-focus-within/chip:visible group-focus-within/chip:translate-y-0 group-focus-within/chip:opacity-100"
       >
         <span className="block text-[11px] leading-snug text-neutral-300">{explain}</span>
       </span>

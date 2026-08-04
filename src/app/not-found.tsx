@@ -8,7 +8,7 @@ export default function NotFound() {
         <div className="mb-6 flex justify-center">
           <BrandMark size={52} />
         </div>
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-500">404 — dead fork</p>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-400">404 — dead fork</p>
         <h1 className="mt-3 font-mono text-2xl font-bold tracking-tight text-white">
           Nothing grew here
         </h1>

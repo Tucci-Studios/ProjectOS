@@ -13,7 +13,7 @@ import { EMPTY, serialize, problems, type Tutorial } from "@/lib/tutorial";
  * here has a goal, steps, and a way to check you got it right.
  */
 const field =
-  "w-full rounded-lg border border-neutral-700 bg-neutral-950/60 px-3 py-2 text-[14px] text-neutral-100 outline-none transition placeholder:text-neutral-600 focus:border-amber-400/60 focus-visible:ring-2 focus-visible:ring-amber-400/30";
+  "w-full rounded-lg border border-neutral-700 bg-neutral-950/60 px-3 py-2 text-[14px] text-neutral-100 outline-none transition placeholder:text-neutral-400 focus:border-amber-400/60 focus-visible:ring-2 focus-visible:ring-amber-400/30";
 
 const legend = "flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest";
 
@@ -44,7 +44,7 @@ export function TutorialComposer({ value, onChange }: { value: string; onChange:
           className={`${field} mt-2`}
           placeholder="A working MCP server Claude can call"
         />
-        <p className="mt-1.5 font-mono text-[11px] text-neutral-600">One sentence. This is all most people read.</p>
+        <p className="mt-1.5 font-mono text-[11px] text-neutral-400">One sentence. This is all most people read.</p>
       </section>
 
       <section className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
@@ -66,7 +66,7 @@ export function TutorialComposer({ value, onChange }: { value: string; onChange:
                   type="button"
                   onClick={() => update({ ...t, needs: t.needs.filter((_, k) => k !== i) })}
                   aria-label={`Remove requirement ${i + 1}`}
-                  className="shrink-0 cursor-pointer rounded-lg p-2 text-neutral-600 transition hover:bg-neutral-800 hover:text-rose-300"
+                  className="shrink-0 cursor-pointer rounded-lg p-2 text-neutral-400 transition hover:bg-neutral-800 hover:text-rose-300"
                 >
                   <X size={15} aria-hidden />
                 </button>
@@ -77,7 +77,7 @@ export function TutorialComposer({ value, onChange }: { value: string; onChange:
         <button
           type="button"
           onClick={() => update({ ...t, needs: [...t.needs, ""] })}
-          className="mt-2 inline-flex cursor-pointer items-center gap-1.5 font-mono text-[12px] text-neutral-500 transition hover:text-neutral-300"
+          className="mt-2 inline-flex cursor-pointer items-center gap-1.5 font-mono text-[12px] text-neutral-400 transition hover:text-neutral-300"
         >
           <Plus size={13} aria-hidden /> Add another
         </button>
@@ -101,7 +101,7 @@ export function TutorialComposer({ value, onChange }: { value: string; onChange:
                   type="button"
                   onClick={() => update({ ...t, steps: t.steps.filter((_, k) => k !== i) })}
                   aria-label={`Remove step ${i + 1}`}
-                  className="absolute right-2.5 top-2.5 cursor-pointer rounded-lg p-1.5 text-neutral-600 transition hover:bg-neutral-800 hover:text-rose-300"
+                  className="absolute right-2.5 top-2.5 cursor-pointer rounded-lg p-1.5 text-neutral-400 transition hover:bg-neutral-800 hover:text-rose-300"
                 >
                   <X size={15} aria-hidden />
                 </button>
@@ -151,7 +151,7 @@ export function TutorialComposer({ value, onChange }: { value: string; onChange:
       {left.length > 0 && (
         <ul className="space-y-1 rounded-xl border border-neutral-800 bg-neutral-900/40 p-3.5">
           {left.map((p, i) => (
-            <li key={i} className="font-mono text-[12px] text-neutral-500">
+            <li key={i} className="font-mono text-[12px] text-neutral-400">
               · {p}
             </li>
           ))}

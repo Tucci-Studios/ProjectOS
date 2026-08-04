@@ -29,7 +29,7 @@ export function PageHeader({
   return (
     <header className="mb-6 border-b border-neutral-800 pb-5">
       {crumbs.length > 0 && (
-        <nav aria-label="Breadcrumb" className="mb-2 flex flex-wrap items-center gap-1 font-mono text-xs text-neutral-500">
+        <nav aria-label="Breadcrumb" className="mb-2 flex flex-wrap items-center gap-1 font-mono text-xs text-neutral-400">
           {crumbs.map((c, i) => (
             <span key={i} className="flex items-center gap-1">
               {i > 0 && <ChevronRight size={12} className="text-neutral-700" aria-hidden />}

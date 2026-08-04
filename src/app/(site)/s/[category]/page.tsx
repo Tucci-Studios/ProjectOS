@@ -144,7 +144,7 @@ export default async function SectionPage({
           <Pager href={link(page - 1)} disabled={page === 1}>
             <ArrowLeft size={14} aria-hidden /> Previous
           </Pager>
-          <span className="font-mono text-xs text-neutral-500">
+          <span className="font-mono text-xs text-neutral-400">
             Page {page} of {pages} · {total} total
           </span>
           <Pager href={link(page + 1)} disabled={page >= pages}>
@@ -183,7 +183,7 @@ export default async function SectionPage({
               >
                 {post.title ?? "(untitled)"}
               </Link>
-              <p className="mt-1 font-mono text-[11px] text-neutral-500">
+              <p className="mt-1 font-mono text-[11px] text-neutral-400">
                 @{post.github_login} · {timeAgo(post.created_at)} · {post.comment_count} comment
                 {post.comment_count === 1 ? "" : "s"}
               </p>
@@ -224,14 +224,14 @@ export default async function SectionPage({
               href={t.key === "projects" ? `/s/${category}` : `/s/${category}?tab=${t.key}`}
               aria-current={active ? "page" : undefined}
               className={`relative -mb-px flex min-h-[42px] items-center gap-2 px-3.5 font-mono text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                active ? "text-white" : "text-neutral-500 hover:text-neutral-300"
+                active ? "text-white" : "text-neutral-400 hover:text-neutral-300"
               }`}
             >
               <t.Icon size={14} aria-hidden />
               {t.label}
               <span
                 className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] ${
-                  active ? "bg-neutral-800 text-neutral-300" : "text-neutral-600"
+                  active ? "bg-neutral-800 text-neutral-300" : "text-neutral-400"
                 }`}
               >
                 {t.count}

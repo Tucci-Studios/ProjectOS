@@ -32,7 +32,7 @@ export function Wordmark() {
         <Link
           href="/updates"
           title="What's new — weekly updates"
-          className="mt-[3px] w-fit rounded font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-500 outline-none transition-colors duration-200 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
+          className="mt-[3px] w-fit rounded font-mono text-[8.5px] font-medium uppercase tracking-[0.42em] text-neutral-400 outline-none transition-colors duration-200 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
         >
           open source
         </Link>

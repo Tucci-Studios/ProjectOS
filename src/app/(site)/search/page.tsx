@@ -26,7 +26,7 @@ export default async function SearchPage({
     return (
       <div className="mx-auto max-w-3xl">
         <PageHeader crumbs={[{ label: "Search" }]} title="Search" purpose="Find projects, posts, and people." Icon={SearchIcon} />
-        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
+        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
           Type something in the search box up top.
         </p>
       </div>
@@ -104,7 +104,7 @@ export default async function SearchPage({
               <PageLink q={query} page={page - 1} disabled={page === 1}>
                 <ArrowLeft size={14} aria-hidden /> Previous
               </PageLink>
-              <span className="font-mono text-xs text-neutral-500">
+              <span className="font-mono text-xs text-neutral-400">
                 Page {page} of {pages}
               </span>
               <PageLink q={query} page={page + 1} disabled={page >= pages}>
@@ -126,7 +126,7 @@ export default async function SearchPage({
                 className="block rounded-xl border border-neutral-700/70 bg-neutral-900/40 p-3.5 transition hover:border-neutral-500 hover:bg-neutral-800/40"
               >
                 <span className="block font-mono text-sm text-neutral-200">{post.title ?? "(untitled)"}</span>
-                <span className="font-mono text-[11px] text-neutral-500">
+                <span className="font-mono text-[11px] text-neutral-400">
                   {post.kind} · @{post.github_login} · {timeAgo(post.created_at)}
                 </span>
               </Link>

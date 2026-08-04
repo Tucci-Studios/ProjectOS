@@ -95,7 +95,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
               <UserBadges badges={badges} size="md" showTree />
             </h1>
             {person.display_name && <p className="text-sm text-neutral-400">{person.display_name}</p>}
-            <p className="mt-1 font-mono text-[11px] text-neutral-500">
+            <p className="mt-1 font-mono text-[11px] text-neutral-400">
               on Project OS since{" "}
               {new Date(person.created_at * 1000).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
               {activity?.last_seen ? ` · last active ${timeAgo(activity.last_seen)}` : ""}
@@ -103,13 +103,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
 
             <div className="mt-3 flex flex-wrap items-center gap-4 font-mono text-[13px]">
               <span className="flex items-center gap-1.5 text-neutral-300">
-                <Boxes size={14} className="text-neutral-500" aria-hidden /> {stats?.projects ?? 0} projects
+                <Boxes size={14} className="text-neutral-400" aria-hidden /> {stats?.projects ?? 0} projects
               </span>
               <span className="flex items-center gap-1.5 text-neutral-300">
-                <Heart size={14} className="text-neutral-500" aria-hidden /> {stats?.votes ?? 0} votes
+                <Heart size={14} className="text-neutral-400" aria-hidden /> {stats?.votes ?? 0} votes
               </span>
               <span className="flex items-center gap-1.5 text-neutral-300">
-                <GitFork size={14} className="text-neutral-500" aria-hidden /> {stats?.forks_of_theirs ?? 0} forks off their work
+                <GitFork size={14} className="text-neutral-400" aria-hidden /> {stats?.forks_of_theirs ?? 0} forks off their work
               </span>
             </div>
           </div>
@@ -119,7 +119,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
               GitHub <ExternalLink size={14} aria-hidden />
             </ButtonLink>
             {isYou ? (
-              <Link href="/me" className="font-mono text-[11px] text-neutral-500 transition hover:text-neutral-300">
+              <Link href="/me" className="font-mono text-[11px] text-neutral-400 transition hover:text-neutral-300">
                 This is you — go to your page
               </Link>
             ) : (
@@ -141,11 +141,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
 
       <section className="mb-8">
         <h2 className="mb-3 flex items-center gap-2 font-mono text-sm font-bold text-neutral-200">
-          <Boxes size={15} className="text-neutral-500" aria-hidden /> Projects
-          <span className="font-normal text-neutral-500">{projects.length}</span>
+          <Boxes size={15} className="text-neutral-400" aria-hidden /> Projects
+          <span className="font-normal text-neutral-400">{projects.length}</span>
         </h2>
         {projects.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-neutral-700 p-6 text-center text-sm text-neutral-500">
+          <p className="rounded-xl border border-dashed border-neutral-700 p-6 text-center text-sm text-neutral-400">
             Nothing published yet.
           </p>
         ) : (
@@ -160,7 +160,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
       {posts.length > 0 && (
         <section>
           <h2 className="mb-3 flex items-center gap-2 font-mono text-sm font-bold text-neutral-200">
-            <Megaphone size={15} className="text-neutral-500" aria-hidden /> Recent posts
+            <Megaphone size={15} className="text-neutral-400" aria-hidden /> Recent posts
           </h2>
           <div className="space-y-2">
             {posts.map((post) => (
@@ -170,7 +170,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ login:
                 className="block rounded-xl border border-neutral-700/70 bg-neutral-900/40 p-3.5 outline-none transition hover:border-neutral-500 hover:bg-neutral-800/40 focus-visible:ring-2 focus-visible:ring-emerald-400"
               >
                 <span className="block truncate font-mono text-sm text-neutral-200">{post.title ?? "(untitled)"}</span>
-                <span className="font-mono text-[11px] text-neutral-500">
+                <span className="font-mono text-[11px] text-neutral-400">
                   {post.kind} · {timeAgo(post.created_at)}
                 </span>
               </Link>

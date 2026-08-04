@@ -93,11 +93,11 @@ export default async function ModPage() {
                   <span className="font-mono text-[12px] text-emerald-400">
                     {roleByKey(a.role)?.title ?? a.role}
                   </span>
-                  <span className="font-mono text-[11px] text-neutral-600">{timeAgo(a.created_at)}</span>
+                  <span className="font-mono text-[11px] text-neutral-400">{timeAgo(a.created_at)}</span>
                 </div>
                 <p className="mt-2 whitespace-pre-wrap text-[13.5px] leading-relaxed text-neutral-300">{a.body}</p>
                 {a.contact && (
-                  <p className="mt-2 font-mono text-[12px] text-neutral-500">Reach them at {a.contact}</p>
+                  <p className="mt-2 font-mono text-[12px] text-neutral-400">Reach them at {a.contact}</p>
                 )}
                 <ApplicationActions id={a.id} />
               </article>
@@ -108,7 +108,7 @@ export default async function ModPage() {
       )}
 
       {open.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
+        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
           Nothing reported. Quiet is good.
         </p>
       ) : (
@@ -119,7 +119,7 @@ export default async function ModPage() {
                 <span className="rounded-full border border-rose-400/40 bg-rose-400/10 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-rose-300">
                   {r.target_type}
                 </span>
-                <span className="font-mono text-[11px] text-neutral-500">
+                <span className="font-mono text-[11px] text-neutral-400">
                   reported by @{r.reporter} · {timeAgo(r.created_at)}
                 </span>
                 <Link
@@ -138,17 +138,17 @@ export default async function ModPage() {
 
       {closed.length > 0 && (
         <section className="mt-8 border-t border-neutral-800 pt-6">
-          <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-600">Handled</h2>
+          <h2 className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">Handled</h2>
           <div className="space-y-2">
             {closed.map((r) => (
               <div
                 key={r.id}
                 className="flex items-center justify-between gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-3.5 py-2.5"
               >
-                <span className="min-w-0 truncate font-mono text-[12px] text-neutral-500">
+                <span className="min-w-0 truncate font-mono text-[12px] text-neutral-400">
                   {r.target_type} · {r.reason}
                 </span>
-                <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-neutral-600">{r.status}</span>
+                <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-neutral-400">{r.status}</span>
               </div>
             ))}
           </div>

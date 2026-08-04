@@ -21,7 +21,7 @@ export function UpdateCard({ u }: { u: FeedUpdate }) {
   return (
     <article className="group relative rounded-xl border border-neutral-800 bg-neutral-900/30 p-4 transition duration-200 hover:border-neutral-600 hover:bg-neutral-800/40">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+        <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-400">
           <Megaphone size={11} aria-hidden /> Update
         </span>
         <span className="font-mono text-[13px] font-bold text-neutral-100 transition group-hover:text-emerald-300">
@@ -32,7 +32,7 @@ export function UpdateCard({ u }: { u: FeedUpdate }) {
             {u.version}
           </span>
         )}
-        <span className="font-mono text-[11px] text-neutral-500">
+        <span className="font-mono text-[11px] text-neutral-400">
           @{u.github_login} · {timeAgo(u.created_at)}
         </span>
       </div>

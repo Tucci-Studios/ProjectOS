@@ -48,7 +48,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
         <ChevronDown
           size={13}
           aria-hidden
-          className={`text-neutral-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`text-neutral-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -60,7 +60,7 @@ export function UserMenu({ user }: { user: SessionUser }) {
         >
           <div className="border-b border-neutral-800 px-3 pb-2.5 pt-1.5">
             <p className="font-mono text-sm font-bold text-white">@{user.github_login}</p>
-            <p className="font-mono text-[11px] text-neutral-500">{user.role === "admin" ? "admin" : "member"}</p>
+            <p className="font-mono text-[11px] text-neutral-400">{user.role === "admin" ? "admin" : "member"}</p>
           </div>
 
           <div className="mt-1.5 space-y-0.5">

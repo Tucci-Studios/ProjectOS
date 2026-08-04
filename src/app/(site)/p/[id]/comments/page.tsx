@@ -39,10 +39,10 @@ export default async function ProjectCommentsPage({ params }: { params: Promise<
       </Link>
 
       <h1 className="flex items-center gap-2.5 font-mono text-xl font-bold tracking-tight text-white">
-        <MessageCircle size={19} className="text-neutral-500" aria-hidden />
-        Comments <span className="font-normal text-neutral-500">{results.length}</span>
+        <MessageCircle size={19} className="text-neutral-400" aria-hidden />
+        Comments <span className="font-normal text-neutral-400">{results.length}</span>
       </h1>
-      <p className="mb-6 mt-1.5 text-sm text-neutral-500">On {name}.</p>
+      <p className="mb-6 mt-1.5 text-sm text-neutral-400">On {name}.</p>
 
       <ProjectComments projectId={p.id} comments={results} signedIn={!!user} />
     </div>

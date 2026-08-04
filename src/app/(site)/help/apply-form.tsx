@@ -109,7 +109,7 @@ export function ApplyForm({ role, signedIn, onDone }: { role: string; signedIn: 
         <button
           type="button"
           onClick={onDone}
-          className="cursor-pointer font-mono text-[13px] text-neutral-500 transition hover:text-neutral-300"
+          className="cursor-pointer font-mono text-[13px] text-neutral-400 transition hover:text-neutral-300"
         >
           Cancel
         </button>

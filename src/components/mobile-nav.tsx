@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ScrollText, Compass, Menu, X, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical, Radio, GraduationCap, HeartHandshake } from "lucide-react";
@@ -23,6 +23,47 @@ const MAIN = [
 export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const panel = useRef<HTMLElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+
+  // Without this the drawer was a panel drawn over a page you were still
+  // standing in: focus stayed on the body, and the header's links behind the
+  // overlay were still tabbable and still announced. Move focus in on open,
+  // keep Tab inside, and put it back on the trigger when it closes.
+  useEffect(() => {
+    if (!open) return;
+    const root = panel.current;
+    if (!root) return;
+
+    const focusable = () =>
+      [...root.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')].filter(
+        (el) => el.offsetParent !== null,
+      );
+
+    focusable()[0]?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const items = focusable();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !root.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      trigger.current?.focus();
+    };
+  }, [open]);
   const activeGroup = pathname.startsWith("/g/")
     ? pathname.split("/")[2]
     : pathname.startsWith("/s/")
@@ -52,7 +93,8 @@ export function MobileNav() {
         onClick={() => setOpen(true)}
         aria-label="Open menu"
         aria-expanded={open}
-        className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg text-neutral-300 outline-none transition hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-emerald-400 md:hidden"
+        ref={trigger}
+        className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-lg text-neutral-300 outline-none transition hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-emerald-400 md:hidden"
       >
         <Menu size={20} aria-hidden />
       </button>
@@ -63,6 +105,9 @@ export function MobileNav() {
           onClick={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <nav
+            ref={panel}
+            role="dialog"
+            aria-modal="true"
             aria-label="Menu"
             className="animate-rise h-full w-[86%] max-w-xs overflow-y-auto border-r border-neutral-800 bg-[#141a16] p-3"
           >

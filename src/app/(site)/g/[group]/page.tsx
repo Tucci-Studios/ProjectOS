@@ -74,7 +74,7 @@ export default async function GroupPage({ params }: { params: Promise<{ group: s
                 <span className="mt-0.5 block truncate text-[13px] text-neutral-400">{s.use}</span>
               </span>
 
-              <span className="shrink-0 font-mono text-[13px] tabular-nums text-neutral-500">{n}</span>
+              <span className="shrink-0 font-mono text-[13px] tabular-nums text-neutral-400">{n}</span>
             </Link>
           );
         })}

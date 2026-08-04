@@ -74,9 +74,9 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
         {tab === "vote" ? (
           <>
             <span className="font-bold text-emerald-300">Round {cycle.n}</span>
-            <span className="text-neutral-600"> · </span>
+            <span className="text-neutral-400"> · </span>
             voting {closesInWords(cycle.daysLeft)}
-            <span className="text-neutral-600"> · </span>
+            <span className="text-neutral-400"> · </span>
             most votes ships
           </>
         ) : tab === "winners" ? (
@@ -103,7 +103,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
                         : "border-neutral-700/70 bg-neutral-900/40 hover:border-neutral-500"
                     }`}
                   >
-                    <span className="w-5 shrink-0 pt-1 text-right font-mono text-[13px] text-neutral-600">{i + 1}</span>
+                    <span className="w-5 shrink-0 pt-1 text-right font-mono text-[13px] text-neutral-400">{i + 1}</span>
                     <div className="relative z-[2] shrink-0">
                       <VoteButton ideaId={idea.id} initialCount={idea.vote_count} initialVote={idea.voted} />
                     </div>
@@ -131,7 +131,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
                         {idea.title}
                       </h2>
                       <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{idea.body_md}</p>
-                      <p className="mt-2 font-mono text-[11px] text-neutral-500">
+                      <p className="mt-2 font-mono text-[11px] text-neutral-400">
                         built by @{idea.github_login} · {timeAgo(idea.created_at)}
                       </p>
                     </div>
@@ -156,7 +156,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
               <h2 className="mb-1 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-amber-300">
                 <Hammer size={13} aria-hidden /> Shipping soon
               </h2>
-              <p className="mb-3 text-sm leading-relaxed text-neutral-500">
+              <p className="mb-3 text-sm leading-relaxed text-neutral-400">
                 Won a round. The code is public and going through a security check before it goes live.
               </p>
               <div className="space-y-3">
@@ -178,7 +178,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
                       &ldquo;{idea.title}&rdquo;
                     </h3>
                     <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-neutral-400">{idea.body_md}</p>
-                    <p className="mt-2 font-mono text-[11px] text-neutral-500">
+                    <p className="mt-2 font-mono text-[11px] text-neutral-400">
                       built by @{idea.github_login} · lands in{" "}
                       <Link href="/updates" className="relative z-[2] text-amber-300 hover:underline">
                         News
@@ -200,7 +200,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
             <h2 className="mb-1 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-emerald-400">
               <CheckCircle2 size={13} aria-hidden /> Already in the site
             </h2>
-            <p className="mb-3 text-sm leading-relaxed text-neutral-500">
+            <p className="mb-3 text-sm leading-relaxed text-neutral-400">
               Past rounds that shipped. You&apos;re using them right now.
             </p>
             {shipped.length === 0 ? (
@@ -217,7 +217,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
                       <Chip tone="emerald">
                         <CheckCircle2 size={10} aria-hidden /> Shipped
                       </Chip>
-                      <span className="font-mono text-[11px] text-neutral-500">
+                      <span className="font-mono text-[11px] text-neutral-400">
                         {idea.vote_count} vote{Math.abs(idea.vote_count) === 1 ? "" : "s"} · by @{idea.github_login}
                       </span>
                     </span>
@@ -230,7 +230,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
             )}
             <Link
               href="/updates"
-              className="mt-3 inline-block font-mono text-[12px] text-neutral-500 transition hover:text-emerald-300"
+              className="mt-3 inline-block font-mono text-[12px] text-neutral-400 transition hover:text-emerald-300"
             >
               Read the release notes in News →
             </Link>
@@ -240,7 +240,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
 
       {tab === "archive" && (
         <section>
-          <p className="mb-3 text-sm leading-relaxed text-neutral-500">
+          <p className="mb-3 text-sm leading-relaxed text-neutral-400">
 Proposals that lost their round or were turned down. Nothing is ever deleted — the reasoning stays readable.
           </p>
           {declined.length === 0 ? (
@@ -253,8 +253,8 @@ Proposals that lost their round or were turned down. Nothing is ever deleted —
                   href={`/ideas/${idea.id}`}
                   className="flex items-center justify-between gap-3 rounded-lg border border-neutral-800 bg-neutral-900/30 px-3.5 py-2.5 transition hover:border-neutral-600"
                 >
-                  <span className="min-w-0 truncate font-mono text-[13px] text-neutral-500">{idea.title}</span>
-                  <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-600">
+                  <span className="min-w-0 truncate font-mono text-[13px] text-neutral-400">{idea.title}</span>
+                  <span className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                     Not doing
                   </span>
                 </Link>
@@ -263,7 +263,7 @@ Proposals that lost their round or were turned down. Nothing is ever deleted —
           )}
         </section>
       )}
-      <p className="mt-8 border-t border-neutral-800 pt-5 text-[13px] leading-relaxed text-neutral-500">
+      <p className="mt-8 border-t border-neutral-800 pt-5 text-[13px] leading-relaxed text-neutral-400">
         <span className="text-neutral-300">How this works:</span>{" "}the site is built on itself. Fork it, build your
         change, deploy it, and post it here — everyone tries the real thing before they vote. The round&apos;s winner
         gets a security check, then ships.
@@ -274,7 +274,7 @@ Proposals that lost their round or were turned down. Nothing is ever deleted —
 
 function Empty({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
+    <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
       {children}
     </p>
   );

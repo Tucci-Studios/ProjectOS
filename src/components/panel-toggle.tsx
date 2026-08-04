@@ -27,14 +27,14 @@ export function PanelToggle({
           {showComments ? (
             <>
               <MessageCircle size={13} aria-hidden /> Comments
-              <span className="font-normal normal-case tracking-normal text-neutral-500">{commentCount}</span>
+              <span className="font-normal normal-case tracking-normal text-neutral-400">{commentCount}</span>
             </>
           ) : (
             <>
               <GitFork size={13} aria-hidden /> Forks
               <span className="font-normal normal-case tracking-normal">
                 {forkCount === 0 ? (
-                  <span className="text-neutral-500">none yet</span>
+                  <span className="text-neutral-400">none yet</span>
                 ) : (
                   <span className="font-bold text-emerald-400">{forkCount.toLocaleString()}</span>
                 )}

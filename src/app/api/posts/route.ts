@@ -2,6 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { getSessionUser } from "@/lib/auth";
 import { checkRate } from "@/lib/rate-limit";
+import { CATEGORY_SLUGS } from "@/lib/categories";
 
 export async function POST(request: Request) {
   const user = await getSessionUser();
@@ -27,6 +28,10 @@ export async function POST(request: Request) {
 
   if ((kind === "tutorial" || kind === "request") && !category)
     return NextResponse.json({ error: "Tutorials and requests need a section." }, { status: 400 });
+  // Section pages look posts up by this exact slug, so an unrecognised one is
+  // written happily and then never appears anywhere.
+  if (category && !CATEGORY_SLUGS.includes(category))
+    return NextResponse.json({ error: "That isn't a section." }, { status: 400 });
 
   if (title.length < 3 || title.length > 120)
     return NextResponse.json({ error: "Title must be 3-120 characters." }, { status: 400 });

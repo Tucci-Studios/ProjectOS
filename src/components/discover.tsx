@@ -20,7 +20,7 @@ export function DiscoverTile({ p }: { p: ProjectFeedRow }) {
           {p.base_name}
         </p>
         <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-neutral-400">{p.description}</p>
-        <p className="mt-1.5 flex flex-wrap items-center gap-x-3 font-mono text-[11px] text-neutral-500">
+        <p className="mt-1.5 flex flex-wrap items-center gap-x-3 font-mono text-[11px] text-neutral-400">
           {p.stars ? (
             <span className="inline-flex items-center gap-1 text-amber-300/65">
               <Star size={10} className="fill-amber-300/65" aria-hidden />
@@ -33,7 +33,7 @@ export function DiscoverTile({ p }: { p: ProjectFeedRow }) {
               ? `${((p.github_forks ?? 0) / 1000).toFixed(1)}k`
               : (p.github_forks ?? 0)}
           </span>
-          {p.language && <span className="truncate text-neutral-600">{p.language}</span>}
+          {p.language && <span className="truncate text-neutral-400">{p.language}</span>}
         </p>
       </div>
 
@@ -60,11 +60,11 @@ export function Strip({
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <div className="min-w-0">
           <h2 className="font-mono text-[15px] font-bold text-white">{title}</h2>
-          <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-500">{blurb}</p>
+          <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-400">{blurb}</p>
         </div>
         <Link
           href={href}
-          className="flex shrink-0 items-center gap-1.5 font-mono text-[12px] text-neutral-400 transition hover:text-emerald-300"
+          className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-lg px-2 font-mono text-[12px] text-neutral-400 outline-none transition hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
         >
           See all <ArrowRight size={12} aria-hidden />
         </Link>

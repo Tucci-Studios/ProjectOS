@@ -22,11 +22,11 @@ export function IdeaTabs({ active, counts }: { active: IdeaTab; counts: Record<I
             className={`-mb-px flex min-h-[42px] items-center gap-2 border-b-2 px-3.5 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               on
                 ? "border-emerald-400 font-bold text-white"
-                : "border-transparent text-neutral-500 hover:text-neutral-200"
+                : "border-transparent text-neutral-400 hover:text-neutral-200"
             }`}
           >
             {label}
-            <span className={`font-mono text-[11px] ${on ? "text-emerald-400" : "text-neutral-600"}`}>
+            <span className={`font-mono text-[11px] ${on ? "text-emerald-400" : "text-neutral-400"}`}>
               {counts[key]}
             </span>
           </Link>

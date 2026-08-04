@@ -164,7 +164,7 @@ export function Readme({ md, repo }: { md: string; repo: string }) {
           key={key++}
           className="my-3 overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-950/70 p-3.5 font-mono text-[12.5px] leading-relaxed text-neutral-200"
         >
-          {lang && <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-neutral-600">{lang}</span>}
+          {lang && <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-neutral-400">{lang}</span>}
           <code>{body.join("\n")}</code>
         </pre>,
       );
@@ -221,7 +221,7 @@ export function Readme({ md, repo }: { md: string; repo: string }) {
         <ul key={key++} className="my-2.5 space-y-1 pl-1">
           {items.map((it, n) => (
             <li key={n} className="flex gap-2.5 text-neutral-300">
-              <span className="shrink-0 select-none font-mono text-[13px] text-neutral-600">
+              <span className="shrink-0 select-none font-mono text-[13px] text-neutral-400">
                 {ordered ? `${n + 1}.` : "·"}
               </span>
               <span className="min-w-0">
@@ -255,7 +255,7 @@ export function Readme({ md, repo }: { md: string; repo: string }) {
     );
   }
 
-  return <div className="text-[14.5px]">{out}</div>;
+  return <div className="break-words text-[14.5px]">{out}</div>;
 }
 
 /**
@@ -314,7 +314,7 @@ export function ReadmeButton({
         className="mt-7 flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/40 font-mono text-[13px] text-neutral-200 outline-none transition hover:border-emerald-400/50 hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400"
       >
         <BookOpen size={15} aria-hidden /> Read the readme
-        {!hasReadme && <span className="text-neutral-600">· from GitHub</span>}
+        {!hasReadme && <span className="text-neutral-400">· from GitHub</span>}
       </button>
 
       {open && mounted &&
@@ -343,19 +343,19 @@ export function ReadmeButton({
             <div className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6">
               <div className="mx-auto w-full max-w-3xl">
               {state === "loading" && (
-                <p className="flex items-center gap-2 py-8 font-mono text-[13px] text-neutral-500">
+                <p className="flex items-center gap-2 py-8 font-mono text-[13px] text-neutral-400">
                   <Loader2 size={14} className="animate-spin" aria-hidden /> Fetching it from GitHub...
                 </p>
               )}
               {state === "empty" && (
-                <p className="py-8 text-center text-sm text-neutral-500">This project has no readme on GitHub.</p>
+                <p className="py-8 text-center text-sm text-neutral-400">This project has no readme on GitHub.</p>
               )}
               {md && <Readme md={md} repo={repo} />}
               </div>
             </div>
 
             <footer className="shrink-0 border-t border-neutral-800 px-4 py-2.5 sm:px-6">
-              <p className="mx-auto max-w-3xl font-mono text-[11px] text-neutral-600">
+              <p className="mx-auto max-w-3xl font-mono text-[11px] text-neutral-400">
                 Formatting is simplified. Any HTML is stripped out rather than run.
               </p>
             </footer>

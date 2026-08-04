@@ -81,7 +81,7 @@ export function UpdateComposer() {
         />
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1.5">
           {KINDS.map(({ p, Icon, cls, label }) => (
-            <span key={p} className="inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-500">
+            <span key={p} className="inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-400">
               <Icon size={12} className={cls} aria-hidden />
               <code className="text-neutral-400">{p}</code> {label}
             </span>

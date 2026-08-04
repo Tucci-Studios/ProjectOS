@@ -51,7 +51,7 @@ export function VoteButton({
         aria-pressed={vote === 1}
         aria-label={vote === 1 ? "Remove upvote" : "Upvote"}
         title={vote === 1 ? "Remove upvote" : "Upvote"}
-        className={`${btn} ${vote === 1 ? "text-emerald-400" : "text-neutral-500 hover:bg-neutral-800 hover:text-emerald-300"}`}
+        className={`${btn} ${vote === 1 ? "text-emerald-400" : "text-neutral-400 hover:bg-neutral-800 hover:text-emerald-300"}`}
       >
         <ChevronUp size={26} strokeWidth={vote === 1 ? 3 : 2.25} aria-hidden />
       </button>
@@ -74,7 +74,7 @@ export function VoteButton({
         className={`${btn} ${
           vote === -1
             ? "text-rose-400 opacity-100"
-            : "text-neutral-600 opacity-40 hover:bg-neutral-800 hover:text-rose-300 hover:opacity-100 group-hover/vote:opacity-100"
+            : "text-neutral-400 opacity-40 hover:bg-neutral-800 hover:text-rose-300 hover:opacity-100 group-hover/vote:opacity-100"
         }`}
       >
         <ChevronDown size={26} strokeWidth={vote === -1 ? 3 : 2.25} aria-hidden />

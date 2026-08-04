@@ -11,7 +11,7 @@ export function CommentForm({ postId, signedIn }: { postId: string; signedIn: bo
 
   if (!signedIn) {
     return (
-      <p className="mt-4 font-mono text-xs text-neutral-500">
+      <p className="mt-4 font-mono text-xs text-neutral-400">
         <a href="/api/auth/login" className="text-emerald-400 hover:underline">
           sign in with GitHub
         </a>{" "}

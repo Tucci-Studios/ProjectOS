@@ -16,7 +16,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   planned: { label: "Winning the vote", cls: "border-sky-400/40 text-sky-300" },
   building: { label: "Getting built", cls: "border-amber-400/40 text-amber-300" },
   shipped: { label: "Shipped", cls: "border-emerald-400/40 text-emerald-300" },
-  declined: { label: "Not doing", cls: "border-neutral-700 text-neutral-600" },
+  declined: { label: "Not doing", cls: "border-neutral-700 text-neutral-400" },
 };
 
 type Row = {
@@ -53,7 +53,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="mx-auto max-w-3xl">
-      <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 font-mono text-xs text-neutral-500">
+      <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-1.5 font-mono text-xs text-neutral-400">
         <Link href="/ideas" className="rounded px-1 py-0.5 transition hover:text-neutral-200">
           Ideas
         </Link>
@@ -68,12 +68,12 @@ export default async function IdeaPage({ params }: { params: Promise<{ id: strin
             <span className={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${s.cls}`}>
               {s.label}
             </span>
-            <span className="flex items-center gap-1 font-mono text-[11px] text-neutral-500">
+            <span className="flex items-center gap-1 font-mono text-[11px] text-neutral-400">
               <Clock size={11} aria-hidden /> Round {cycle.n} · {closesInWords(cycle.daysLeft)}
             </span>
           </div>
           <h1 className="mt-2 font-mono text-2xl font-bold leading-tight tracking-tight text-white">{idea.title}</h1>
-          <p className="mt-1.5 font-mono text-[11px] text-neutral-500">
+          <p className="mt-1.5 font-mono text-[11px] text-neutral-400">
             built by @{idea.github_login} · {timeAgo(idea.created_at)}
           </p>
         </div>
@@ -100,7 +100,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ id: strin
           />
         </section>
       ) : (
-        <p className="mt-6 rounded-xl border border-dashed border-neutral-700 p-5 text-center text-sm text-neutral-500">
+        <p className="mt-6 rounded-xl border border-dashed border-neutral-700 p-5 text-center text-sm text-neutral-400">
           No demo attached — this one&apos;s a written proposal. Want it to happen?{" "}
           <Link href="/ideas/new" className="text-emerald-400 hover:underline">
             Build it and submit a version with a demo.
@@ -116,7 +116,7 @@ export default async function IdeaPage({ params }: { params: Promise<{ id: strin
         </div>
       )}
 
-      <p className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-xs leading-relaxed text-neutral-500">
+      <p className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-xs leading-relaxed text-neutral-400">
         <span className="text-neutral-300">How this gets shipped:</span> when round {cycle.n} closes, the top-voted
         proposals go to code review. Nothing merges automatically — a human reads the diff before it touches the live
         site. Votes decide <em>what</em> gets built, review decides <em>whether it&apos;s safe</em>.

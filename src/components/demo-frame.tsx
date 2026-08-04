@@ -26,7 +26,7 @@ export function DemoFrame({ url, title }: { url: string; title: string }) {
 
   if (!safe) {
     return (
-      <p className="rounded-xl border border-neutral-700 bg-neutral-900/40 p-4 font-mono text-xs text-neutral-500">
+      <p className="rounded-xl border border-neutral-700 bg-neutral-900/40 p-4 font-mono text-xs text-neutral-400">
         Demo link is not a valid https URL.
       </p>
     );
@@ -38,7 +38,7 @@ export function DemoFrame({ url, title }: { url: string; title: string }) {
         <span className="flex items-center gap-1.5 font-mono text-[11px] text-neutral-400">
           <Play size={12} className="text-emerald-400" aria-hidden /> Live demo
         </span>
-        <span className="truncate font-mono text-[11px] text-neutral-600">{host}</span>
+        <span className="truncate font-mono text-[11px] text-neutral-400">{host}</span>
         <div className="ml-auto flex items-center gap-1">
           {live && (
             <>
@@ -46,7 +46,7 @@ export function DemoFrame({ url, title }: { url: string; title: string }) {
                 onClick={() => setWide(true)}
                 aria-pressed={wide}
                 title="Desktop width"
-                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition ${wide ? "bg-neutral-800 text-white" : "text-neutral-500 hover:text-neutral-300"}`}
+                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition ${wide ? "bg-neutral-800 text-white" : "text-neutral-400 hover:text-neutral-300"}`}
               >
                 <Monitor size={14} aria-hidden />
               </button>
@@ -54,7 +54,7 @@ export function DemoFrame({ url, title }: { url: string; title: string }) {
                 onClick={() => setWide(false)}
                 aria-pressed={!wide}
                 title="Phone width"
-                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition ${!wide ? "bg-neutral-800 text-white" : "text-neutral-500 hover:text-neutral-300"}`}
+                className={`flex h-8 w-8 cursor-pointer items-center justify-center rounded-md transition ${!wide ? "bg-neutral-800 text-white" : "text-neutral-400 hover:text-neutral-300"}`}
               >
                 <Smartphone size={14} aria-hidden />
               </button>
@@ -92,13 +92,13 @@ export function DemoFrame({ url, title }: { url: string; title: string }) {
             <Play size={18} aria-hidden />
           </span>
           <span className="font-mono text-sm text-neutral-200">Load the demo</span>
-          <span className="max-w-sm text-xs leading-relaxed text-neutral-500">
+          <span className="max-w-sm text-xs leading-relaxed text-neutral-400">
             Runs {host} in a sandboxed frame — it can&apos;t touch your Project OS session.
           </span>
         </button>
       )}
 
-      <p className="flex items-start gap-2 border-t border-neutral-800 px-3 py-2 text-[11px] leading-relaxed text-neutral-500">
+      <p className="flex items-start gap-2 border-t border-neutral-800 px-3 py-2 text-[11px] leading-relaxed text-neutral-400">
         <ShieldAlert size={13} className="mt-0.5 shrink-0" aria-hidden />
         Community-built demo hosted by its author. Sandboxed, but treat it like any other link — don&apos;t enter
         passwords or personal info.

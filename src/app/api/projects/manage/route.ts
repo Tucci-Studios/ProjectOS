@@ -60,7 +60,12 @@ export async function POST(request: Request) {
     .run();
 
   if (Array.isArray(body.images)) {
-    const urls = body.images.filter((u): u is string => typeof u === "string" && u.length > 0).slice(0, 6);
+    // A gallery row is keyed on (project_id, url), so the same picture listed
+    // twice used to break the insert halfway — after the delete had already
+    // emptied the gallery, leaving the project with fewer images than it had.
+    const urls = [
+      ...new Set(body.images.filter((u): u is string => typeof u === "string" && u.length > 0)),
+    ].slice(0, 6);
     await env.DB.prepare("DELETE FROM project_images WHERE project_id = ?1").bind(projectId).run();
     for (const [i, url] of urls.entries()) {
       await env.DB.prepare("INSERT INTO project_images (project_id, url, position) VALUES (?1, ?2, ?3)")

@@ -74,7 +74,7 @@ export function ProjectUpdates({
       <div className="mb-3 flex flex-wrap items-center gap-3">
         <h2 className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
           <Megaphone size={13} aria-hidden /> Updates
-          {updates.length > 0 && <span className="text-neutral-600">{updates.length}</span>}
+          {updates.length > 0 && <span className="text-neutral-400">{updates.length}</span>}
         </h2>
         {isOwner && !open && (
           <button
@@ -126,7 +126,7 @@ export function ProjectUpdates({
       )}
 
       {updates.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-neutral-700 px-4 py-6 text-center text-sm text-neutral-500">
+        <p className="rounded-xl border border-dashed border-neutral-700 px-4 py-6 text-center text-sm text-neutral-400">
           {isOwner
             ? "No updates yet. Post one when you change something — everyone following this project will see it."
             : "No updates yet."}
@@ -152,7 +152,7 @@ export function ProjectUpdates({
                       {u.version}
                     </span>
                   )}
-                  <span className="font-mono text-[11px] text-neutral-500">
+                  <span className="font-mono text-[11px] text-neutral-400">
                     @{u.github_login} · {timeAgo(u.created_at)}
                   </span>
                   {i === 0 && (
@@ -162,7 +162,7 @@ export function ProjectUpdates({
                     <button
                       onClick={() => remove(u.id)}
                       aria-label="Delete this update"
-                      className="ml-auto cursor-pointer rounded p-1 text-neutral-600 outline-none transition hover:text-rose-400 focus-visible:ring-2 focus-visible:ring-rose-400"
+                      className="ml-auto cursor-pointer rounded p-1 text-neutral-400 outline-none transition hover:text-rose-400 focus-visible:ring-2 focus-visible:ring-rose-400"
                     >
                       <Trash2 size={13} aria-hidden />
                     </button>

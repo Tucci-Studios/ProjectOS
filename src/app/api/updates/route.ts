@@ -15,7 +15,13 @@ export async function POST(request: Request) {
   const user = await getSessionUser();
   if (!user || user.role !== "admin") return NextResponse.json({ error: "Admins only." }, { status: 403 });
 
-  const { version, title, intro, body } = (await request.json()) as Record<string, string | undefined>;
+  let payload: Record<string, string | undefined>;
+  try {
+    payload = (await request.json()) as typeof payload;
+  } catch {
+    return NextResponse.json({ error: "Bad request." }, { status: 400 });
+  }
+  const { version, title, intro, body } = payload;
 
   const t = (title ?? "").trim();
   const b = (body ?? "").trim();

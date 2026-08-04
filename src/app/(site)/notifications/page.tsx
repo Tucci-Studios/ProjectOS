@@ -56,7 +56,7 @@ export default async function NotificationsPage() {
       />
 
       {results.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
+        <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
           Nothing yet. Publish something or post on the feed and this fills up.
         </p>
       ) : (
@@ -71,10 +71,10 @@ export default async function NotificationsPage() {
                   n.read_at === null ? "border-emerald-400/30 bg-emerald-400/[0.04]" : "border-neutral-700/70 bg-neutral-900/40"
                 }`}
               >
-                <Icon size={16} className="mt-0.5 shrink-0 text-neutral-500" aria-hidden />
+                <Icon size={16} className="mt-0.5 shrink-0 text-neutral-400" aria-hidden />
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm leading-relaxed text-neutral-200">{n.body}</span>
-                  <span className="font-mono text-[11px] text-neutral-500">{timeAgo(n.created_at)}</span>
+                  <span className="font-mono text-[11px] text-neutral-400">{timeAgo(n.created_at)}</span>
                 </span>
               </Link>
             );

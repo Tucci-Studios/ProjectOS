@@ -70,7 +70,7 @@ export function ForksPanel({
   return (
     <div className={hasTree ? "mt-4 border-t border-neutral-800 pt-4" : ""}>
       <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 px-2 font-mono text-[11px]">
-        <span className="text-neutral-500">
+        <span className="text-neutral-400">
           {syncedAt === null && !busy ? (
             "Haven't checked GitHub yet."
           ) : total === 0 ? (
@@ -79,7 +79,7 @@ export function ForksPanel({
             <>
               <span className="font-bold text-neutral-200">{total.toLocaleString()}</span> forks on GitHub
               {unpublished.length > 0 && total > unpublished.length && (
-                <span className="text-neutral-600"> · top {unpublished.length} by stars</span>
+                <span className="text-neutral-400"> · top {unpublished.length} by stars</span>
               )}
               {published > 0 && (
                 <>
@@ -94,7 +94,7 @@ export function ForksPanel({
           onClick={refresh}
           disabled={busy}
           aria-label="Check GitHub again"
-          className="ml-auto flex cursor-pointer items-center gap-1.5 rounded p-1 text-neutral-600 outline-none transition hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50"
+          className="-mr-2 ml-auto flex min-h-[44px] cursor-pointer items-center gap-1.5 rounded px-2 text-neutral-400 outline-none transition hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50"
         >
           <RefreshCw size={11} className={busy ? "animate-spin" : ""} aria-hidden />
           {busy ? "checking" : syncedAt ? timeAgo(syncedAt) : "check"}
@@ -123,7 +123,7 @@ export function ForksPanel({
                     </span>
                     <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-neutral-200">
                       {f.owner_login}
-                      {renamed && <span className="text-neutral-600">/{suffix}</span>}
+                      {renamed && <span className="text-neutral-400">/{suffix}</span>}
                     </span>
                     {f.stars > 0 && (
                       <span className="flex shrink-0 items-center gap-1 font-mono text-[12px] tabular-nums text-amber-300/70">
@@ -141,13 +141,13 @@ export function ForksPanel({
           {show < unpublished.length && (
             <button
               onClick={() => setShow(show + 25)}
-              className="mt-2 w-full cursor-pointer rounded-lg border border-neutral-800 py-2 font-mono text-[11px] text-neutral-500 transition hover:border-neutral-600 hover:text-neutral-300"
+              className="mt-2 w-full cursor-pointer rounded-lg border border-neutral-800 py-2 font-mono text-[11px] text-neutral-400 transition hover:border-neutral-600 hover:text-neutral-300"
             >
               show {Math.min(25, unpublished.length - show)} more
             </button>
           )}
 
-          <p className="mt-3 px-1 font-mono text-[11px] leading-relaxed text-neutral-600">
+          <p className="mt-3 px-1 font-mono text-[11px] leading-relaxed text-neutral-400">
             None of these have a page here — nobody claimed them.{" "}
             <a href="/submit" className="text-emerald-400 hover:underline">
               Publish yours

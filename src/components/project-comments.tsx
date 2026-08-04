@@ -69,7 +69,7 @@ export function ProjectComments({
       )}
 
       {threads.length === 0 ? (
-        <p className="flex items-center gap-2 rounded-xl border border-dashed border-neutral-800 p-5 text-sm text-neutral-500">
+        <p className="flex items-center gap-2 rounded-xl border border-dashed border-neutral-800 p-5 text-sm text-neutral-400">
           <MessageCircle size={15} aria-hidden /> No comments yet. Be the first.
         </p>
       ) : (
@@ -124,7 +124,7 @@ function Comment({
     return (
       <button
         onClick={() => setCollapsed(false)}
-        className="flex min-h-[30px] cursor-pointer items-center gap-2 rounded-md px-1 font-mono text-[12px] text-neutral-500 transition hover:text-neutral-200"
+        className="flex min-h-[30px] cursor-pointer items-center gap-2 rounded-md px-1 font-mono text-[12px] text-neutral-400 transition hover:text-neutral-200"
       >
         <span className="text-emerald-400">[+]</span> @{node.github_login}
         {hidden > 0 && ` · ${hidden} more`}
@@ -147,14 +147,14 @@ function Comment({
             @{node.github_login}
           </Link>
           {node.is_shadow === 0 && <VerifiedMark size={10} />}
-          <span className="font-mono text-[11px] text-neutral-500">{timeAgo(node.created_at)}</span>
+          <span className="font-mono text-[11px] text-neutral-400">{timeAgo(node.created_at)}</span>
 
           {viewerLogin === node.github_login && (
             <button
               onClick={remove}
               aria-label="Delete comment"
               title="Delete"
-              className="ml-auto flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-neutral-600 transition hover:bg-neutral-800 hover:text-rose-300"
+              className="ml-auto flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-neutral-400 transition hover:bg-neutral-800 hover:text-rose-300"
             >
               <Trash2 size={12} aria-hidden />
             </button>
@@ -166,7 +166,7 @@ function Comment({
         {signedIn && (
           <button
             onClick={() => setReplyTo(replyTo === node.id ? null : node.id)}
-            className="mt-1 flex min-h-[28px] cursor-pointer items-center gap-1.5 rounded px-1 font-mono text-[11px] text-neutral-500 transition hover:text-emerald-300"
+            className="mt-1 flex min-h-[28px] cursor-pointer items-center gap-1.5 rounded px-1 font-mono text-[11px] text-neutral-400 transition hover:text-emerald-300"
           >
             <CornerDownRight size={11} aria-hidden /> {replyTo === node.id ? "Cancel" : "Reply"}
           </button>
@@ -284,7 +284,7 @@ function Composer({
           <button
             type="button"
             onClick={onCancel}
-            className="min-h-[34px] cursor-pointer font-mono text-[13px] text-neutral-500 transition hover:text-white"
+            className="min-h-[34px] cursor-pointer font-mono text-[13px] text-neutral-400 transition hover:text-white"
           >
             Cancel
           </button>

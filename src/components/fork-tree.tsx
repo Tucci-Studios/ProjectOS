@@ -80,7 +80,7 @@ function Node({
       <div className="py-1">
         <button
           onClick={() => setCollapsed(false)}
-          className="flex min-h-[30px] cursor-pointer items-center gap-2 rounded-md px-1.5 font-mono text-[12px] text-neutral-500 outline-none transition hover:bg-neutral-800 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-emerald-400"
+          className="flex min-h-[30px] cursor-pointer items-center gap-2 rounded-md px-1.5 font-mono text-[12px] text-neutral-400 outline-none transition hover:bg-neutral-800 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-emerald-400"
         >
           <span className="flex h-4 w-4 items-center justify-center rounded border border-neutral-600 text-neutral-400">
             <Plus size={10} aria-hidden />
@@ -122,7 +122,7 @@ function Node({
             <span className={`font-mono text-sm ${isCurrent ? "font-bold text-white" : "text-neutral-100"}`}>
               {isRoot ? node.base_name : node.variant_name}
             </span>
-            <span className="font-mono text-[11px] text-neutral-500">
+            <span className="font-mono text-[11px] text-neutral-400">
               @{node.github_login} · {node.like_count} vote{Math.abs(node.like_count) === 1 ? "" : "s"}
             </span>
             {isRoot && (
@@ -193,7 +193,7 @@ function Node({
 function TreeLegend({ accent }: { accent: string }) {
   const dot = "flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border";
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-neutral-800 px-1.5 pb-1 pt-2.5 font-mono text-[11px] text-neutral-500">
+    <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-neutral-800 px-1.5 pb-1 pt-2.5 font-mono text-[11px] text-neutral-400">
       <span className="flex items-center gap-1.5">
         <span className={dot} style={{ borderColor: accent }} aria-hidden />
         end of the line
@@ -208,7 +208,7 @@ function TreeLegend({ accent }: { accent: string }) {
         <span className={dot} style={{ borderColor: accent, background: accent }} aria-hidden />
         you are here
       </span>
-      <span className="text-neutral-600">click a line to fold that thread</span>
+      <span className="text-neutral-400">click a line to fold that thread</span>
     </div>
   );
 }

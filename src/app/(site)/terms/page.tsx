@@ -23,7 +23,7 @@ function Section({ n, title, children }: { n: string; title: string; children: R
   return (
     <section className="border-t border-neutral-800 py-6 first:border-t-0 first:pt-0">
       <h2 className="mb-3 flex items-baseline gap-3 font-mono text-[15px] font-bold text-white">
-        <span className="text-neutral-600">{n}</span> {title}
+        <span className="text-neutral-400">{n}</span> {title}
       </h2>
       <div className="space-y-3 text-[14px] leading-relaxed text-neutral-300">{children}</div>
     </section>

@@ -51,13 +51,13 @@ export default function Home() {
 
         <div className="mt-12">
           <WaitlistForm />
-          <p className="mt-3 font-mono text-xs text-neutral-500">
+          <p className="mt-3 font-mono text-xs text-neutral-400">
             No spam. One email when the doors open.
           </p>
         </div>
 
         <div className="mt-16 border-t border-neutral-700 pt-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-neutral-500">
+          <p className="font-mono text-xs uppercase tracking-widest text-neutral-400">
             Launch sections
           </p>
           <div className="mt-4 flex flex-wrap gap-2">

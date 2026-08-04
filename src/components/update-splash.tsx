@@ -137,7 +137,7 @@ export function UpdateSplash({
 
             {/* Then the mechanic that makes it work */}
             <div className="mt-10 border-t border-neutral-800 pt-7">
-              <p className="mb-4 text-center font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">
+              <p className="mb-4 text-center font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
                 And the same goes for everything on it
               </p>
               <div className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
@@ -165,7 +165,7 @@ export function UpdateSplash({
               </div>
             </div>
 
-            <p className="mt-7 text-center text-xs text-neutral-600">
+            <p className="mt-7 text-center text-xs text-neutral-400">
               Code lives on GitHub — projects here are community-submitted, so read before you run.{" "}
               <Link href="/updates" onClick={close} className="text-neutral-400 hover:text-emerald-300 hover:underline">
                 See what&apos;s new →
@@ -176,7 +176,7 @@ export function UpdateSplash({
           <div className="animate-rise w-full max-w-2xl">
             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-300">What&apos;s new</p>
             <h1 className="mt-1.5 font-mono text-2xl font-bold leading-tight tracking-tight text-white">{update.title}</h1>
-            <p className="mt-1 font-mono text-[11px] text-neutral-500">
+            <p className="mt-1 font-mono text-[11px] text-neutral-400">
               {update.version && <span className="text-neutral-400">{update.version} · </span>}
               {date} · @{update.github_login}
             </p>
@@ -217,7 +217,7 @@ export function UpdateSplash({
               >
                 Got it
               </button>
-              <Link href="/updates" onClick={close} className="font-mono text-[13px] text-neutral-500 transition hover:text-neutral-300">
+              <Link href="/updates" onClick={close} className="font-mono text-[13px] text-neutral-400 transition hover:text-neutral-300">
                 All past updates
               </Link>
             </div>

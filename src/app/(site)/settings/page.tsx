@@ -36,7 +36,7 @@ export default async function SettingsPage() {
           label="Terms accepted"
           value={user.tos_accepted_at ? new Date(user.tos_accepted_at * 1000).toLocaleDateString() : "Not yet — you'll accept on your first publish"}
         />
-        <p className="mt-3 text-xs leading-relaxed text-neutral-500">
+        <p className="mt-3 text-xs leading-relaxed text-neutral-400">
           Your name and avatar come from GitHub. Change them there and they update here on your next sign-in.
         </p>
         <div className="mt-4">
@@ -76,7 +76,7 @@ function Card({ title, Icon, children }: { title: string; Icon: typeof Settings;
   return (
     <section className="mb-4 rounded-xl border border-neutral-700/70 bg-neutral-900/40 p-5">
       <h2 className="mb-3 flex items-center gap-2 font-mono text-sm font-bold text-neutral-200">
-        <Icon size={15} className="text-neutral-500" aria-hidden />
+        <Icon size={15} className="text-neutral-400" aria-hidden />
         {title}
       </h2>
       {children}
@@ -87,7 +87,7 @@ function Card({ title, Icon, children }: { title: string; Icon: typeof Settings;
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-neutral-800 py-2 last:border-0">
-      <span className="font-mono text-xs text-neutral-500">{label}</span>
+      <span className="font-mono text-xs text-neutral-400">{label}</span>
       <span className="font-mono text-sm text-neutral-200">{value}</span>
     </div>
   );

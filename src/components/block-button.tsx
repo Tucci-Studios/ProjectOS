@@ -51,7 +51,7 @@ export function BlockButton({ login, initialBlocked }: { login: string; initialB
         </button>
         <button
           onClick={() => setConfirming(false)}
-          className="min-h-[32px] cursor-pointer px-1.5 font-mono text-[11px] text-neutral-500 transition hover:text-neutral-300"
+          className="min-h-[32px] cursor-pointer px-1.5 font-mono text-[11px] text-neutral-400 transition hover:text-neutral-300"
         >
           Cancel
         </button>
@@ -63,7 +63,7 @@ export function BlockButton({ login, initialBlocked }: { login: string; initialB
     <button
       onClick={() => setConfirming(true)}
       title="Hide this person's projects and posts from your feeds"
-      className="inline-flex min-h-[32px] cursor-pointer items-center gap-1.5 rounded-md px-2 font-mono text-[11px] text-neutral-600 transition hover:bg-neutral-800 hover:text-neutral-300"
+      className="inline-flex min-h-[32px] cursor-pointer items-center gap-1.5 rounded-md px-2 font-mono text-[11px] text-neutral-400 transition hover:bg-neutral-800 hover:text-neutral-300"
     >
       <EyeOff size={12} aria-hidden /> Hide
     </button>

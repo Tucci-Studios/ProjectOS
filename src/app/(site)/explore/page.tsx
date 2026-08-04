@@ -139,7 +139,7 @@ export default async function ExplorePage({
 
       <div className="mt-5">
         {results.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-500">
+          <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
             Nothing here yet.
           </p>
         ) : (
@@ -168,7 +168,7 @@ export default async function ExplorePage({
           ) : (
             <span />
           )}
-          <span className="text-neutral-600">
+          <span className="text-neutral-400">
             {page} of {pages}
           </span>
           {page < pages ? (
@@ -212,7 +212,7 @@ function Sorts({ sort, href }: { sort: FeedSort; href: Href }) {
             className={`-mb-px flex min-h-[42px] shrink-0 items-center border-b-2 px-3.5 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               on
                 ? "border-emerald-400 font-bold text-white"
-                : "border-transparent text-neutral-500 hover:text-neutral-200"
+                : "border-transparent text-neutral-400 hover:text-neutral-200"
             }`}
           >
             {label}

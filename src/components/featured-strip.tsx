@@ -54,14 +54,14 @@ export function FeaturedStrip({ p }: { p: FeaturedProject }) {
               {p.base_name}
               {p.variant_name && (
                 <>
-                  <span className="text-neutral-500"> // </span>
+                  <span className="text-neutral-400"> // </span>
                   {p.variant_name}
                 </>
               )}
             </Link>
           </h2>
           <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-300">{p.description}</p>
-          <p className="mt-2 font-mono text-[11px] text-neutral-500">
+          <p className="mt-2 font-mono text-[11px] text-neutral-400">
             @{p.github_login} · {p.like_count} likes · {p.fork_count} fork{p.fork_count === 1 ? "" : "es"}
           </p>
           <div className="mt-4 flex flex-wrap gap-2.5">

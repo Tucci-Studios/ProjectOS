@@ -56,6 +56,21 @@ export async function POST(request: Request) {
     )
       .bind(child.id)
       .run();
+    // Anything forked from it comes along. Leaving descendants pointing at the
+    // old root strands them: they'd hang off a parent that no longer belongs to
+    // that tree, showing up under the wrong root and missing from the right one.
+    await env.DB.prepare(
+      `UPDATE projects SET root_id = ?1 WHERE id IN (
+         WITH RECURSIVE descendants(id) AS (
+           SELECT id FROM projects WHERE parent_id = ?1
+           UNION ALL
+           SELECT p.id FROM projects p JOIN descendants d ON p.parent_id = d.id
+         )
+         SELECT id FROM descendants
+       )`,
+    )
+      .bind(child.id)
+      .run();
   }
 
   await env.DB.prepare(

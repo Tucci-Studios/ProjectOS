@@ -57,7 +57,7 @@ export function ProjectHeadline({
         {baseName}
         {variantName && (
           <>
-            <span className="text-neutral-600"> // </span>
+            <span className="text-neutral-400"> // </span>
             <span className="text-neutral-200">{variantName}</span>
           </>
         )}
@@ -145,12 +145,12 @@ export function ProjectCard({
             );
           })()}
 
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-500">
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-400">
             <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} verified={p.is_shadow === 0} />
             {p.source === "indexed" && (
               <span
                 title="Found on GitHub and listed here. Its author hasn't signed in — if it's yours, sign in and it becomes yours."
-                className="cursor-help rounded border border-neutral-700 px-1.5 py-px text-[9px] font-bold uppercase tracking-wider text-neutral-500"
+                className="cursor-help rounded border border-neutral-700 px-1.5 py-px text-[9px] font-bold uppercase tracking-wider text-neutral-400"
               >
                 Indexed
               </span>
@@ -164,7 +164,7 @@ export function ProjectCard({
                 {p.stars >= 1000 ? `${(p.stars / 1000).toFixed(1)}k` : p.stars}
               </span>
             ) : null}
-            {p.language && <span className="text-neutral-600">{p.language}</span>}
+            {p.language && <span className="text-neutral-400">{p.language}</span>}
             {gained !== undefined && gained > 0 && (
               <span
                 className="inline-flex items-center gap-1 font-bold text-emerald-400"
@@ -193,7 +193,7 @@ export function ProjectCard({
               );
             })()}
             {p.parent_display && (
-              <span className="inline-flex items-center gap-1 text-neutral-600">
+              <span className="inline-flex items-center gap-1 text-neutral-400">
                 forked from <span className="text-neutral-400">{p.parent_display}</span>
               </span>
             )}

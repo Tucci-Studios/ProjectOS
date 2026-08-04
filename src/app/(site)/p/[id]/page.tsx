@@ -140,12 +140,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             {p.base_name}
             {p.variant_name && (
               <>
-                <span className="text-neutral-600"> // </span>
+                <span className="text-neutral-400"> // </span>
                 <span className="text-neutral-200">{p.variant_name}</span>
               </>
             )}
           </h1>
-          <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-xs text-neutral-500">
+          <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-xs text-neutral-400">
             <Link
               href={`/u/${p.github_login}`}
               className="inline-flex items-center gap-1.5 text-neutral-300 transition hover:text-white"
@@ -297,7 +297,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         }
       />
 
-      <p className="mt-8 font-mono text-[11px] text-neutral-600">License: {p.license}</p>
+      <p className="mt-8 font-mono text-[11px] text-neutral-400">License: {p.license}</p>
     </div>
   );
 }
@@ -314,7 +314,7 @@ function Section({
   return (
     <section className="mt-9">
       <h2 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">{title}</h2>
-      {note && <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-500">{note}</p>}
+      {note && <p className="mt-1.5 mb-3 text-sm leading-relaxed text-neutral-400">{note}</p>}
       <div className={note ? "" : "mt-3"}>{children}</div>
     </section>
   );

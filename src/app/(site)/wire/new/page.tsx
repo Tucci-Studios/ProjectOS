@@ -38,7 +38,7 @@ export default async function NewPostPage({
       <h1 className="mb-2 font-mono text-2xl font-bold tracking-tight text-white">
         {initialKind === "tutorial" ? "New tutorial" : initialKind === "request" ? "Request a tutorial" : "New post"}
       </h1>
-      <p className="mb-6 font-mono text-xs text-neutral-500">
+      <p className="mb-6 font-mono text-xs text-neutral-400">
         Reference projects with @Subwolf or @[Fridge MCP], posts with #post_id. Image URLs render inline.
       </p>
       <NewPostForm projects={projects} initialKind={initialKind} initialCategory={category ?? ""} />

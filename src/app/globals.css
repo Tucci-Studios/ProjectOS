@@ -195,13 +195,23 @@ body {
 .group\/mark:hover .m-hv-l { transform: translate(-1.4px, -1.2px); }
 .group\/mark:hover .m-hv-r { transform: translate(1.4px, -1.2px); }
 
+/* Reduced motion stops these dead — correct for a header mark, which is
+   decoration, and wrong for the lab, where judging the motion IS the task. The
+   lab opts out by wrapping its grid in .motion-demo, so someone who has asked
+   the system for stillness still gets it everywhere the mark actually ships. */
 @media (prefers-reduced-motion: reduce) {
-  .m-draw, .m-pop, .m-flow, .m-blink, .m-spin, .m-breathe, .m-split-l, .m-split-r,
-  .m-scan, .m-caret, .m-trace, .m-lift, .m-twinkle {
+  /* `:not(.motion-demo) .m-flow` would NOT work here: the descendant combinator
+     only needs one matching ancestor, and <html> is never .motion-demo, so it
+     matches inside the lab too. The exclusion has to sit on the element. */
+  .m-draw:not(.motion-demo *), .m-pop:not(.motion-demo *), .m-flow:not(.motion-demo *),
+  .m-blink:not(.motion-demo *), .m-spin:not(.motion-demo *), .m-breathe:not(.motion-demo *),
+  .m-split-l:not(.motion-demo *), .m-split-r:not(.motion-demo *), .m-scan:not(.motion-demo *),
+  .m-caret:not(.motion-demo *), .m-trace:not(.motion-demo *), .m-lift:not(.motion-demo *),
+  .m-twinkle:not(.motion-demo *) {
     animation: none;
   }
-  .m-draw { stroke-dashoffset: 0; }
-  .m-pop, .m-lift { opacity: 1; transform: none; }
-  .m-split-l, .m-split-r { opacity: 0; }
-  .m-hv-l, .m-hv-r { transition: none; }
+  .m-draw:not(.motion-demo *) { stroke-dashoffset: 0; }
+  .m-pop:not(.motion-demo *), .m-lift:not(.motion-demo *) { opacity: 1; transform: none; }
+  .m-split-l:not(.motion-demo *), .m-split-r:not(.motion-demo *) { opacity: 0; }
+  .m-hv-l:not(.motion-demo *), .m-hv-r:not(.motion-demo *) { transition: none; }
 }
