@@ -10,23 +10,19 @@ import { categoryMeta } from "@/lib/categories";
 const DRAWN: Record<string, (color: string) => React.ReactNode> = {
   apps: (c) => (
     <>
-      <path
-        d="M5.5 2.5h8L19 8v13.5H5.5z"
-        fill="none"
-        stroke={c}
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-      <path d="M13.5 2.5V8H19" fill="none" stroke={c} strokeWidth="1.7" strokeLinejoin="round" />
+      {/* The page fills nearly the whole box so APP has room to be legible at
+          18px — the first attempt left it unreadable on a card. */}
+      <path d="M3.5 2h9.5L20.5 9.5V22H3.5z" fill="none" stroke={c} strokeWidth="1.7" strokeLinejoin="round" />
+      <path d="M13 2v7.5h7.5" fill="none" stroke={c} strokeWidth="1.7" strokeLinejoin="round" />
       <text
-        x="12.2"
-        y="18.4"
+        x="12"
+        y="19.2"
         textAnchor="middle"
         fill={c}
-        fontSize="7.4"
+        fontSize="9.4"
         fontWeight="700"
         fontFamily="ui-monospace, SFMono-Regular, monospace"
-        letterSpacing="-0.3"
+        letterSpacing="-0.8"
       >
         APP
       </text>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ScrollText, Compass, Bookmark, Menu, X, Flame, Sparkles, Megaphone, Lightbulb, ChevronRight, FlaskConical } from "lucide-react";
-import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
+import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
 const MAIN = [
   { href: "/", label: "Feed", Icon: ScrollText, exact: true },
@@ -19,8 +19,11 @@ const MAIN = [
 export function MobileNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const activeGroup = pathname.startsWith("/s/") ? categoryMeta(pathname.split("/")[2]).group : undefined;
-  const [openGroup, setOpenGroup] = useState<string | undefined>(activeGroup);
+  const activeGroup = pathname.startsWith("/g/")
+    ? pathname.split("/")[2]
+    : pathname.startsWith("/s/")
+      ? categoryMeta(pathname.split("/")[2]).group
+      : undefined;
 
   // Any navigation closes the drawer.
   useEffect(() => setOpen(false), [pathname]);
@@ -91,38 +94,16 @@ export function MobileNav() {
 
               {GROUP_ORDER.map((key) => {
                 const g = GROUPS[key];
-                const isOpen = openGroup === key;
+                const active = activeGroup === key;
                 return (
-                  <div key={key}>
-                    <button
-                      onClick={() => setOpenGroup(isOpen ? undefined : key)}
-                      aria-expanded={isOpen}
-                      className={`${row} w-full cursor-pointer text-neutral-300 hover:bg-neutral-800`}
-                    >
-                      <g.Icon size={17} className={g.text} aria-hidden />
-                      <span className="flex-1 text-left">{g.label}</span>
-                      <ChevronRight
-                        size={15}
-                        aria-hidden
-                        className={`text-neutral-500 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`}
-                      />
-                    </button>
-                    {isOpen && (
-                      <div className="ml-4 border-l border-neutral-800 pl-2">
-                        {sectionsIn(key).map((c) => (
-                          <Link
-                            key={c.slug}
-                            href={`/s/${c.slug}`}
-                            className={`${row} text-[13px] ${
-                              pathname === `/s/${c.slug}` ? `font-bold ${g.text}` : "text-neutral-400 hover:bg-neutral-800"
-                            }`}
-                          >
-                            {c.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <Link
+                    key={key}
+                    href={`/g/${key}`}
+                    className={`${row} ${active ? `font-bold ${g.text}` : "text-neutral-300 hover:bg-neutral-800"}`}
+                    style={active ? { background: `${g.hex}14` } : undefined}
+                  >
+                    <g.Icon size={17} aria-hidden /> {g.label}
+                  </Link>
                 );
               })}
             </div>

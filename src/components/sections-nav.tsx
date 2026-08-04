@@ -1,38 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ScrollText, Compass, Bookmark, FlaskConical, ChevronRight, Lightbulb, Flame, Sparkles, Megaphone } from "lucide-react";
-import { GROUPS, GROUP_ORDER, sectionsIn, categoryMeta } from "@/lib/categories";
-import { SectionMark } from "./section-mark";
+import { ScrollText, Compass, Bookmark, FlaskConical, Lightbulb, Megaphone } from "lucide-react";
+import { GROUPS, GROUP_ORDER, categoryMeta } from "@/lib/categories";
 
-// Three doors: AI, Build, Play. Each opens to its sections. The group you're in
-// stays open and wears its color down the whole spine, so an expanded group is
-// unmistakable.
-
+/**
+ * The rail: three fixed rows for the site, three for the groups, three for
+ * personal things.
+ *
+ * The groups used to unfold their sections here. They're pages now — clicking
+ * AI takes you to AI, where the sections are laid out with their counts — so
+ * the rail stays the same height whatever you're looking at, and the sections
+ * get room to explain themselves instead of being a cramped list.
+ */
 export function SectionsNav() {
   const pathname = usePathname();
   const activeSlug = pathname.startsWith("/s/") ? pathname.split("/")[2] : undefined;
-  const activeGroup = activeSlug ? categoryMeta(activeSlug).group : undefined;
-
-  const [open, setOpen] = useState<Record<string, boolean>>(
-    Object.fromEntries(GROUP_ORDER.map((g) => [g, g === activeGroup])),
-  );
-
-  // The initial state is set once, but navigation doesn't remount this — so
-  // landing on a section from anywhere else would leave its group shut and the
-  // highlighted row hidden inside it. Opening it on every route change is what
-  // makes the sidebar say where you are.
-  useEffect(() => {
-    if (activeGroup) setOpen((o) => (o[activeGroup] ? o : { ...o, [activeGroup]: true }));
-  }, [activeGroup]);
+  const activeGroup = pathname.startsWith("/g/")
+    ? pathname.split("/")[2]
+    : activeSlug
+      ? categoryMeta(activeSlug).group
+      : undefined;
 
   const MAIN = [
     { href: "/", label: "Feed", Icon: ScrollText, exact: true },
-      { href: "/explore", label: "Explore", Icon: Compass },
+    { href: "/explore", label: "Explore", Icon: Compass },
     { href: "/news", label: "News", Icon: Megaphone },
   ];
+
+  const MINE = [
+    { href: "/saves", label: "Saves", Icon: Bookmark, tone: "text-sky-300", bg: "bg-sky-400/10" },
+    { href: "/ideas", label: "Ideas", Icon: Lightbulb, tone: "text-amber-300", bg: "bg-amber-400/10" },
+    { href: "/lab", label: "Lab", Icon: FlaskConical, tone: "text-amber-300", bg: "bg-amber-400/10" },
+  ];
+
+  const row =
+    "flex min-h-[40px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400";
 
   return (
     <nav aria-label="Browse" className="space-y-1.5">
@@ -44,8 +48,10 @@ export function SectionsNav() {
               key={href}
               href={href}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-[40px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                active ? "bg-emerald-400/10 font-bold text-emerald-300" : "text-neutral-300 hover:bg-neutral-800 hover:text-white"
+              className={`${row} ${
+                active
+                  ? "bg-emerald-400/10 font-bold text-emerald-300"
+                  : "text-neutral-300 hover:bg-neutral-800 hover:text-white"
               }`}
             >
               <Icon size={16} aria-hidden /> {label}
@@ -54,115 +60,39 @@ export function SectionsNav() {
         })}
       </div>
 
-
-      {GROUP_ORDER.map((key) => {
-        const g = GROUPS[key];
-        const isOpen = open[key];
-        const isActiveGroup = activeGroup === key;
-
-        return (
-          <div
-            key={key}
-            className={`overflow-hidden rounded-lg border transition-colors duration-200 ${
-              isOpen ? "border-neutral-700 bg-neutral-900/60" : "border-transparent"
-            }`}
-          >
-            <button
-              onClick={() => setOpen((o) => ({ ...o, [key]: !o[key] }))}
-              aria-expanded={isOpen}
-              className="flex min-h-[44px] w-full cursor-pointer items-center gap-2 px-3 text-left outline-none transition-colors duration-200 hover:bg-neutral-800/60 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-emerald-400"
+      <div className="space-y-0.5 border-b border-neutral-800 pb-4">
+        {GROUP_ORDER.map((key) => {
+          const g = GROUPS[key];
+          const active = activeGroup === key;
+          return (
+            <Link
+              key={key}
+              href={`/g/${key}`}
+              aria-current={active ? "page" : undefined}
+              title={g.blurb}
+              className={`${row} ${active ? `font-bold ${g.text}` : "text-neutral-300 hover:bg-neutral-800 hover:text-white"}`}
+              style={active ? { background: `${g.hex}14` } : undefined}
             >
-              <g.Icon size={15} strokeWidth={2} className={`shrink-0 ${isOpen || isActiveGroup ? g.text : "text-neutral-500"}`} aria-hidden />
-              <span className={`flex-1 font-mono text-sm font-bold ${isOpen || isActiveGroup ? g.text : "text-neutral-300"}`}>
-                {g.label}
-              </span>
-              <ChevronRight
-                size={14}
-                aria-hidden
-                className={`text-neutral-500 transition-transform duration-200 ease-out ${isOpen ? "rotate-90" : ""}`}
-              />
-            </button>
+              <g.Icon size={16} style={{ color: active ? g.hex : undefined }} aria-hidden /> {g.label}
+            </Link>
+          );
+        })}
+      </div>
 
-            <div
-              className="grid transition-[grid-template-rows] duration-300 ease-out"
-              style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+      <div className="space-y-0.5 pt-1">
+        {MINE.map(({ href, label, Icon, tone, bg }) => {
+          const active = pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={`${row} ${active ? `${bg} font-bold ${tone}` : "text-neutral-300 hover:bg-neutral-800"}`}
             >
-              <div className="overflow-hidden">
-                <p className="px-3 pb-2 text-[11px] leading-snug text-neutral-500">{g.blurb}</p>
-                <div className="relative pb-2 pl-3">
-                  {/* group-colored spine */}
-                  <span
-                    className="absolute left-[15px] top-0 bottom-3 w-px opacity-40"
-                    style={{ background: g.hex }}
-                    aria-hidden
-                  />
-                  {sectionsIn(key).map((c) => {
-                    const isActive = activeSlug === c.slug;
-                    return (
-                      <Link
-                        key={c.slug}
-                        href={`/s/${c.slug}`}
-                        aria-current={isActive ? "page" : undefined}
-                        tabIndex={isOpen ? undefined : -1}
-                        className={`relative ml-3 flex min-h-[36px] items-center rounded-md pl-3 pr-2 font-mono text-[13px] outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-                          isActive
-                            ? `bg-neutral-800 font-bold ${g.text}`
-                            : "text-neutral-400 hover:bg-neutral-800/60 hover:text-white"
-                        }`}
-                      >
-                        {isActive && (
-                          <span
-                            className="absolute left-[-1px] top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full"
-                            style={{ background: g.hex }}
-                            aria-hidden
-                          />
-                        )}
-                        <SectionMark category={c.slug} size={15} color={g.hex} className="mr-2 w-5 shrink-0 text-center opacity-90" />
-                        {c.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-
-      <div className="mt-4 border-t border-neutral-800 pt-3">
-        <Link
-          href="/saves"
-          aria-current={pathname.startsWith("/saves") ? "page" : undefined}
-          className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-            pathname.startsWith("/saves")
-              ? "bg-sky-400/10 font-bold text-sky-300"
-              : "text-neutral-300 hover:bg-neutral-800"
-          }`}
-        >
-          <Bookmark size={16} aria-hidden /> Saves
-        </Link>
-        <Link
-          href="/ideas"
-          aria-current={pathname.startsWith("/ideas") ? "page" : undefined}
-          className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-            pathname.startsWith("/ideas")
-              ? "bg-amber-400/10 font-bold text-amber-300"
-              : "text-neutral-300 hover:bg-neutral-800"
-          }`}
-        >
-          <Lightbulb size={16} aria-hidden /> Ideas
-        </Link>
-        <Link
-          href="/lab"
-          aria-current={pathname.startsWith("/lab") ? "page" : undefined}
-          className={`flex min-h-[42px] items-center gap-2.5 rounded-lg px-3 font-mono text-sm outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-emerald-400 ${
-            pathname.startsWith("/lab")
-              ? "bg-amber-400/10 font-bold text-amber-300"
-              : "text-neutral-300 hover:bg-neutral-800"
-          }`}
-        >
-          <FlaskConical size={16} aria-hidden /> Lab
-        </Link>
+              <Icon size={16} aria-hidden /> {label}
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );
