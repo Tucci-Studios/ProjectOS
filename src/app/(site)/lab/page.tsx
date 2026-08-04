@@ -37,15 +37,15 @@ export default async function LabPage() {
 
   const forkRows = root
     ? await env.DB.prepare(
-        `SELECT gf.full_name, gf.owner_login, gf.stars,
+        `SELECT gf.full_name, gf.owner_login, gf.stars, gf.pushed_at,
                 EXISTS(SELECT 1 FROM projects x WHERE lower(x.github_repo) = lower(gf.full_name)
                        AND x.status='live') AS published
          FROM github_forks gf WHERE gf.project_id = ?1
-         ORDER BY gf.stars DESC LIMIT 12`,
+         ORDER BY gf.stars DESC LIMIT 16`,
       )
         .bind(root.id)
-        .all<{ full_name: string; owner_login: string; stars: number; published: number }>()
-    : { results: [] as { full_name: string; owner_login: string; stars: number; published: number }[] };
+        .all<{ full_name: string; owner_login: string; stars: number; pushed_at: number | null; published: number }>()
+    : { results: [] as { full_name: string; owner_login: string; stars: number; pushed_at: number | null; published: number }[] };
 
   const treeRoot: TreeRoot | null = root
     ? { name: root.base_name, owner: root.github_login, stars: root.stars, totalForks: root.github_forks }
@@ -55,6 +55,7 @@ export default async function LabPage() {
     full_name: f.full_name,
     owner_login: f.owner_login,
     stars: f.stars,
+    pushedAt: f.pushed_at,
     published: !!f.published,
   }));
 
