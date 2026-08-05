@@ -23,3 +23,13 @@ export function siteUrl(): string {
   const raw = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   return raw.replace(/\/+$/, "");
 }
+
+/**
+ * Where a takedown request lands.
+ *
+ * Section 3 of the terms promises anyone can ask to be removed without an
+ * account and without explaining themselves. That promise needs a route that
+ * works for someone who has never signed in and can't see a private repo —
+ * otherwise the most important paragraph in the document is decorative.
+ */
+export const CONTACT_EMAIL = "jacobt72401@gmail.com";

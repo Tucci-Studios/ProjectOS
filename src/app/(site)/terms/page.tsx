@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ScrollText } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { CONTACT_EMAIL, REPO_IS_PUBLIC, SOURCE_REPO, SOURCE_URL } from "@/lib/site";
 
 export const metadata = { title: "Terms — Project OS" };
 
@@ -107,24 +108,38 @@ export default function TermsPage() {
           don&apos;t have to explain, and you don&apos;t need an account:
         </p>
         <ul className="space-y-2 pl-1">
+          {REPO_IS_PUBLIC && (
+            <li className="flex gap-3">
+              <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+              <span>
+                Open an issue on{" "}
+                <a
+                  href={`${SOURCE_URL}/issues`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:underline"
+                >
+                  the Project OS repo
+                </a>{" "}
+                with the link. It&apos;s public, so you can see it was actioned.
+              </span>
+            </li>
+          )}
           <li className="flex gap-3">
             <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
             <span>
-              Open an issue on{" "}
-              <a
-                href="https://github.com/project-os/project-os/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-emerald-400 hover:underline"
-              >
-                the Project OS repo
-              </a>{" "}
-              with the link. It&apos;s public, so you can see it was actioned.
+              Use the report button on the project page. It goes straight to the moderation queue.
             </span>
           </li>
           <li className="flex gap-3">
             <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
-            <span>Or, if you have an account, use the report button on the project page.</span>
+            <span>
+              Or write to{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              . No account needed, and you don&apos;t have to explain why.
+            </span>
           </li>
         </ul>
         <p>
@@ -162,7 +177,42 @@ export default function TermsPage() {
         </p>
       </Section>
 
-      <Section n="6" title="Read before you run">
+      <Section n="6" title="The same rules apply to us">
+        <p>
+          Everything above asks you to be open source, to keep it that way, and not to sell it. It would be a poor
+          rule if the site asking didn&apos;t follow it.
+        </p>
+        <p>
+          So: <B>Project OS will be open source under AGPL-3.0</B>, published under the same terms it asks of
+          everyone here — free, forkable, and never sold. AGPL specifically, because it&apos;s the licence that
+          makes the no-sell rule real rather than a house rule: anyone running a modified copy as a website has to
+          publish their changes too.
+        </p>
+        <p>
+          {REPO_IS_PUBLIC ? (
+            <>
+              The source is at{" "}
+              <a
+                href={SOURCE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:underline"
+              >
+                {SOURCE_REPO}
+              </a>
+              . Fork it, change it, and put your version up for a vote.
+            </>
+          ) : (
+            <>
+              It isn&apos;t published yet, because the site isn&apos;t live yet — there&apos;s no point open-sourcing
+              a thing nobody can use. It goes public at launch. Until then this is a promise rather than a fact, and
+              you should hold us to it.
+            </>
+          )}
+        </p>
+      </Section>
+
+      <Section n="7" title="Read before you run">
         <p>
           Every project here is code written by a stranger, and running it is your decision. We index and link;
           we don&apos;t audit. Scan results and badges are signals, not guarantees, and their absence
@@ -175,7 +225,7 @@ export default function TermsPage() {
         </p>
       </Section>
 
-      <Section n="7" title="Changes">
+      <Section n="8" title="Changes">
         <p>
           These terms will change as the site does. Material changes get posted to{" "}
           <Link href="/updates" className="text-emerald-400 hover:underline">

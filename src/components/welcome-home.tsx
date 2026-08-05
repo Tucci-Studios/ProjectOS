@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Compass, ArrowRight, Users, Vote, Download } from "lucide-react";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
+import { REPO_IS_PUBLIC } from "@/lib/site";
 
 /**
  * What a stranger sees.
@@ -50,7 +51,15 @@ export function WelcomeHome({ projects, total }: { projects: ProjectFeedRow[]; t
       <div className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
           { Icon: Users, t: "Show your work", d: "Post what you built and how. A tutorial that saves someone an afternoon beats a star count." },
-          { Icon: Vote, t: "Run the place", d: "The site is open source on itself. Build a change, put it to a vote, and it ships." },
+          {
+            Icon: Vote,
+            t: "Run the place",
+            // Don't claim the site is forkable while the source is private —
+            // this audience checks. Says what's true now and what's coming.
+            d: REPO_IS_PUBLIC
+              ? "The site is open source on itself. Build a change, put it to a vote, and it ships."
+              : "Project OS opens its own source when it launches, under the same rules it asks of everyone else. Until then, vote on what gets built.",
+          },
           { Icon: Download, t: "Nothing is sold here", d: "Publish and you agree not to sell or paywall it, and to ask the same of anyone who builds on it." },
         ].map(({ Icon, t, d }) => (
           <div key={t} className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">

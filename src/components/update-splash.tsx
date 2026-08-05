@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X, Plus, Wrench, Bug, Rocket, Download, Users, Vote, Compass, ArrowRight } from "lucide-react";
 import { BrandMark } from "./brand";
+import { REPO_IS_PUBLIC } from "@/lib/site";
 
 export type SplashUpdate = {
   id: string;
@@ -158,11 +159,24 @@ export function UpdateSplash({
                 </span>
                 <p className="mt-3.5 font-mono text-[14.5px] font-bold text-white">Run the place</p>
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-neutral-400">
-                  The site is open source on itself. Don&apos;t like how something works — build the change and{" "}
-                  <Link href="/ideas" onClick={close} className="text-emerald-400 hover:underline">
-                    put it to a vote
-                  </Link>
-                  . It gets built.
+                  {REPO_IS_PUBLIC ? (
+                    <>
+                      The site is open source on itself. Don&apos;t like how something works — build the change and{" "}
+                      <Link href="/ideas" onClick={close} className="text-emerald-400 hover:underline">
+                        put it to a vote
+                      </Link>
+                      . It gets built.
+                    </>
+                  ) : (
+                    <>
+                      Project OS opens its own source at launch, under the same terms it asks of everyone here. Until
+                      then,{" "}
+                      <Link href="/ideas" onClick={close} className="text-emerald-400 hover:underline">
+                        vote on what gets built
+                      </Link>
+                      .
+                    </>
+                  )}
                 </p>
               </div>
               <div className="rounded-xl border border-neutral-700/70 bg-neutral-900/50 p-5">
