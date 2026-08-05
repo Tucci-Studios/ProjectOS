@@ -6,6 +6,8 @@ import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds , getSavedIds
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { UpdateCard, type FeedUpdate } from "@/components/update-card";
 import { ButtonLink } from "@/components/ui";
+import { WelcomeHome } from "@/components/welcome-home";
+import { getProjectFeed } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +26,12 @@ export default async function FeedPage() {
     (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                  ELSE pp.base_name || ' // ' || pp.variant_name END
      FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;
+
+  // A stranger gets real projects, not a login wall. Recently-pushed rather
+  // than most-starred: it shows the place is alive, which is the truer thing.
+  const welcomeFeed = user ? null : await getProjectFeed(undefined, "top", { limit: 4 });
+  const welcome = welcomeFeed?.results ?? [];
+  const liveTotal = welcomeFeed?.total ?? 0;
 
   const [followedRaw, votes, follows, blocked, updateRows, savedIds] = user
     ? await Promise.all([
@@ -80,11 +88,7 @@ export default async function FeedPage() {
       </header>
 
       {!user ? (
-        <EmptyHome
-          title="Sign in to build your feed"
-          body="Follow projects and forks you care about and they'll show up here — every update their owner posts, and every fork someone makes of them."
-          cta={{ href: "/api/auth/login", label: "Sign in with GitHub" }}
-        />
+        <WelcomeHome projects={welcome} total={liveTotal} />
       ) : timeline.length === 0 ? (
         <EmptyHome
           title="You're not following anything yet"

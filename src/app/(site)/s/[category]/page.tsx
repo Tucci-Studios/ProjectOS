@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
@@ -12,6 +14,19 @@ import { ButtonLink } from "@/components/ui";
 import { CATEGORY_META, categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
+  const { category } = await params;
+  const meta = CATEGORY_META.find((c) => c.slug === category);
+  if (!meta) return { title: "Project OS" };
+  const title = `${meta.label} — open-source projects on Project OS`;
+  return {
+    title,
+    description: meta.use,
+    alternates: { canonical: `${siteUrl()}/s/${category}` },
+    openGraph: { title, description: meta.use },
+  };
+}
 
 const PER_PAGE = 15;
 

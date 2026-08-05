@@ -54,6 +54,21 @@ export async function POST(request: Request) {
   if (!info) return bad([`Couldn't find github.com/${repo} — is it public?`]);
   if (info.private) return bad(["Repo must be public."]);
 
+  // Publishing claims ownership here: your name goes on the page, you can edit
+  // it, and you're the one agreeing to the terms on its behalf. So it has to be
+  // yours. Without this, anyone could publish anyone else's repo and become its
+  // owner on Project OS — indexing is how other people's work gets listed, and
+  // that path deliberately claims nothing.
+  //
+  // Org repos are the honest gap: GitHub won't tell us you're a member without
+  // scopes we don't ask for, so a maintainer publishing under an org has to
+  // register it under their own account or ask us. Better than the alternative.
+  const repoOwner = repo.split("/")[0]?.toLowerCase() ?? "";
+  if (repoOwner !== user.github_login.toLowerCase())
+    return bad([
+      `That repo belongs to @${repo.split("/")[0]}, not you. You can only publish your own repos — if it's yours through an organisation, open an issue and we'll sort it.`,
+    ], 403);
+
   const [manifestText, agentsText] = await Promise.all([
     getFileText(repo, "project.json"),
     getFileText(repo, "AGENTS.md"),

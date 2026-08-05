@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,6 +14,17 @@ import { ButtonLink } from "@/components/ui";
 import { timeAgo } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ login: string }> }): Promise<Metadata> {
+  const { login } = await params;
+  const title = `@${login} — Project OS`;
+  return {
+    title,
+    description: `Open-source projects by @${login} on Project OS.`,
+    alternates: { canonical: `${siteUrl()}/u/${login}` },
+    openGraph: { title, description: `Open-source projects by @${login}.` },
+  };
+}
 
 const FEED_COLS = `p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
   u.github_login, u.avatar_url,

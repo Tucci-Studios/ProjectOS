@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { siteUrl } from "@/lib/site";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GitFork, ExternalLink, MessageCircle } from "lucide-react";
@@ -28,6 +30,47 @@ import { getSessionUser } from "@/lib/auth";
 import { getLineage, getBadges } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * A title and description per project.
+ *
+ * Every one of these pages emitted the same <title> as the homepage, so to a
+ * search engine the whole catalogue looked like 655 copies of one page. This is
+ * the half of the claim mechanic that was missing: an author searching their
+ * own repo name has to be able to land here.
+ */
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const { env } = getCloudflareContext();
+  const p = await env.DB.prepare(
+    `SELECT p.base_name, p.variant_name, p.description, p.language, u.github_login
+     FROM projects p JOIN users u ON u.id = p.owner_id WHERE p.id = ?1 AND p.status='live'`,
+  )
+    .bind(id)
+    .first<{
+      base_name: string;
+      variant_name: string | null;
+      description: string | null;
+      language: string | null;
+      github_login: string;
+    }>();
+
+  if (!p) return { title: "Not found — Project OS" };
+
+  const name = p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name;
+  const title = `${name} by @${p.github_login} — Project OS`;
+  const description =
+    (p.description ?? "").trim().slice(0, 155) ||
+    `${name}, an open-source ${p.language ?? ""} project by @${p.github_login}.`.replace(/\s+/g, " ");
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `${siteUrl()}/p/${id}` },
+    openGraph: { title, description, type: "article" },
+    twitter: { card: "summary_large_image", title, description },
+  };
+}
 
 type Row = {
   id: string;
