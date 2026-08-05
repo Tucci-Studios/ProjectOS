@@ -29,11 +29,9 @@ export function LabClient({ cards }: { cards: ProjectFeedRow[] }) {
           off.
         </p>
 
-        <div className="mt-5">
-          <PolishToggle />
-        </div>
+        <PolishToggle />
 
-        <div className="space-y-3">
+        <div className="mt-5 space-y-3">
           {cards.map((p) => (
             <ProjectCard key={p.id} p={p} vote={0} following={false} saved={false} canFollow={false} />
           ))}
