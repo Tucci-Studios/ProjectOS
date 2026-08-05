@@ -20,9 +20,12 @@ const CARDS = [
   { name: "NextChat", desc: "Light and fast AI assistant for web, iOS and desktop.", stars: "88.6k", forks: "59.3k", tag: "LLM", when: "2 days ago" },
 ];
 
-function Frame({ on }: { on: boolean }) {
+function Frame({ on, level = 2 }: { on: boolean; level?: number }) {
   return (
-    <div className={`lab-frame ${on ? "lab-on" : ""} overflow-hidden rounded-xl border border-neutral-800`}>
+    <div
+      data-level={level}
+      className={`lab-frame ${on ? "lab-on" : ""} overflow-hidden rounded-xl border border-neutral-800`}
+    >
       <div className="lab-header relative flex h-[52px] items-center gap-3 px-4">
         <span className="lab-mark flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border border-neutral-500 bg-neutral-900/60">
           <svg width="17" height="17" viewBox="0 0 16 16" fill="none" aria-hidden>
@@ -89,17 +92,42 @@ function Frame({ on }: { on: boolean }) {
   );
 }
 
+const LEVELS = [
+  { n: 1, label: "1 · Subtle", note: "What a designer would call correct. If you can't see it, that's the point being proven." },
+  { n: 2, label: "2 · Clear", note: "The same idea, loud enough to survive a dim screen." },
+  { n: 3, label: "3 · Too much", note: "Deliberately overdone, so the direction is unmistakable." },
+];
+
 export function PremiumLab() {
   const [stacked, setStacked] = useState(false);
+  const [level, setLevel] = useState(2);
 
   return (
     <div>
-      <button
-        onClick={() => setStacked((s) => !s)}
-        className="mb-3 min-h-[32px] cursor-pointer rounded-full border border-neutral-700 px-3 font-mono text-[11.5px] text-neutral-400 outline-none transition hover:border-neutral-500 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-emerald-400"
-      >
-        {stacked ? "Put them side by side" : "Stack them (bigger)"}
-      </button>
+      <div className="mb-3 flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 font-mono text-[11px] uppercase tracking-widest text-neutral-400">Strength</span>
+        {LEVELS.map(({ n, label }) => (
+          <button
+            key={n}
+            onClick={() => setLevel(n)}
+            aria-pressed={level === n}
+            className={`min-h-[32px] cursor-pointer rounded-full border px-3 font-mono text-[11.5px] outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+              level === n
+                ? "border-emerald-400 bg-emerald-400/10 font-bold text-emerald-300"
+                : "border-neutral-700 text-neutral-400 hover:border-neutral-500"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+        <button
+          onClick={() => setStacked((s) => !s)}
+          className="ml-auto min-h-[32px] cursor-pointer rounded-full border border-neutral-700 px-3 font-mono text-[11.5px] text-neutral-400 outline-none transition hover:border-neutral-500 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-emerald-400"
+        >
+          {stacked ? "Side by side" : "Stack them"}
+        </button>
+      </div>
+      <p className="mb-3 text-[12.5px] text-neutral-400">{LEVELS.find((l) => l.n === level)!.note}</p>
 
       <div className={stacked ? "space-y-6" : "grid gap-4 lg:grid-cols-2"}>
         <div>
@@ -108,15 +136,14 @@ export function PremiumLab() {
         </div>
         <div>
           <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-emerald-300">With the pass</p>
-          <Frame on />
+          <Frame on level={level} />
         </div>
       </div>
 
       <p className="mt-4 text-[12.5px] leading-relaxed text-neutral-400">
-        The card is a lighter surface with a lit top edge and a shadow deep enough to imply height. The header is a
-        layer the page passes under, not a bar with a line beneath it. The name, the description and the numbers are
-        three clearly different sizes instead of three within 3px of each other. Hover and press a card on the right —
-        that&apos;s where the rest of it lives.
+        Start at 3. If that&apos;s obviously different, walk it back until it stops being obvious — the last level
+        where you still see it is the right one. Twice now I&apos;ve picked a value that measured correctly and
+        couldn&apos;t be seen, so this is your call, not mine.
       </p>
     </div>
   );
