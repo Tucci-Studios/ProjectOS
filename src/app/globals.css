@@ -36,9 +36,9 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation-duration: 0.01ms;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
   }
 }
 ::selection { background: rgba(52, 211, 153, 0.3); color: #fff; }
@@ -335,62 +335,48 @@ body {
 }
 
 
-/* ── The polish pass, applied to the real page ──────────────────────────────
-   Turned on from /lab by putting .pos-polish on <html>, so the header, the
-   rail and the cards you are already looking at change under you. The mock
-   frames were a comparison you had to notice inside a page that stayed the
-   same — this is the thing itself.
+/* ── Surfaces ───────────────────────────────────────────────────────────────
+   A card should read as something sitting on the page rather than a rectangle
+   drawn on it: lighter than its background, a top edge catching light, and a
+   shadow with enough spread to imply height. The header stops being a bar with
+   a line under it and becomes a layer the content passes beneath.
 
-   Everything here targets the real site's own elements. If it's kept, this
-   block loses the .pos-polish prefix and that's the whole ship. */
+   These sit outside Tailwind's layers, so they win without !important. */
 
-.pos-polish article {
-  border-color: #3d4a43 !important;
-  border-top-color: #647a6f !important;
-  border-radius: 16px !important;
-  background: linear-gradient(180deg, #26302b 0%, #1c2420 100%) !important;
+article {
+  border-color: #3d4a43;
+  border-top-color: #647a6f;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #26302b 0%, #1c2420 100%);
   box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.09) inset;
   transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out),
     box-shadow 200ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  .pos-polish article:hover {
-    border-color: #5f7268 !important;
-    border-top-color: #8fada0 !important;
+  article:hover {
+    border-color: #5f7268;
+    border-top-color: #8fada0;
     box-shadow: 0 18px 38px -10px rgba(0, 0, 0, 0.92), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
     transform: translateY(-2px);
   }
 }
-.pos-polish article:active { transform: translateY(0) scale(0.995); transition-duration: 90ms; }
+article:active { transform: translateY(0) scale(0.995); transition-duration: 90ms; }
 
 /* The header becomes a layer the page passes under, not a bar with a line. */
-.pos-polish header {
-  background: rgba(18, 24, 20, 0.72) !important;
+header {
+  background: rgba(18, 24, 20, 0.72);
   backdrop-filter: blur(16px) saturate(150%);
-  border-bottom-color: transparent !important;
+  border-bottom-color: transparent;
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.07), 0 10px 28px -14px rgba(0, 0, 0, 0.85);
 }
 
-.pos-polish aside { border-right-color: transparent !important; box-shadow: 1px 0 0 rgba(255, 255, 255, 0.05); }
-.pos-polish nav[aria-label="Browse"] a[aria-current="page"] {
-  background: linear-gradient(90deg, rgba(74, 222, 128, 0.18), rgba(74, 222, 128, 0.02)) !important;
+aside { border-right-color: transparent; box-shadow: 1px 0 0 rgba(255, 255, 255, 0.05); }
+nav[aria-label="Browse"] a[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(74, 222, 128, 0.18), rgba(74, 222, 128, 0.02));
   box-shadow: inset 2px 0 0 #4ade80;
 }
 
 /* Room to breathe — the single most reliable "expensive" signal, and the one
    least dependent on what screen you're on. */
-.pos-polish main { letter-spacing: 0.002em; }
-.pos-polish .space-y-3 > * + * { margin-top: 0.875rem; }
-
-
-/* ── Wiring test ────────────────────────────────────────────────────────────
-   Deliberately hideous, and temporary. Three times the polish switch has
-   changed measurable things and Jacob has seen nothing, so before tuning any
-   more values we need to know which of two problems this is: the CSS isn't
-   reaching his browser, or it's reaching it and the changes are too subtle to
-   perceive. Magenta answers that in one click. Delete this block once we know. */
-.pos-polish article {
-  outline: 3px solid magenta !important;
-  outline-offset: 2px;
-}
-.pos-polish header { outline: 3px solid magenta !important; outline-offset: -3px; }
+main { letter-spacing: 0.002em; }
+.space-y-3 > * + * { margin-top: 0.875rem; }
