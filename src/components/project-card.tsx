@@ -9,7 +9,6 @@ import { CardComments } from "./card-comments";
 import { UserChip } from "./user-chip";
 import type { Badges } from "./user-badges";
 import { BrandMark } from "./brand";
-import { SHOW_EVERYONE_VERIFIED } from "@/lib/flags";
 
 export type ProjectFeedRow = {
   id: string;
@@ -147,7 +146,7 @@ export function ProjectCard({
           })()}
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-neutral-400">
-            <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} verified={SHOW_EVERYONE_VERIFIED || p.is_shadow === 0} />
+            <UserChip login={p.github_login} avatarUrl={p.avatar_url} badges={badges} verified={p.is_shadow === 0} />
             {p.source === "indexed" && (
               <span
                 title="Found on GitHub and listed here. Its author hasn't signed in — if it's yours, sign in and it becomes yours."

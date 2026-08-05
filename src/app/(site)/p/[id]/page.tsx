@@ -14,7 +14,6 @@ import { ForksPanel } from "@/components/forks-panel";
 import { ReadmeButton } from "@/components/readme";
 import { ClaimBanner } from "@/components/claim-banner";
 import { LicenseNote } from "@/components/license-note";
-import { SHOW_EVERYONE_VERIFIED } from "@/lib/flags";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
 import { UserBadges } from "@/components/user-badges";
@@ -162,7 +161,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                 </span>
               )}
               @{p.github_login}
-              {(SHOW_EVERYONE_VERIFIED || p.is_shadow === 0) && <VerifiedMark size={11} />}
+              {p.is_shadow === 0 && <VerifiedMark size={11} />}
             </Link>
             {badges && <UserBadges badges={badges} />}
             <span>·</span>
