@@ -25,7 +25,7 @@ export default async function NotificationsPage() {
         <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-8 text-center">
           <p className="text-sm text-neutral-400">Sign in to see your notifications.</p>
           <div className="mt-4 flex justify-center">
-            <ButtonLink href="/api/auth/login" variant="primary">Sign in with GitHub</ButtonLink>
+            <ButtonLink href="/login" variant="primary">Sign in with GitHub</ButtonLink>
           </div>
         </div>
       </div>

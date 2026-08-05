@@ -61,7 +61,7 @@ export default async function IdeasPage({ searchParams }: { searchParams: Promis
             <Code2 size={14} aria-hidden /> Get the code
           </ButtonLink>
           <ButtonLink
-            href={user ? "/ideas/new" : "/api/auth/login"}
+            href={user ? "/ideas/new" : "/login"}
             variant="primary"
             className="!min-h-[38px] !text-[13px]"
           >

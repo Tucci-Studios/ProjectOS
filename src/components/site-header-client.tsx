@@ -109,7 +109,7 @@ export function SiteHeaderClient({
               <UserMenu user={user} />
             </div>
           ) : (
-            <ButtonLink href="/api/auth/login" variant="ghost" className="!min-h-[38px] !rounded-full !px-4">
+            <ButtonLink href="/login" variant="ghost" className="!min-h-[38px] !rounded-full !px-4">
               Sign in
             </ButtonLink>
           )}

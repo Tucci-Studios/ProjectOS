@@ -40,7 +40,7 @@ export function WelcomeHome({ projects, total }: { projects: ProjectFeedRow[]; t
             <Compass size={16} aria-hidden /> Look around
           </Link>
           <Link
-            href="/api/auth/login"
+            href="/login"
             className="inline-flex min-h-[46px] items-center gap-2 rounded-lg border border-neutral-700 px-5 font-mono text-sm text-neutral-300 transition hover:border-emerald-400/50 hover:text-emerald-300"
           >
             Sign in with GitHub <ArrowRight size={15} aria-hidden />

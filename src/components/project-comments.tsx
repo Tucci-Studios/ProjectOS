@@ -61,7 +61,7 @@ export function ProjectComments({
         <Composer projectId={projectId} onDone={() => router.refresh()} />
       ) : (
         <p className="mb-4 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-sm text-neutral-400">
-          <a href="/api/auth/login" className="text-emerald-400 hover:underline">
+          <a href="/login" className="text-emerald-400 hover:underline">
             Sign in
           </a>{" "}
           to join the conversation.

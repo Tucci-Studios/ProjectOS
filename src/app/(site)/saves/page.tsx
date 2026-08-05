@@ -56,7 +56,7 @@ export default async function SavesPage() {
         <Empty
           title="Sign in to save projects"
           body="Saving keeps a private shelf of things you want to come back to."
-          cta={{ href: "/api/auth/login", label: "Sign in with GitHub" }}
+          cta={{ href: "/login", label: "Sign in with GitHub" }}
         />
       ) : saved.length === 0 ? (
         <Empty

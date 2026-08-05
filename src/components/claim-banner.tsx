@@ -23,7 +23,7 @@ export function ClaimBanner({ login, signedIn }: { login: string; signedIn: bool
         Sign in and it&apos;s yours to edit — nothing to fill in.
       </p>
       <Link
-        href="/api/auth/login"
+        href="/login"
         className="flex min-h-[34px] shrink-0 items-center rounded-lg bg-emerald-400 px-3.5 font-mono text-[12px] font-bold text-black transition hover:bg-emerald-300"
       >
         Claim it

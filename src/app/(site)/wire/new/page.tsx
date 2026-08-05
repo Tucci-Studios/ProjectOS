@@ -15,7 +15,7 @@ export default async function NewPostPage({
     return (
       <div className="max-w-xl rounded-lg border border-neutral-700 bg-neutral-900/60 p-8 text-center">
         <p className="font-mono text-sm text-neutral-300">
-          <a href="/api/auth/login" className="text-emerald-400 hover:underline">
+          <a href="/login" className="text-emerald-400 hover:underline">
             Sign in with GitHub
           </a>{" "}
           to post on The Wire.

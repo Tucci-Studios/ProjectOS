@@ -26,7 +26,7 @@ export function ApplyForm({ role, signedIn, onDone }: { role: string; signedIn: 
       <div className="mt-3 rounded-xl border border-neutral-700 bg-neutral-900/50 p-4">
         <p className="text-[13px] text-neutral-400">
           Sign in with GitHub first — we want to see what you&apos;ve built.{" "}
-          <Link href="/api/auth/login" className="font-bold text-emerald-400 hover:underline">
+          <Link href="/login" className="font-bold text-emerald-400 hover:underline">
             Sign in
           </Link>
         </p>

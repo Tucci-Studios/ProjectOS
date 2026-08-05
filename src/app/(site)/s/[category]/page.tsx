@@ -135,7 +135,7 @@ export default async function SectionPage({
         <Empty
           title={`No ${meta.label} yet`}
           body="Publish the first one — it'll be the whole section until someone forks it."
-          cta={{ href: user ? "/submit" : "/api/auth/login", label: "Publish here" }}
+          cta={{ href: user ? "/submit" : "/login", label: "Publish here" }}
         />
       ) : (
         <div className="space-y-3">
@@ -181,7 +181,7 @@ export default async function SectionPage({
               : "Stuck on something? Ask, and someone (or someone's AI) will write it up."
           }
           cta={{
-            href: user ? `/wire/new?kind=${kind}&category=${category}` : "/api/auth/login",
+            href: user ? `/wire/new?kind=${kind}&category=${category}` : "/login",
             label: tab === "tutorials" ? "Write a tutorial" : "Ask for help",
           }}
         />
@@ -220,7 +220,7 @@ export default async function SectionPage({
         action={
           tab !== "projects" ? (
             <ButtonLink
-              href={user ? `/wire/new?kind=${tab === "tutorials" ? "tutorial" : "request"}&category=${category}` : "/api/auth/login"}
+              href={user ? `/wire/new?kind=${tab === "tutorials" ? "tutorial" : "request"}&category=${category}` : "/login"}
               variant="outline"
             >
               <Plus size={15} aria-hidden /> {tab === "tutorials" ? "Write a tutorial" : "Ask for help"}

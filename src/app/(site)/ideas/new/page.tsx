@@ -22,7 +22,7 @@ export default async function NewIdeaPage() {
         <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-8 text-center">
           <p className="text-sm text-neutral-400">Sign in to post an idea.</p>
           <div className="mt-4 flex justify-center">
-            <ButtonLink href="/api/auth/login" variant="primary">
+            <ButtonLink href="/login" variant="primary">
               Sign in with GitHub
             </ButtonLink>
           </div>

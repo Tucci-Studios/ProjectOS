@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     ?.match(/pos_oauth_state=([^;]+)/)?.[1];
 
   if (!code || !state || state !== cookieState) {
-    return NextResponse.redirect(`${url.origin}/?auth_error=state`);
+    return NextResponse.redirect(`${url.origin}/login?error=state`);
   }
 
   const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
   });
   const { access_token } = (await tokenRes.json()) as { access_token?: string };
   if (!access_token) {
-    return NextResponse.redirect(`${url.origin}/?auth_error=token`);
+    return NextResponse.redirect(`${url.origin}/login?error=token`);
   }
 
   const userRes = await fetch("https://api.github.com/user", {
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
     },
   });
   if (!userRes.ok) {
-    return NextResponse.redirect(`${url.origin}/?auth_error=user`);
+    return NextResponse.redirect(`${url.origin}/login?error=user`);
   }
   const gh = (await userRes.json()) as GitHubUser;
 
@@ -87,11 +87,18 @@ export async function GET(request: Request) {
     .run();
   const claimedCount = claimed.meta?.changes ?? 0;
 
+  // A first sign-in always gets the mark and the claim step; a returning one
+  // goes back to whatever page sent them to /login.
+  const wanted = request.headers.get("cookie")?.match(/pos_oauth_next=([^;]+)/)?.[1];
+  const back = wanted ? decodeURIComponent(wanted) : "";
+  const returnTo = back.startsWith("/") && !back.startsWith("//") ? back : "/explore";
+
   const res = NextResponse.redirect(
     firstTime
       ? `${url.origin}/me?verified=1${claimedCount > 0 ? `&claimed=${claimedCount}` : ""}`
-      : `${url.origin}/explore`,
+      : `${url.origin}${returnTo}`,
   );
+  res.cookies.set("pos_oauth_next", "", { path: "/api/auth", maxAge: 0 });
   res.cookies.set(sessionCookieName, await signSession(userId, env.SESSION_SECRET), {
     httpOnly: true,
     sameSite: "lax",
