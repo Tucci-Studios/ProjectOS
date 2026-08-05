@@ -7,7 +7,7 @@ const GH = "https://api.github.com";
  * token needs NO scopes — it only raises the ceiling on public reads — so it
  * costs nothing in access and buys ~83x the headroom.
  */
-function headers(): Record<string, string> {
+export function headers(): Record<string, string> {
   const h: Record<string, string> = {
     Accept: "application/vnd.github+json",
     "User-Agent": "project-os",
