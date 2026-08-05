@@ -194,14 +194,8 @@ export async function refresh(batch = 150): Promise<JobResult> {
     // A claimed project's description belongs to its owner; only numbers move.
     if (p.source === "claimed") {
       await env.DB.prepare(
-        "UPDATE projects SET stars=?1, github_forks=?2, language=?3, pushed_at=?4, updated_at=?5 WHERE id=?6",
-      )
-        .bind(info.stargazers_count ?? 0, info.forks_count ?? 0, info.language, ts(info.pushed_at), now, p.id)
-        .run();
-    } else {
-      await env.DB.prepare(
         `UPDATE projects SET stars=?1, github_forks=?2, language=?3, pushed_at=?4, updated_at=?5,
-           description = COALESCE(NULLIF(?6,''), description) WHERE id=?7`,
+           archived=?6, license=?7 WHERE id=?8`,
       )
         .bind(
           info.stargazers_count ?? 0,
@@ -209,6 +203,25 @@ export async function refresh(batch = 150): Promise<JobResult> {
           info.language,
           ts(info.pushed_at),
           now,
+          info.archived ? 1 : 0,
+          info.license?.spdx_id ?? "NOASSERTION",
+          p.id,
+        )
+        .run();
+    } else {
+      await env.DB.prepare(
+        `UPDATE projects SET stars=?1, github_forks=?2, language=?3, pushed_at=?4, updated_at=?5,
+           archived=?6, license=?7,
+           description = COALESCE(NULLIF(?8,''), description) WHERE id=?9`,
+      )
+        .bind(
+          info.stargazers_count ?? 0,
+          info.forks_count ?? 0,
+          info.language,
+          ts(info.pushed_at),
+          now,
+          info.archived ? 1 : 0,
+          info.license?.spdx_id ?? "NOASSERTION",
           info.description?.trim().slice(0, 500) ?? "",
           p.id,
         )

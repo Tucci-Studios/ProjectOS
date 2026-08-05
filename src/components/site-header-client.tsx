@@ -39,7 +39,7 @@ export function SiteHeaderClient({
         {/* Left: brand */}
         <span className="flex min-w-0 shrink select-none items-center gap-2 justify-self-start md:gap-2.5">
           <MobileNav />
-          <BrandMark size={34} />
+          <BrandMark size={34} animated />
           <span className="hidden min-w-0 flex-col leading-none sm:flex">
             <span className="truncate font-mono text-[17px] font-bold tracking-[0.16em] text-white">
               PROJECT<span className="text-emerald-400">_</span>OS

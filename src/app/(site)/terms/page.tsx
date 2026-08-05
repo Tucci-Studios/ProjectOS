@@ -67,7 +67,7 @@ export default function TermsPage() {
             ],
             [
               "It stays free.",
-              "Projects published here can't be sold, paywalled, or locked behind a payment — and neither can anything forked from them. Donation and sponsor links are fine. Required payment isn't. This is the rule the whole site is built on.",
+              "Publish here and you agree not to sell it, paywall it, or lock it behind a payment, and to ask the same of anything forked from it. Donation and sponsor links are fine; required payment isn't. This is a condition of being listed on Project OS, not a claim on your copyright — most open-source licences permit selling, and we can't and don't override yours. What we can do is delist. It's the rule the site is built on, and it's kept by the people who agree to it.",
             ],
             [
               "Lineage is public and permanent.",

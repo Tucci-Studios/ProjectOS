@@ -7,10 +7,20 @@ import Link from "next/link";
  * forking trunk, which trades the literal "lineage" read for something that
  * looks like the thing the site is about — a terminal you build in.
  *
- * The cursor is the only moving part, and it holds still for anyone whose
- * system asks for reduced motion (see .m-caret in globals.css).
+ * The cursor only blinks in the header — everywhere else it sits still, because
+ * a second animated mark on the same page is movement with nothing to say. It
+ * also holds still for anyone whose system asks for reduced motion.
  */
-export function BrandMark({ size = 34, className = "" }: { size?: number; className?: string }) {
+export function BrandMark({
+  size = 34,
+  className = "",
+  animated = false,
+}: {
+  size?: number;
+  className?: string;
+  /** Only the header passes this. One blinking cursor per page is plenty. */
+  animated?: boolean;
+}) {
   return (
     <span
       className={`inline-flex shrink-0 items-center justify-center rounded-full border border-neutral-500 bg-neutral-900/60 ${className}`}
@@ -25,7 +35,7 @@ export function BrandMark({ size = 34, className = "" }: { size?: number; classN
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <rect x="8.4" y="9.4" width="4.4" height="1.5" rx="0.5" fill="#4ade80" className="m-caret" />
+        <rect x="8.4" y="9.4" width="4.4" height="1.5" rx="0.5" fill="#4ade80" className={animated ? "m-caret" : undefined} />
       </svg>
     </span>
   );

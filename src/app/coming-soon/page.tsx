@@ -36,7 +36,7 @@ export default function Home() {
         <ul className="mt-10 space-y-3 text-sm text-neutral-400">
           <li>
             <span className="font-mono text-emerald-400">▸</span> Everything open
-            source. Nothing for sale. Code lives on GitHub.
+            source. Nothing sold here. Code lives on GitHub.
           </li>
           <li>
             <span className="font-mono text-emerald-400">▸</span> Every project

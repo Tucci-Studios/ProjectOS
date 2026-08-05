@@ -7,7 +7,7 @@ import { BrandMark } from "./brand";
 export function TermsGate({ login }: { login: string }) {
   const RULES = [
     { t: "Everything here is open source", d: "Anything you publish carries an open-source license and stays readable by anyone." },
-    { t: "Nothing gets sold", d: "No paywalls, no locked features, no selling a project you published here. Donations and sponsor links are fine." },
+    { t: "Nothing gets sold here", d: "You agree not to sell or paywall what you publish here, and to ask the same of anyone who forks it. Donations and sponsor links are fine. It\u2019s a condition of being listed, not a claim on your licence." },
     { t: "Forks stay open", d: "When someone forks your work — or you fork theirs — that fork stays open too. That's the whole point." },
     { t: "No malware, ever", d: "Malicious or deceptive code means instant removal and a ban. This one has no second chance." },
     { t: "Credit is permanent", d: "Fork lineage and attribution are public and stay visible, even if a project is later delisted." },

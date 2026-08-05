@@ -184,7 +184,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
             <a href="/terms" target="_blank" className="text-emerald-400 hover:underline">
               Project OS terms
             </a>
-            : open source, never sold or paywalled, forks stay open, no malware.
+            : open source, not sold or paywalled while it's listed here, forks stay open, no malware.
           </span>
         </label>
       )}

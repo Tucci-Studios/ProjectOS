@@ -13,6 +13,7 @@ import { ConfirmLineage } from "@/components/confirm-lineage";
 import { ForksPanel } from "@/components/forks-panel";
 import { ReadmeButton } from "@/components/readme";
 import { ClaimBanner } from "@/components/claim-banner";
+import { LicenseNote } from "@/components/license-note";
 import { SHOW_EVERYONE_VERIFIED } from "@/lib/flags";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
@@ -35,6 +36,7 @@ type Row = {
   category: string;
   description: string;
   license: string;
+  archived: number;
   github_repo: string;
   change_summary: string | null;
   parent_id: string | null;
@@ -65,7 +67,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url, u.is_shadow,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at,
+            p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at, p.archived,
             (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE p.id = ?1 AND p.status = 'live'`,
@@ -298,7 +300,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         }
       />
 
-      <p className="mt-8 font-mono text-[11px] text-neutral-400">License: {p.license}</p>
+      <LicenseNote license={p.license} archived={!!p.archived} />
     </div>
   );
 }

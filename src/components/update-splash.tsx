@@ -169,10 +169,10 @@ export function UpdateSplash({
                 <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-800 text-emerald-300">
                   <Download size={18} aria-hidden />
                 </span>
-                <p className="mt-3.5 font-mono text-[14.5px] font-bold text-white">Nothing is for sale</p>
+                <p className="mt-3.5 font-mono text-[14.5px] font-bold text-white">Nothing is sold here</p>
                 <p className="mt-1.5 text-[13.5px] leading-relaxed text-neutral-400">
-                  No project here can be sold or paywalled, and neither can anything built from it. That rule is the
-                  site, not a policy on it.
+                  Publish here and you agree not to sell it or put it behind a paywall, and to ask the same of anyone
+                  who builds on it. It&apos;s a condition of being listed, kept by the people who agree to it.
                 </p>
               </div>
             </div>

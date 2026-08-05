@@ -1,63 +1,32 @@
 import type { Metadata } from "next";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { LabClient } from "@/components/lab/lab-client";
-import type { ForkNode, TreeRoot } from "@/components/lab/fork-trees";
+import { FlaskConical } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Lab — Project OS",
   description: "Test area: experiments that aren't part of the site yet.",
 };
 
-export const dynamic = "force-dynamic";
-
 /**
- * The lab runs on real rows, not fixtures.
+ * Empty on purpose.
  *
- * A layout that looks fine against three tidy strings falls apart against the
- * actual catalogue — descriptions full of pipe-lists, repo names longer than
- * the column, fork counts in the thousands. If it survives here it survives.
+ * Everything that was on the shelf has been decided — the header mark, the
+ * fork listing, the description cleaner, card density. A lab that keeps its
+ * finished experiments around stops being a lab and becomes a museum.
  */
-export default async function LabPage() {
-  const { env } = getCloudflareContext();
+export default function LabPage() {
+  return (
+    <div className="mx-auto w-full max-w-4xl">
+      <div className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-amber-300">
+        <FlaskConical size={13} aria-hidden /> Test area — nothing here is live
+      </div>
+      <h1 className="font-mono text-[28px] font-bold text-white">Lab</h1>
+      <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
+        Where things get tried before they earn a place on the site.
+      </p>
 
-  const root = await env.DB.prepare(
-    `SELECT p.id, p.base_name, p.github_repo, p.stars, p.github_forks, u.github_login
-     FROM projects p JOIN users u ON u.id = p.owner_id
-     WHERE p.status = 'live' AND p.github_forks > 50
-     ORDER BY (SELECT COUNT(*) FROM github_forks gf WHERE gf.project_id = p.id) DESC
-     LIMIT 1`,
-  ).first<{
-    id: string;
-    base_name: string;
-    github_repo: string;
-    stars: number;
-    github_forks: number;
-    github_login: string;
-  }>();
-
-  const forkRows = root
-    ? await env.DB.prepare(
-        `SELECT gf.full_name, gf.owner_login, gf.stars, gf.pushed_at,
-                EXISTS(SELECT 1 FROM projects x WHERE lower(x.github_repo) = lower(gf.full_name)
-                       AND x.status='live') AS published
-         FROM github_forks gf WHERE gf.project_id = ?1
-         ORDER BY gf.stars DESC LIMIT 16`,
-      )
-        .bind(root.id)
-        .all<{ full_name: string; owner_login: string; stars: number; pushed_at: number | null; published: number }>()
-    : { results: [] as { full_name: string; owner_login: string; stars: number; pushed_at: number | null; published: number }[] };
-
-  const treeRoot: TreeRoot | null = root
-    ? { name: root.base_name, owner: root.github_login, stars: root.stars, totalForks: root.github_forks }
-    : null;
-
-  const forks: ForkNode[] = (forkRows.results ?? []).map((f) => ({
-    full_name: f.full_name,
-    owner_login: f.owner_login,
-    stars: f.stars,
-    pushedAt: f.pushed_at,
-    published: !!f.published,
-  }));
-
-  return <LabClient treeRoot={treeRoot} forks={forks} />;
+      <p className="mt-8 rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
+        Nothing on the bench right now.
+      </p>
+    </div>
+  );
 }
