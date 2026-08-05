@@ -31,5 +31,9 @@ export function siteUrl(): string {
  * account and without explaining themselves. That promise needs a route that
  * works for someone who has never signed in and can't see a private repo —
  * otherwise the most important paragraph in the document is decorative.
+ *
+ * Set CONTACT_EMAIL to override. Worth doing before launch: this default is a
+ * personal address, and it goes on a public page next to an invitation to
+ * write to it.
  */
-export const CONTACT_EMAIL = "jacobt72401@gmail.com";
+export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "jacobt72401@gmail.com";

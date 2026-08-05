@@ -41,6 +41,7 @@ const d1 = (sql) =>
   )[0].results;
 
 const findings = [];
+const empties = [];
 const add = (level, area, what) => findings.push({ level, area, what });
 
 // ── crawl ────────────────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ const routes = execFileSync("find", ["src/app", "-name", "page.tsx"], { encoding
 // Reachable, just not from server-rendered HTML: two live behind the avatar
 // dropdown, one is a redirect kept for old links, one is the pre-launch page
 // that is unlinked on purpose.
-const REACHABLE = new Set(["/me", "/settings", "/popular", "/coming-soon"]);
+const REACHABLE = new Set(["/me", "/settings", "/popular", "/news", "/coming-soon"]);
 for (const r of routes) {
   if (r === "/" || REACHABLE.has(r)) continue;
   if (!linkedFrom.has(r) || linkedFrom.get(r).size === 0) add("orphan", r, "no page links here");
@@ -107,7 +108,8 @@ for (const r of routes) {
 // ── data the UI reads but nothing writes ─────────────────────────────────
 const tables = d1("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE '\\_%' ESCAPE '\\'").map((t) => t.name);
 const src = execFileSync("grep", ["-rho", "-E", "(FROM|JOIN|INTO|UPDATE) [a-z_]+", "src", "scripts"], { encoding: "utf8" });
-// A trigger is a writer too — without this every FTS index looks abandoned.
+// A trigger both reads and writes — without this, every FTS index looks
+// abandoned and project_tags looks dead when it's holding up publishing.
 const triggerSrc = d1("SELECT COALESCE(GROUP_CONCAT(sql, ' '), '') AS s FROM sqlite_master WHERE type='trigger'")[0].s;
 const schemaSrc = d1("SELECT COALESCE(GROUP_CONCAT(sql, ' '), '') AS s FROM sqlite_master WHERE type IN ('view','index','table')")[0].s;
 const fts = new Set(
@@ -117,6 +119,11 @@ const fts = new Set(
 );
 for (const t of tables) {
   if (["d1_migrations", "sqlite_sequence"].includes(t) || fts.has(t)) continue;
+  // Known-empty and deliberately so. project_tags is read by the search-index
+  // triggers on every project write, so it has to exist — dropping it once
+  // broke publishing outright — but nothing fills it, because GitHub topics
+  // were looked at in the lab and cut. Empty forever, on purpose.
+  if (t === "project_tags") continue;
   const n = d1(`SELECT COUNT(*) AS n FROM ${t}`)[0].n;
   const reads = new RegExp(`(FROM|JOIN) ${t}\\b`).test(src + triggerSrc);
   const writes = new RegExp(`(INTO|UPDATE) ${t}\\b`).test(src + triggerSrc);
@@ -125,7 +132,7 @@ for (const t of tables) {
   // views and indexes as well as triggers before saying nothing needs it.
   else if (!reads && !writes && !schemaSrc.includes(t))
     add("dead", t, `nothing references this table (${n} rows)`);
-  else if (reads && n === 0) add("empty", t, "queried everywhere, zero rows");
+  else if (reads && n === 0) empties.push(t);
 }
 
 // ── data integrity ───────────────────────────────────────────────────────
@@ -172,6 +179,11 @@ for (const [path, { html, status }] of seen) {
 const ok = [...seen.values()].filter((v) => v.status >= 200 && v.status < 400).length;
 const slowest = [...seen.entries()].filter(([, v]) => v.status === 200).sort((a, b) => b[1].ms - a[1].ms)[0];
 console.log(`\nCrawled ${seen.size} pages — ${ok} fine. Slowest: ${slowest?.[0]} at ${slowest?.[1].ms}ms.\n`);
+
+if (empties.length)
+  console.log(
+    `${empties.length} table${empties.length === 1 ? "" : "s"} queried but empty — expected until people arrive: ${empties.join(", ")}\n`,
+  );
 
 const ORDER = ["bug", "data", "hollow", "dead", "empty", "orphan", "a11y", "polish", "slow", "thin"];
 for (const level of ORDER) {
