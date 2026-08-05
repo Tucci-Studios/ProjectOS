@@ -1,10 +1,17 @@
 "use client";
 
 import { FlaskConical } from "lucide-react";
-import { PremiumLab } from "./premium";
+import { PolishToggle } from "./polish-toggle";
+import type { ProjectFeedRow } from "@/components/project-card";
+import { ProjectCard } from "@/components/project-card";
 
-/** On the bench: whether the site can be made to feel more expensive. */
-export function LabClient() {
+/**
+ * The bench: one switch, and real cards to watch it happen to.
+ *
+ * These are actual ProjectCards from the database, not a copy of one — so
+ * whatever the switch does here is exactly what it does on Explore.
+ */
+export function LabClient({ cards }: { cards: ProjectFeedRow[] }) {
   return (
     <div className="mx-auto w-full max-w-4xl">
       <div className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-amber-300">
@@ -15,14 +22,21 @@ export function LabClient() {
         Where things get tried before they earn a place on the site.
       </p>
 
-      <section className="mt-9">
+      <section className="mt-8">
         <h2 className="font-mono text-[15px] font-bold text-white">Making it feel expensive</h2>
         <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-neutral-400">
-          The site&apos;s own header, rail and cards, copied here at real sizes, with a polish pass you can switch on
-          and off. Nothing is applied to the real site yet.
+          Press the switch and watch this page change around you. It only applies here — leaving the Lab turns it
+          off.
         </p>
+
         <div className="mt-5">
-          <PremiumLab />
+          <PolishToggle />
+        </div>
+
+        <div className="space-y-3">
+          {cards.map((p) => (
+            <ProjectCard key={p.id} p={p} vote={0} following={false} saved={false} canFollow={false} />
+          ))}
         </div>
       </section>
     </div>
