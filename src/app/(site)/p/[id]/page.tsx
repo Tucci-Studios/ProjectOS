@@ -16,6 +16,7 @@ import { ForksPanel } from "@/components/forks-panel";
 import { ReadmeButton } from "@/components/readme";
 import { ClaimBanner } from "@/components/claim-banner";
 import { LicenseNote } from "@/components/license-note";
+import { BuiltWith, type CreditedPost } from "@/components/built-with";
 import { ProjectFacts, Contributors } from "@/components/project-facts";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
 import { OwnerControls } from "@/components/owner-controls";
@@ -127,7 +128,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const meta = categoryMeta(p.category);
   const g = groupOf(p.category);
 
-  const [myVote, lineage, followRows, parent, followerRow, commentRows, imageRows, badges, updateRows] = await Promise.all([
+  const [myVote, lineage, followRows, parent, followerRow, commentRows, imageRows, creditedPosts, badges, updateRows] = await Promise.all([
     Promise.resolve(null),
     getLineage(p.root_id),
     user
@@ -148,6 +149,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
        WHERE c.project_id = ?1 AND c.status='live' ORDER BY c.created_at DESC LIMIT 500`,
     ).bind(id).all<ProjectComment>(),
     env.DB.prepare("SELECT url FROM project_images WHERE project_id = ?1 ORDER BY position").bind(id).all<{ url: string }>(),
+    // Posts that credit this project — the thing GitHub can't hold.
+    env.DB.prepare(
+      `SELECT po.id, po.title, po.kind, po.created_at, u.github_login
+       FROM posts po JOIN users u ON u.id = po.author_id
+       WHERE po.project_id = ?1 AND po.status='live'
+       ORDER BY po.created_at DESC LIMIT 8`,
+    ).bind(id).all<CreditedPost>(),
     (async () => {
       const owner = await env.DB.prepare("SELECT owner_id FROM projects WHERE id = ?1").bind(id).first<{ owner_id: string }>();
       return owner ? getBadges(owner.owner_id) : null;
@@ -311,6 +319,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           childDisplay={p.variant_name ? `${p.base_name} // ${p.variant_name}` : p.base_name}
         />
       )}
+
+      <BuiltWith posts={creditedPosts.results} repo={p.github_repo} />
 
       <Contributors json={p.contributors_json} />
 
