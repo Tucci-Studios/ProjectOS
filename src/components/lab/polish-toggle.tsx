@@ -35,8 +35,10 @@ export function PolishToggle() {
         {on ? "Polish is ON — click to turn it off" : "Polish is OFF — click to turn it on"}
       </button>
       <p className="mt-2 text-center text-[12.5px] leading-relaxed text-neutral-400">
-        This changes the page you are looking at right now — the header above, the rail on the left, and every card
-        below. Not a preview: the real thing, live.
+        <span className="font-bold text-amber-300">Diagnostic:</span> while this is on, every card and the header get
+        a <span className="font-bold" style={{ color: "magenta" }}>bright magenta outline</span>. If you see magenta,
+        the switch works and the real changes are just too subtle for your screen — which is worth knowing. If you
+        see no magenta, the CSS isn&apos;t reaching your browser at all and that&apos;s the actual bug.
       </p>
     </div>
   );

@@ -381,3 +381,16 @@ body {
    least dependent on what screen you're on. */
 .pos-polish main { letter-spacing: 0.002em; }
 .pos-polish .space-y-3 > * + * { margin-top: 0.875rem; }
+
+
+/* ── Wiring test ────────────────────────────────────────────────────────────
+   Deliberately hideous, and temporary. Three times the polish switch has
+   changed measurable things and Jacob has seen nothing, so before tuning any
+   more values we need to know which of two problems this is: the CSS isn't
+   reaching his browser, or it's reaching it and the changes are too subtle to
+   perceive. Magenta answers that in one click. Delete this block once we know. */
+.pos-polish article {
+  outline: 3px solid magenta !important;
+  outline-offset: 2px;
+}
+.pos-polish header { outline: 3px solid magenta !important; outline-offset: -3px; }
