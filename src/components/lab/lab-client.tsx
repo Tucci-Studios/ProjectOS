@@ -28,9 +28,9 @@ export function LabClient({ samples }: { samples: { id: string; base_name: strin
       <section className="mt-9">
         <h2 className="font-mono text-[15px] font-bold text-white">What a project page is missing</h2>
         <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-neutral-400">
-          Seven things GitHub already knows that Project OS doesn&apos;t show. Each one is live data, not a mock-up —
-          switch projects to see which of them hold up against a small repo as well as a famous one. The ones that go
-          blank are the ones to leave out.
+          The same project page twice — as it is now, and with the GitHub data we don&apos;t show yet. Real data, so
+          switch projects and watch which rows go empty on an ordinary repo. Turn a row off to see whether the page
+          is actually worse without it.
         </p>
 
         {samples.length > 1 && (
