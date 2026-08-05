@@ -55,8 +55,40 @@ type Repo = {
   archived: boolean;
   private: boolean;
   license: { spdx_id: string | null } | null;
+  open_issues_count: number;
   owner: { id: number; login: string; avatar_url: string | null };
 };
+
+/**
+ * The extras a page shows that the repo call doesn't carry: latest release and
+ * the top contributors. Two more requests per project, so refresh costs three
+ * calls instead of one — at 150 a batch that's 450 against a 5,000/hour
+ * budget, which is fine, and both fail soft: a missing release is a normal
+ * answer (404), not an error.
+ */
+async function fetchExtras(repo: string): Promise<{ tag: string | null; at: number | null; people: string | null }> {
+  const h = headers();
+  let tag: string | null = null;
+  let at: number | null = null;
+  let people: string | null = null;
+  try {
+    const rel = await fetch(`${GH}/repos/${repo}/releases/latest`, { headers: h });
+    if (rel.ok) {
+      const j = (await rel.json()) as { tag_name?: string; published_at?: string };
+      tag = j.tag_name ?? null;
+      at = j.published_at ? Math.floor(new Date(j.published_at).getTime() / 1000) : null;
+    }
+    const con = await fetch(`${GH}/repos/${repo}/contributors?per_page=6`, { headers: h });
+    if (con.ok) {
+      const j = (await con.json()) as { login: string; contributions: number; avatar_url: string | null }[];
+      if (Array.isArray(j) && j.length)
+        people = JSON.stringify(j.slice(0, 6).map((c) => ({ login: c.login, commits: c.contributions, avatar: c.avatar_url })));
+    }
+  } catch {
+    // Network trouble mid-batch: keep what we have, the next refresh retries.
+  }
+  return { tag, at, people };
+}
 
 /** A repo with no description tells a reader nothing, so it doesn't earn a card. */
 const usable = (r: Repo) => !!r.description && r.description.trim().length >= 20 && !r.archived && !r.private;
@@ -191,11 +223,13 @@ export async function refresh(batch = 150): Promise<JobResult> {
       continue;
     }
     const info = got.repo;
+    const extra = await fetchExtras(p.github_repo);
     // A claimed project's description belongs to its owner; only numbers move.
     if (p.source === "claimed") {
       await env.DB.prepare(
         `UPDATE projects SET stars=?1, github_forks=?2, language=?3, pushed_at=?4, updated_at=?5,
-           archived=?6, license=?7 WHERE id=?8`,
+           archived=?6, license=?7, open_issues=?8, release_tag=?9, release_at=?10,
+           contributors_json=COALESCE(?11, contributors_json) WHERE id=?12`,
       )
         .bind(
           info.stargazers_count ?? 0,
@@ -205,14 +239,19 @@ export async function refresh(batch = 150): Promise<JobResult> {
           now,
           info.archived ? 1 : 0,
           info.license?.spdx_id ?? "NOASSERTION",
+          info.open_issues_count ?? 0,
+          extra.tag,
+          extra.at,
+          extra.people,
           p.id,
         )
         .run();
     } else {
       await env.DB.prepare(
         `UPDATE projects SET stars=?1, github_forks=?2, language=?3, pushed_at=?4, updated_at=?5,
-           archived=?6, license=?7,
-           description = COALESCE(NULLIF(?8,''), description) WHERE id=?9`,
+           archived=?6, license=?7, open_issues=?8, release_tag=?9, release_at=?10,
+           contributors_json=COALESCE(?11, contributors_json),
+           description = COALESCE(NULLIF(?12,''), description) WHERE id=?13`,
       )
         .bind(
           info.stargazers_count ?? 0,
@@ -222,6 +261,10 @@ export async function refresh(batch = 150): Promise<JobResult> {
           now,
           info.archived ? 1 : 0,
           info.license?.spdx_id ?? "NOASSERTION",
+          info.open_issues_count ?? 0,
+          extra.tag,
+          extra.at,
+          extra.people,
           info.description?.trim().slice(0, 500) ?? "",
           p.id,
         )

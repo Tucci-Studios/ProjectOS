@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { GitFork, Users, ChevronUp, Star } from "lucide-react";
+import { OpenIssues } from "./project-facts";
 import { FollowButton } from "./follow-button";
 import { SaveButton } from "./save-button";
 
@@ -26,6 +27,8 @@ export function ProjectStats({
   forkCount,
   voteCount,
   stars,
+  openIssues,
+  repo,
   saved,
   signedIn,
 }: {
@@ -35,6 +38,8 @@ export function ProjectStats({
   forkCount: number;
   voteCount: number;
   stars?: number | null;
+  openIssues?: number | null;
+  repo?: string;
   saved?: boolean;
   signedIn: boolean;
 }) {
@@ -43,7 +48,7 @@ export function ProjectStats({
   // A brand-new project can have nothing to report at all. An empty bordered
   // strip is worse than no strip, so it only exists if it holds something —
   // the follow and save buttons count.
-  const hasNumbers = forkCount > 0 || voteCount !== 0 || followers > 0 || !!stars;
+  const hasNumbers = forkCount > 0 || voteCount !== 0 || followers > 0 || !!stars || !!openIssues;
   if (!hasNumbers && !signedIn) return null;
 
   return (
@@ -69,6 +74,8 @@ export function ProjectStats({
           explain="Upvotes minus downvotes from the community."
         />
       )}
+      {!!openIssues && repo && <OpenIssues count={openIssues} repo={repo} />}
+
       {followers > 0 && (
         <Stat
           Icon={Users}
