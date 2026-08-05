@@ -1,7 +1,16 @@
-// Project OS is open source on itself. Update this once the repo is public.
-export const SOURCE_REPO = "project-os/project-os";
+/**
+ * Project OS is open source on itself — eventually.
+ *
+ * The repo now exists and this points at it, but it's private, so every "get
+ * the code" link on the site 404s for anyone who isn't Jacob. REPO_IS_PUBLIC
+ * gates that: while it's false the site says the code isn't out yet rather than
+ * sending people to a page they can't see.
+ *
+ * Flip it the moment the repo goes public. Nothing else needs changing.
+ */
+export const SOURCE_REPO = "jacobt72401/ProjectOS";
 export const SOURCE_URL = `https://github.com/${SOURCE_REPO}`;
-export const REPO_IS_PUBLIC = false; // flip when the GitHub org exists
+export const REPO_IS_PUBLIC = false;
 
 /**
  * Where the site lives, absolutely.
