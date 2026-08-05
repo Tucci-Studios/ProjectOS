@@ -216,16 +216,21 @@ body {
   .m-hv-l:not(.motion-demo *), .m-hv-r:not(.motion-demo *) { transition: none; }
 }
 
-/* ── Lab: the polish pass, switchable ───────────────────────────────────────
+/* ── Lab: the polish pass, side by side ─────────────────────────────────────
    Scoped to .lab-frame so nothing here touches the real site until it's been
-   looked at. Everything below is one of the rules from the two design skills,
-   made concrete against this site's own chrome. */
+   looked at.
+
+   The first attempt at this was a 3.5% white gradient and a 1px shadow, which
+   is invisible — a polish pass nobody can see isn't restraint, it's nothing.
+   The levers that actually read on a dark UI, in order of effect: the surface
+   being genuinely lighter than the page, real elevation, room to breathe, and
+   a type scale with an actual gap in it. */
 
 .lab-frame { background: #161d18; }
 .lab-header { background: #141a16; border-bottom: 1px solid #262626; }
 .lab-rail { border-right: 1px solid #262626; }
-.lab-card { border: 1px solid #262626; background: rgba(23, 23, 23, 0.4); }
-.lab-tile { border: 1px solid #404040; background: rgba(23, 23, 23, 0.6); }
+.lab-card { border: 1px solid #262626; background: rgba(23, 23, 23, 0.4); border-radius: 12px; padding: 12px; }
+.lab-tile { border: 1px solid #404040; background: rgba(23, 23, 23, 0.6); border-radius: 8px; }
 .lab-name { font-size: 14px; }
 .lab-desc { font-size: 13px; }
 .lab-meta { font-size: 11px; }
@@ -233,76 +238,90 @@ body {
 
 /* ---- switched on ---- */
 
-/* Surfaces lit from above. A flat fill reads as a rectangle; a top-lit
-   gradient plus a real shadow reads as something sitting on the page. */
+/* A card has to be a surface sitting ON the page, not a rectangle drawn on it.
+   That means genuinely lighter than the background, a top edge catching light,
+   and a shadow with enough spread to imply height. */
 .lab-on .lab-card {
-  border-color: #2a2f2c;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0) 42%), #171d1a;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.03) inset;
-  transition: transform 180ms var(--ease-out), border-color 180ms var(--ease-out),
-    box-shadow 180ms var(--ease-out), background-color 180ms var(--ease-out);
+  border: 1px solid #313a35;
+  border-top-color: #46524b;
+  border-radius: 14px;
+  padding: 15px;
+  background: linear-gradient(180deg, #1e2622 0%, #1a211d 100%);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  transition: transform 200ms var(--ease-out), border-color 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
 }
 
-/* Hover gated: on a touch screen an unguarded :hover sticks after the tap. */
+/* Gated: on a touch screen an unguarded :hover sticks after the tap. */
 @media (hover: hover) and (pointer: fine) {
   .lab-on .lab-card:hover {
-    border-color: #3d4a43;
-    box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.05) inset;
-    transform: translateY(-1px);
+    border-color: #4d5f56;
+    border-top-color: #5f7268;
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.85), 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+    transform: translateY(-2px);
   }
 }
 /* Exit faster than entrance — slow where you decide, fast where it responds. */
-.lab-on .lab-card:active { transform: translateY(0) scale(0.995); transition-duration: 90ms; }
+.lab-on .lab-card:active { transform: translateY(0) scale(0.99); transition-duration: 90ms; }
 
 /* The header stops being a bar with a line under it and becomes a layer the
    content passes beneath. */
 .lab-on .lab-header {
-  background: rgba(20, 26, 22, 0.72);
-  backdrop-filter: blur(14px) saturate(140%);
+  background: rgba(18, 24, 20, 0.7);
+  backdrop-filter: blur(16px) saturate(150%);
   border-bottom: 1px solid transparent;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px -12px rgba(0, 0, 0, 0.8);
 }
 .lab-on .lab-header::after {
   content: "";
   position: absolute;
   left: 0; right: 0; top: 100%;
-  height: 22px;
-  background: linear-gradient(180deg, rgba(22, 29, 24, 0.9), rgba(22, 29, 24, 0));
+  height: 24px;
+  background: linear-gradient(180deg, rgba(22, 29, 24, 0.85), rgba(22, 29, 24, 0));
   pointer-events: none;
 }
 
-.lab-on .lab-rail { border-right-color: transparent; box-shadow: 1px 0 0 rgba(255, 255, 255, 0.035); }
+.lab-on .lab-rail { border-right-color: transparent; box-shadow: 1px 0 0 rgba(255, 255, 255, 0.05); }
+.lab-on .lab-body { padding: 18px; gap: 10px; }
 .lab-on .lab-row { transition: color 140ms var(--ease-out), background-color 140ms var(--ease-out); }
 @media (hover: hover) and (pointer: fine) {
-  .lab-on .lab-row:not(.lab-row-active):hover { background: rgba(255, 255, 255, 0.035); color: #fff; }
+  .lab-on .lab-row:not(.lab-row-active):hover { background: rgba(255, 255, 255, 0.045); color: #fff; }
 }
 .lab-on .lab-row-active {
-  background: linear-gradient(90deg, rgba(74, 222, 128, 0.14), rgba(74, 222, 128, 0.04));
+  background: linear-gradient(90deg, rgba(74, 222, 128, 0.16), rgba(74, 222, 128, 0.02));
   box-shadow: inset 2px 0 0 #4ade80;
 }
 
-/* The section tile is the most repeated element on the site, so it's worth
-   the most: same top-light treatment, at a smaller scale. */
+/* The section tile is the most repeated element on the site, so it earns the
+   most care: the same lit-from-above treatment at a smaller scale. */
 .lab-on .lab-tile {
-  border-color: #33403a;
-  background: linear-gradient(180deg, rgba(74, 222, 128, 0.12), rgba(74, 222, 128, 0.03));
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  border-color: #3b4a43;
+  border-top-color: #52655c;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(74, 222, 128, 0.16), rgba(74, 222, 128, 0.03));
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
 }
 
-/* Type hierarchy: the name steps up, the metadata steps down, so the eye is
-   told what to read first instead of scanning three lines of equal weight. */
-.lab-on .lab-name { font-size: 15px; letter-spacing: -0.01em; }
-.lab-on .lab-desc { font-size: 12.5px; color: #9ca3a0; }
-.lab-on .lab-meta { font-size: 10.5px; letter-spacing: 0.02em; }
+/* Hierarchy needs a real gap. Three lines within 3px of each other is a wall
+   of text; the eye has to be told what to read first. */
+.lab-on .lab-name { font-size: 16px; letter-spacing: -0.015em; }
+.lab-on .lab-desc { font-size: 12.5px; color: #97a29d; line-height: 1.5; }
+.lab-on .lab-meta { font-size: 10.5px; letter-spacing: 0.03em; color: #7d8783; }
 
 .lab-on .lab-cta {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 16px -4px rgba(74, 222, 128, 0.5);
+  background: linear-gradient(180deg, #5ee79a, #34d987);
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.35) inset;
   transition: transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
 }
 .lab-on .lab-cta:active { transform: scale(0.97); }
-.lab-on .lab-search { transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out); }
+.lab-on .lab-search {
+  background: rgba(10, 14, 12, 0.6);
+  border-color: #313a35;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  transition: border-color 160ms var(--ease-out), background-color 160ms var(--ease-out);
+}
 @media (hover: hover) and (pointer: fine) {
-  .lab-on .lab-search:hover { border-color: #525252; background: rgba(38, 38, 38, 0.7); }
+  .lab-on .lab-search:hover { border-color: #4d5f56; }
 }
 
 @media (prefers-reduced-motion: reduce) {
