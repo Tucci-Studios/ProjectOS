@@ -65,11 +65,11 @@ export function VerifiedGrant() {
         ) : (
         <>
         <svg width="132" height="132" viewBox="0 0 16 16" fill="none" className="drop-shadow-[0_0_28px_rgba(52,211,153,0.35)]">
-          {/* the ring draws itself */}
+          {/* the rim draws itself, then the disc fills in behind the prompt */}
           <circle
             cx="8"
             cy="8"
-            r="7.1"
+            r="7.4"
             stroke="#34d399"
             strokeWidth="0.75"
             strokeLinecap="round"
@@ -79,23 +79,32 @@ export function VerifiedGrant() {
             transform="rotate(-90 8 8)"
             style={{ transition: "stroke-dashoffset 900ms cubic-bezier(0.22, 1, 0.36, 1)" }}
           />
-          <g
-            transform="translate(8 8.6) scale(0.62) translate(-8 -10)"
+          <circle
+            cx="8"
+            cy="8"
+            r="7.4"
+            fill="#34d399"
             style={{
               opacity: stage >= 2 ? 1 : 0,
-              transform:
-                stage >= 2
-                  ? "translate(8px, 8.6px) scale(0.62) translate(-8px, -10px)"
-                  : "translate(8px, 8.6px) scale(0.2) translate(-8px, -10px)",
+              transition: "opacity 520ms ease-out",
+            }}
+          />
+          <g
+            style={{
+              opacity: stage >= 2 ? 1 : 0,
+              transform: stage >= 2 ? "scale(1)" : "scale(0.55)",
               transformOrigin: "center",
-              transition: "opacity 420ms ease-out, transform 620ms cubic-bezier(0.22, 1, 0.36, 1)",
+              transition: "opacity 420ms ease-out 120ms, transform 620ms cubic-bezier(0.22, 1, 0.36, 1) 120ms",
             }}
           >
-            <path d="M8 15V9.5" stroke="#34d399" strokeWidth="1.6" strokeLinecap="round" />
-            <path d="M8 10 L4.2 6.6 M8 10 L11.8 6.6" stroke="#34d399" strokeWidth="1.45" strokeLinecap="round" />
-            <circle cx="8" cy="10" r="1.45" fill="#34d399" />
-            <circle cx="4" cy="5.4" r="1.6" fill="none" stroke="#34d399" strokeWidth="1.35" />
-            <circle cx="12" cy="5.4" r="1.6" fill="none" stroke="#34d399" strokeWidth="1.35" />
+            <path
+              d="M4.4 5.7 L7 8 L4.4 10.3"
+              stroke="#0f1411"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <rect x="8.6" y="9.3" width="3.6" height="1.5" rx="0.45" fill="#0f1411" />
           </g>
         </svg>
 

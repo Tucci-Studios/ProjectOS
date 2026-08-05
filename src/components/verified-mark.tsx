@@ -24,20 +24,21 @@ export function VerifiedMark({ size = 12, className = "" }: { size?: number; cla
         viewBox="0 0 16 16"
         fill="none"
         aria-hidden
-        style={{ filter: "drop-shadow(0 0 2.5px rgba(52,211,153,0.55))" }}
+        style={{ filter: "drop-shadow(0 0 3px rgba(52,211,153,0.6))" }}
       >
-        {/* a lit rim rather than a moving part — it has to sit quietly beside a
-            name, sometimes several times in one list */}
-        <circle cx="8" cy="8" r="7.1" stroke="#34d399" strokeWidth="1.3" opacity="0.9" />
-        <circle cx="8" cy="8" r="7.1" stroke="#34d399" strokeWidth="2.6" opacity="0.18" />
+        {/* Solid, with the prompt knocked out of it. An outlined ring at 11px is
+            the most invisible shape there is — stroke thins away and a circle is
+            the silhouette every avatar beside it already has. Fill is what
+            survives, and the glow does the work motion used to. */}
+        <circle cx="8" cy="8" r="7.4" fill="#34d399" />
         <path
-          d="M4.1 5.7 L6.7 8 L4.1 10.3"
-          stroke="#34d399"
-          strokeWidth="1.5"
+          d="M4.4 5.7 L7 8 L4.4 10.3"
+          stroke="#0f1411"
+          strokeWidth="1.7"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <rect x="8.2" y="9.3" width="4" height="1.4" rx="0.45" fill="#34d399" />
+        <rect x="8.6" y="9.3" width="3.6" height="1.5" rx="0.45" fill="#0f1411" />
       </svg>
     </span>
   );
