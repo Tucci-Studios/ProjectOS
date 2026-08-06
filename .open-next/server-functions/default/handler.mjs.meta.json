@@ -3743,12 +3743,12 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/.next/server/app/api/ideas/vote/route_client-reference-manifest.js": {
       "bytes": 319,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/app/api/ideas/vote/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js": {
       "bytes": 319,
       "imports": [],
       "format": "cjs"
@@ -3967,14 +3967,14 @@
           "original": "/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/app/api/cron/[job]/route_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js"
-        },
-        {
           "path": ".open-next/server-functions/default/.next/server/app/api/ideas/vote/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/app/api/ideas/vote/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/api/waitlist/route_client-reference-manifest.js",
@@ -4655,7 +4655,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/_03kytrn._.js": {
-      "bytes": 4260,
+      "bytes": 4263,
       "imports": [],
       "format": "cjs"
     },
@@ -4742,7 +4742,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/ssr/_1igyvts._.js": {
-      "bytes": 26758,
+      "bytes": 26761,
       "imports": [],
       "format": "cjs"
     },
@@ -14096,10 +14096,10 @@
         ".open-next/server-functions/default/.next/server/app/api/cron/[job]/route_client-reference-manifest.js": {
           "bytesInOutput": 471
         },
-        ".open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/.next/server/app/api/ideas/vote/route_client-reference-manifest.js": {
           "bytesInOutput": 471
         },
-        ".open-next/server-functions/default/.next/server/app/api/ideas/vote/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/.next/server/app/api/auth/login/route_client-reference-manifest.js": {
           "bytesInOutput": 471
         },
         ".open-next/server-functions/default/.next/server/app/api/waitlist/route_client-reference-manifest.js": {
@@ -14253,7 +14253,7 @@
           "bytesInOutput": 10173
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/_03kytrn._.js": {
-          "bytesInOutput": 4467
+          "bytesInOutput": 4470
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__not-found_page_actions_0pt47yr.js": {
           "bytesInOutput": 272
@@ -14298,7 +14298,7 @@
           "bytesInOutput": 24319
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/_1igyvts._.js": {
-          "bytesInOutput": 27296
+          "bytesInOutput": 27299
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/_1x7pcp5._.js": {
           "bytesInOutput": 11873
@@ -15342,7 +15342,7 @@
           "bytesInOutput": 69201
         }
       },
-      "bytes": 6097007
+      "bytes": 6097013
     }
   }
 }

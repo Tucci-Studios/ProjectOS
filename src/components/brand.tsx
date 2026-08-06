@@ -23,7 +23,9 @@ export function BrandMark({
 }) {
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-neutral-500 bg-neutral-900/60 ${className}`}
+      // Green ring to match the favicon, which is the same mark and is the
+      // version that reads at a glance.
+      className={`inline-flex shrink-0 items-center justify-center rounded-full border border-emerald-400/70 bg-neutral-900/60 ${className}`}
       style={{ width: size, height: size }}
       aria-hidden
     >
