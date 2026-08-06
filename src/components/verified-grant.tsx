@@ -52,20 +52,15 @@ export function VerifiedGrant() {
 
   return (
     <div
-      role="dialog"
-      aria-label="You're verified on Project OS"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 p-6 backdrop-blur-sm"
-      onClick={step === "mark" ? dismiss : undefined}
+      aria-label="You're certified on Project OS"
+      className="animate-rise mb-7 overflow-hidden rounded-2xl border border-emerald-400/30 bg-gradient-to-b from-emerald-400/[0.07] to-transparent px-6 py-8"
     >
-      <div
-        className={`flex w-full flex-col items-center text-center ${step === "mark" ? "max-w-md" : "max-w-xl"}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="mx-auto flex w-full max-w-md flex-col items-center text-center">
         {step === "claim" ? (
           <ClaimStep onDone={dismiss} />
         ) : (
         <>
-        <svg width="132" height="132" viewBox="0 0 16 16" fill="none" className="drop-shadow-[0_0_28px_rgba(52,211,153,0.35)]">
+        <svg width="96" height="96" viewBox="0 0 16 16" fill="none" className="drop-shadow-[0_0_28px_rgba(52,211,153,0.35)]">
           {/* the rim draws itself, then the disc fills in behind the prompt */}
           <circle
             cx="8"
@@ -116,12 +111,12 @@ export function VerifiedGrant() {
             transition: "opacity 400ms ease-out, transform 400ms cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
-          <p className="mt-7 font-mono text-[11px] uppercase tracking-[0.35em] text-emerald-400">Verified</p>
-          <h2 className="mt-2 font-mono text-2xl font-bold text-white">You&apos;re on Project OS</h2>
+          <p className="mt-7 font-mono text-[11px] uppercase tracking-[0.35em] text-emerald-400">Certified</p>
+          <h2 className="mt-2 font-mono text-2xl font-bold text-white">Your account is certified</h2>
           <p className="mt-2.5 text-[15px] leading-relaxed text-neutral-400">
             {claimed > 0 ? (
               <>
-                Your mark now shows next to your name — and{" "}
+                Your mark now sits on your profile picture, top right — and{" "}
                 <span className="font-bold text-emerald-300">
                   {claimed} project{claimed === 1 ? "" : "s"}
                 </span>{" "}
@@ -129,8 +124,8 @@ export function VerifiedGrant() {
               </>
             ) : (
               <>
-                Your mark now shows next to your name, so people can tell you&apos;re actually here rather than just
-                listed.
+                Your mark now sits on your profile picture, top right, so people can tell you&apos;re actually here
+                rather than just listed.
               </>
             )}
           </p>

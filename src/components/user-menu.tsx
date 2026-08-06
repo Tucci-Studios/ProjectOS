@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { User, Settings, LogOut, Lightbulb, ChevronDown, ShieldAlert } from "lucide-react";
+import { VerifiedMark } from "./verified-mark";
 import type { SessionUser } from "@/lib/auth";
 
 // Sign-out lives behind a deliberate open-then-click, so it can't be hit by
@@ -37,14 +38,25 @@ export function UserMenu({ user }: { user: SessionUser }) {
         aria-label="Account menu"
         className="flex cursor-pointer items-center gap-1 rounded-full border border-transparent p-0.5 pr-1.5 outline-none transition hover:border-neutral-600 hover:bg-neutral-800/60 focus-visible:ring-2 focus-visible:ring-emerald-400"
       >
-        {user.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={user.avatar_url} alt="" className="h-8 w-8 rounded-full border border-neutral-600" />
-        ) : (
-          <span className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-600 font-mono text-xs text-neutral-300">
-            {user.github_login.slice(0, 2)}
+        {/* The mark lives on the avatar rather than only in a one-off
+            ceremony. Being certified is a state you keep, not a moment that
+            happened once and left nothing behind. */}
+        <span className="relative flex shrink-0">
+          {user.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={user.avatar_url} alt="" className="h-8 w-8 rounded-full border border-neutral-600" />
+          ) : (
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-600 font-mono text-xs text-neutral-300">
+              {user.github_login.slice(0, 2)}
+            </span>
+          )}
+          <span
+            title="Certified — you've signed in and your work is yours"
+            className="absolute -bottom-0.5 -right-0.5 flex h-[15px] w-[15px] items-center justify-center rounded-full bg-[#141a16]"
+          >
+            <VerifiedMark size={13} />
           </span>
-        )}
+        </span>
         <ChevronDown
           size={13}
           aria-hidden
