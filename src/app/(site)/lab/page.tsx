@@ -4,7 +4,7 @@ import { LabClient } from "@/components/lab/lab-client";
 import type { MapDot } from "@/components/lab/catalogue-map";
 
 export const metadata: Metadata = {
-  title: "Lab — Project OS",
+  title: "Lab — Project Open Source",
   description: "Test area: experiments that aren't part of the site yet.",
 };
 

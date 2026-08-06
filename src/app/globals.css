@@ -363,7 +363,7 @@ article {
 article:active { transform: translateY(0) scale(0.995); transition-duration: 90ms; }
 
 /* The header becomes a layer the page passes under, not a bar with a line. */
-header {
+header[data-site-header] {
   background: rgba(18, 24, 20, 0.72);
   backdrop-filter: blur(16px) saturate(150%);
   border-bottom-color: transparent;

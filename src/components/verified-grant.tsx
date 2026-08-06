@@ -28,15 +28,16 @@ export function VerifiedGrant() {
     if (!isNew) return;
     setOpen(true);
 
+    // Reduced motion gets the same sequence with the movement taken out — the
+    // stages still land, they just fade rather than travel. Jumping straight to
+    // the end meant anyone with the setting on never saw the one piece of
+    // ceremony the site has.
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setStage(3);
-      return;
-    }
+    const beats = reduced ? [80, 320, 620] : [250, 900, 1500];
     const timers = [
-      setTimeout(() => setStage(1), 250), // ring
-      setTimeout(() => setStage(2), 900), // trunk
-      setTimeout(() => setStage(3), 1500), // words
+      setTimeout(() => setStage(1), beats[0]), // rim
+      setTimeout(() => setStage(2), beats[1]), // fill and prompt
+      setTimeout(() => setStage(3), beats[2]), // words
     ];
     return () => timers.forEach(clearTimeout);
   }, [isNew]);

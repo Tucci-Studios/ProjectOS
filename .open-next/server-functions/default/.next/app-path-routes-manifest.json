@@ -71,7 +71,7 @@
   "/api/waitlist/route": "/api/waitlist",
   "/api/whoami/route": "/api/whoami",
   "/coming-soon/page": "/coming-soon",
-  "/favicon.ico/route": "/favicon.ico",
+  "/icon.svg/route": "/icon.svg",
   "/robots.txt/route": "/robots.txt",
   "/sitemap.xml/route": "/sitemap.xml"
 }

@@ -34,7 +34,7 @@ export function SiteHeaderClient({
 
   return (
     <>
-    <header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
+    <header data-site-header className="sticky top-0 z-20 border-b border-neutral-800 bg-[#141a16]/95 backdrop-blur">
       <div className="flex h-[60px] w-full items-center gap-2 px-4 md:grid md:grid-cols-[1fr_minmax(0,520px)_1fr] md:gap-6">
         {/* Left: brand */}
         <span className="flex min-w-0 shrink select-none items-center gap-2 justify-self-start md:gap-2.5">

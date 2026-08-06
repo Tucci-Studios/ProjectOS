@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   // Belt and braces: robots.txt is a polite request, this is the directive
   // crawlers actually honour.
   robots: INDEXING_ALLOWED ? undefined : { index: false, follow: false },
-  title: "Project OS — the operating system for open source",
+  title: "Project Open Source",
   description:
     "Publish open-source projects, fork each other's work, and watch every lineage grow as a public family tree. Built for vibe coders.",
 };

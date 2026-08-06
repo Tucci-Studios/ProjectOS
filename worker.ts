@@ -6,7 +6,11 @@
  * endpoint with CRON_SECRET, which keeps the job logic in one place rather
  * than duplicating it against a second database binding.
  */
-// @ts-expect-error — generated at build time by @opennextjs/cloudflare
+// Generated at build time by @opennextjs/cloudflare, so it exists after a
+// build and not before. ts-ignore rather than ts-expect-error: the latter
+// errors on a clean checkout AND after a build, just for opposite reasons.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import handler from "./.open-next/worker.js";
 
 type Env = { CRON_SECRET?: string; SITE_URL?: string };

@@ -71,7 +71,7 @@
   "/api/waitlist/route": "app/api/waitlist/route.js",
   "/api/whoami/route": "app/api/whoami/route.js",
   "/coming-soon/page": "app/coming-soon/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
   "/robots.txt/route": "app/robots.txt/route.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js"
 }
