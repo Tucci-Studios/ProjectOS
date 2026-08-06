@@ -3,6 +3,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "project-os",
   "main": "worker.ts",
+  // The real address. workers.dev stays reachable as a fallback, but SITE_URL,
+  // the sitemap and every canonical point here, so this is what has to serve.
+  "routes": [
+    { "pattern": "project-open-source.com", "custom_domain": true },
+    { "pattern": "www.project-open-source.com", "custom_domain": true }
+  ],
   "vars": {
     // The public origin. Used for the sitemap, canonicals and link previews —
     // a wrong value here points crawlers at a host that doesn't serve the page.
