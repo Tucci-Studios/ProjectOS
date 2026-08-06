@@ -32,7 +32,7 @@ export function BrandMark({
       <svg width={size * 0.58} height={size * 0.58} viewBox="0 0 16 16" fill="none" overflow="visible">
         <path
           d="M3.6 5.4 L6.6 8 L3.6 10.6"
-          stroke="#fafafa"
+          stroke="#4ade80"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
