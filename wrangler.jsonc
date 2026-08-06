@@ -3,6 +3,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "project-os",
   "main": "worker.ts",
+  "vars": {
+    // The public origin. Used for the sitemap, canonicals and link previews —
+    // a wrong value here points crawlers at a host that doesn't serve the page.
+    "SITE_URL": "https://project-open-source.com"
+  },
   "compatibility_date": "2026-07-01",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {

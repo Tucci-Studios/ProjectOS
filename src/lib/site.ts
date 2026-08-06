@@ -20,7 +20,7 @@ export const REPO_IS_PUBLIC = false;
  * Set SITE_URL once the domain exists; localhost is only right in development.
  */
 export function siteUrl(): string {
-  const raw = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const raw = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://project-open-source.com";
   return raw.replace(/\/+$/, "");
 }
 
@@ -32,8 +32,9 @@ export function siteUrl(): string {
  * works for someone who has never signed in and can't see a private repo —
  * otherwise the most important paragraph in the document is decorative.
  *
- * Set CONTACT_EMAIL to override. Worth doing before launch: this default is a
- * personal address, and it goes on a public page next to an invitation to
- * write to it.
+ * Now that the domain exists this is a role address rather than a personal
+ * one, which is the right thing to put on a public page. It needs to actually
+ * receive mail before launch — Cloudflare Email Routing forwards it to a real
+ * inbox for free, and until that's set up this address bounces.
  */
-export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "jacobt72401@gmail.com";
+export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "hello@project-open-source.com";

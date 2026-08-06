@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -13,6 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  // Without this, Next has no origin to resolve relative OG image paths
+  // against, so every link preview points at a URL that doesn't exist.
+  metadataBase: new URL(siteUrl()),
   title: "Project OS — the operating system for open source",
   description:
     "Publish open-source projects, fork each other's work, and watch every lineage grow as a public family tree. Built for vibe coders.",
