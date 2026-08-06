@@ -1,10 +1,9 @@
 "use client";
 
 import { FlaskConical } from "lucide-react";
-import { CatalogueMap, type MapDot } from "./catalogue-map";
+import { IconMatrix } from "./icon-matrix";
 
-/** On the bench: the whole catalogue in one picture. */
-export function LabClient({ dots }: { dots: MapDot[] }) {
+export function LabClient() {
   return (
     <div className="mx-auto w-full max-w-4xl">
       <div className="mb-2 flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-amber-300">
@@ -16,13 +15,14 @@ export function LabClient({ dots }: { dots: MapDot[] }) {
       </p>
 
       <section className="mt-9">
-        <h2 className="font-mono text-[15px] font-bold text-white">The whole catalogue, at once</h2>
+        <h2 className="font-mono text-[15px] font-bold text-white">The tab icon, 27 ways</h2>
         <p className="mt-1 max-w-2xl text-[13.5px] leading-relaxed text-neutral-400">
-          Every listed project as one dot. Explore shows you twenty-four at a time in one order; this shows you the
-          shape of the thing — which sections are fat, which are nearly empty, and how much of it has stopped moving.
+          Every combination of ring, prompt and cursor in green, black and white — drawn at the size it actually
+          ships, inside mock Safari and Chrome tabs. Safari puts a light chip behind favicons and Chrome puts them
+          straight on the tab, which is the whole reason this was hard to judge from a file.
         </p>
         <div className="mt-5">
-          <CatalogueMap dots={dots} />
+          <IconMatrix />
         </div>
       </section>
     </div>
