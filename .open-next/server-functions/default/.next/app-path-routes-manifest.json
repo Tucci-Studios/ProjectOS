@@ -70,8 +70,9 @@
   "/api/upload/route": "/api/upload",
   "/api/waitlist/route": "/api/waitlist",
   "/api/whoami/route": "/api/whoami",
+  "/apple-icon.png/route": "/apple-icon.png",
   "/coming-soon/page": "/coming-soon",
-  "/icon.svg/route": "/icon.svg",
+  "/icon.png/route": "/icon.png",
   "/robots.txt/route": "/robots.txt",
   "/sitemap.xml/route": "/sitemap.xml"
 }

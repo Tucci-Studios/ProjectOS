@@ -1,7 +1,7 @@
 var R=require("../../../chunks/ssr/[turbopack]_runtime.js")("server/app/(site)/settings/page.js")
-R.c("server/chunks/ssr/[root-of-the-server]__02dy_t0._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0pp_wkm._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_0bw_x_7._.js")
-R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_20iu86k.js")
+R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_15a_xxt.js")
 R.c("server/chunks/ssr/[root-of-the-server]__1zopqd7._.js")
 R.c("server/chunks/ssr/[root-of-the-server]__1vfpvus._.js")
 R.c("server/chunks/ssr/[root-of-the-server]__11o4w-y._.js")
@@ -13,5 +13,5 @@ R.c("server/chunks/ssr/_0wicfl4._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_1h4k0e-._.js")
 R.c("server/chunks/ssr/_1hxp0t4._.js")
 R.c("server/chunks/ssr/_next-internal_server_app_(site)_settings_page_actions_0o05ktm.js")
-R.m(28355)
-module.exports=R.m(28355).exports
+R.m(89139)
+module.exports=R.m(89139).exports

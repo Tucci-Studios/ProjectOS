@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- The header mark, at tab size: the ring, the prompt, the cursor. Drawn
-       thicker than the header version because 16px browser chrome eats detail. -->
-  <circle cx="16" cy="16" r="15" fill="#141a16" />
-  <circle cx="16" cy="16" r="14.2" fill="none" stroke="#4ade80" stroke-width="1.6" />
-  <path d="M9.6 11.4 L15 16 L9.6 20.6" fill="none" stroke="#fafafa" stroke-width="3"
-        stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="17.4" y="18.4" width="7.2" height="2.9" rx="0.9" fill="#4ade80" />
-</svg>

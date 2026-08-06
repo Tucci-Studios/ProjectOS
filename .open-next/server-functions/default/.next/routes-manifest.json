@@ -333,6 +333,12 @@
       "namedRegex": "^/api/whoami(?:/)?$"
     },
     {
+      "page": "/apple-icon.png",
+      "regex": "^/apple\\-icon\\.png(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/apple\\-icon\\.png(?:/)?$"
+    },
+    {
       "page": "/coming-soon",
       "regex": "^/coming\\-soon(?:/)?$",
       "routeKeys": {},
@@ -351,10 +357,10 @@
       "namedRegex": "^/help(?:/)?$"
     },
     {
-      "page": "/icon.svg",
-      "regex": "^/icon\\.svg(?:/)?$",
+      "page": "/icon.png",
+      "regex": "^/icon\\.png(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/icon\\.svg(?:/)?$"
+      "namedRegex": "^/icon\\.png(?:/)?$"
     },
     {
       "page": "/ideas",
