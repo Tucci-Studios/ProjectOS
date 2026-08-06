@@ -72,6 +72,7 @@
   "/api/whoami/route": "/api/whoami",
   "/apple-icon.png/route": "/apple-icon.png",
   "/coming-soon/page": "/coming-soon",
+  "/favicon.ico/route": "/favicon.ico",
   "/icon.png/route": "/icon.png",
   "/robots.txt/route": "/robots.txt",
   "/sitemap.xml/route": "/sitemap.xml"

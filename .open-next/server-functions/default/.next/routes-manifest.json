@@ -351,6 +351,12 @@
       "namedRegex": "^/explore(?:/)?$"
     },
     {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
       "page": "/help",
       "regex": "^/help(?:/)?$",
       "routeKeys": {},

@@ -72,6 +72,7 @@
   "/api/whoami/route": "app/api/whoami/route.js",
   "/apple-icon.png/route": "app/apple-icon.png/route.js",
   "/coming-soon/page": "app/coming-soon/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/icon.png/route": "app/icon.png/route.js",
   "/robots.txt/route": "app/robots.txt/route.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js"
