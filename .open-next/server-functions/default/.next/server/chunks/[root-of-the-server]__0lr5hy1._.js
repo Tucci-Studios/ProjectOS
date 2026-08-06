@@ -1,0 +1,35 @@
+module.exports=[18622,(e,t,r)=>{t.exports=e.x("next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",()=>require("next/dist/compiled/next-server/app-page-turbo.runtime.prod.js"))},56704,(e,t,r)=>{t.exports=e.x("next/dist/server/app-render/work-async-storage.external.js",()=>require("next/dist/server/app-render/work-async-storage.external.js"))},32319,(e,t,r)=>{t.exports=e.x("next/dist/server/app-render/work-unit-async-storage.external.js",()=>require("next/dist/server/app-render/work-unit-async-storage.external.js"))},24725,(e,t,r)=>{t.exports=e.x("next/dist/server/app-render/after-task-async-storage.external.js",()=>require("next/dist/server/app-render/after-task-async-storage.external.js"))},70406,(e,t,r)=>{t.exports=e.x("next/dist/compiled/@opentelemetry/api",()=>require("next/dist/compiled/@opentelemetry/api"))},93695,(e,t,r)=>{t.exports=e.x("next/dist/shared/lib/no-fallback-error.external.js",()=>require("next/dist/shared/lib/no-fallback-error.external.js"))},83272,e=>{"use strict";let t=Symbol.for("__cloudflare-context__");function r(){return globalThis[t]}async function a(){let e=r();if(e)return e;{var a;let e=await n();return a=e,globalThis[t]=a,e}}async function n(e){let{getPlatformProxy:t}=await import(`${"__wrangler".replaceAll("_","")}`),r=e?.environment??process.env.NEXT_DEV_WRANGLER_ENV,{env:a,cf:n,ctx:s}=await t({...e,envFiles:[],environment:r});return{env:a,cf:n,ctx:s}}let s=`
+
+ERROR: \`getCloudflareContext\` has been called without having called \`initOpenNextCloudflareForDev\` from the Next.js config file.
+You should update your Next.js config file as shown below:
+
+   \`\`\`
+   // next.config.mjs
+
+   import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
+   initOpenNextCloudflareForDev();
+
+   const nextConfig = { ... };
+   export default nextConfig;
+   \`\`\`
+
+`;e.s(["getCloudflareContext",0,function(e={async:!1}){return e.async?a():function(){let e,t=r();if(t)return t;if(e=globalThis,e.__NEXT_DATA__?.nextExport===!0)throw Error("  - make sure that the call is not at the top level and that the route is not static\n  - call `getCloudflareContext({async: true})` to use the `async` mode\n  - avoid calling `getCloudflareContext` in the route\n");throw Error(s)}()}])},70904,e=>{"use strict";var t=e.i(83272);let r="https://api.github.com";function a(){let e={Accept:"application/vnd.github+json","User-Agent":"project-os"};try{let r=(0,t.getCloudflareContext)().env.GITHUB_TOKEN;r&&(e.Authorization=`Bearer ${r}`)}catch{}return e}async function n(e,t=100){let o=Math.min(100,t),i=await fetch(`${r}/repos/${e}/forks?sort=stargazers&per_page=${o}`,{headers:a()});if(!i.ok)return null;let l=await i.json();if(!Array.isArray(l))return null;let u=l.length;return l.length===o&&(u=(await s(e))?.forks_count??l.length),{total:u,forks:l.map(e=>({full_name:e.full_name,owner_login:e.owner.login,stars:e.stargazers_count??0,pushed_at:e.pushed_at?Math.floor(new Date(e.pushed_at).getTime()/1e3):null}))}}async function s(e){let t=await fetch(`${r}/repos/${e}`,{headers:a()});return t.ok?await t.json():null}async function o(e,t){let n=await fetch(`${r}/repos/${e}/contents/${t}`,{headers:a()});if(!n.ok)return null;let s=await n.json();if(!s.content||"base64"!==s.encoding)return null;try{return new TextDecoder().decode(Uint8Array.from(atob(s.content.replace(/\n/g,"")),e=>e.charCodeAt(0)))}catch{return null}}async function i(e){let t=await fetch(`${r}/repos/${e}/readme`,{headers:{...a(),Accept:"application/vnd.github.raw"}});return t.ok?(await t.text()).slice(0,6e4):null}e.s(["getFileText",0,o,"getReadme",0,i,"getRepo",0,s,"headers",0,a,"listForks",0,n])},95155,e=>{"use strict";var t=e.i(83272);async function r(){let{env:e}=(0,t.getCloudflareContext)(),r=await e.DB.prepare("SELECT MIN(day) AS first, MAX(day) AS last FROM star_history").first();return r?.first&&r?.last?r.last-r.first+1:0}async function a(){let{env:e}=(0,t.getCloudflareContext)(),r=await e.DB.prepare(`INSERT OR REPLACE INTO star_history (project_id, day, stars, forks)
+     SELECT id, CAST(strftime('%s','now') AS INTEGER) / 86400, stars, github_forks
+     FROM projects WHERE status = 'live'`).run();return r.meta?.changes??0}e.s(["historyDepth",0,r,"snapshotStars",0,a])},46128,e=>{"use strict";var t=e.i(83272),r=e.i(70904);async function a(e,r){let{env:a}=(0,t.getCloudflareContext)(),[n,s,o]=await Promise.all([a.DB.prepare("SELECT total, synced_at FROM fork_sync WHERE project_id = ?1").bind(e).first(),a.DB.prepare(`SELECT gf.full_name, gf.owner_login, gf.stars, gf.pushed_at
+       FROM github_forks gf
+       WHERE gf.project_id = ?1
+         AND gf.full_name NOT IN (SELECT github_repo FROM projects WHERE status='live')
+       ORDER BY gf.stars DESC, gf.pushed_at DESC NULLS LAST
+       LIMIT 50`).bind(e).all(),a.DB.prepare("SELECT COUNT(*) AS n FROM projects WHERE parent_id = ?1 AND status='live'").bind(e).first()]);return{unpublished:s.results,total:n?.total??0,published:o?.n??0,syncedAt:n?.synced_at??null}}async function n(e){let{env:r}=(0,t.getCloudflareContext)(),a=await r.DB.prepare("SELECT synced_at FROM fork_sync WHERE project_id = ?1").bind(e).first();return!a||Math.floor(Date.now()/1e3)-a.synced_at>21600}async function s(e,n){let{env:s}=(0,t.getCloudflareContext)(),i=await (0,r.listForks)(n);if(!i)return null;let l=Math.floor(Date.now()/1e3),{results:u}=await s.DB.prepare("SELECT full_name FROM github_forks WHERE project_id = ?1").bind(e).all(),d=new Set(u.map(e=>e.full_name)),p=0===d.size,c=i.forks.filter(e=>!d.has(e.full_name));for(let t of(await s.DB.prepare("DELETE FROM github_forks WHERE project_id = ?1").bind(e).run(),i.forks))await s.DB.prepare("INSERT OR REPLACE INTO github_forks (project_id, full_name, owner_login, stars, pushed_at) VALUES (?1, ?2, ?3, ?4, ?5)").bind(e,t.full_name,t.owner_login,t.stars,t.pushed_at).run();return await s.DB.prepare("INSERT INTO fork_sync (project_id, total, synced_at) VALUES (?1, ?2, ?3) ON CONFLICT(project_id) DO UPDATE SET total = ?2, synced_at = ?3").bind(e,i.total,l).run(),!p&&c.length>0&&await o(e,c.length,l),a(e,n)}async function o(e,r,a){let{env:n}=(0,t.getCloudflareContext)(),s=await n.DB.prepare(`SELECT owner_id, CASE WHEN variant_name IS NULL THEN base_name
+                           ELSE base_name || ' // ' || variant_name END AS display
+     FROM projects WHERE id = ?1`).bind(e).first();if(!s)return;let o=1===r?`${s.display} was forked on GitHub`:`${s.display} picked up ${r} new forks on GitHub`;await n.DB.prepare(`INSERT INTO notifications (id, user_id, kind, body, href, created_at)
+     SELECT 'n_' || lower(hex(randomblob(4))), u.user_id, 'fork', ?1, ?2, ?3
+     FROM (
+       SELECT user_id FROM follows WHERE project_id = ?4
+       UNION
+       SELECT ?5 AS user_id
+     ) u
+     WHERE u.user_id IN (SELECT id FROM users WHERE is_shadow = 0)`).bind(o,`/p/${e}`,a,e,s.owner_id).run()}e.s(["forksAreStale",0,n,"getForkPicture",0,a,"syncForks",0,s])}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__0lr5hy1._.js.map

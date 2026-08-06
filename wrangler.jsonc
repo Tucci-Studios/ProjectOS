@@ -20,10 +20,14 @@
     {
       "binding": "DB",
       "database_name": "project-os",
-      "database_id": "PLACEHOLDER_RUN_wrangler_d1_create"
+      "database_id": "23edf05c-8991-4ec7-90d7-a98b63ae16b8"
     }
   ],
-  "r2_buckets": [{ "binding": "SHOTS", "bucket_name": "project-os-images" }],
+  // R2 has to be switched on once in the Cloudflare dashboard before a bucket
+  // can exist, so this stays commented until that's done. The upload and image
+  // routes both check for the binding and return 503 rather than throwing, so
+  // the only thing that breaks meanwhile is screenshot upload.
+  // "r2_buckets": [{ "binding": "SHOTS", "bucket_name": "project-os-images" }],
   // Keeps the catalogue current without anyone pressing anything. The handler
   // lives in worker.ts and maps each cron to a job.
   "triggers": {
