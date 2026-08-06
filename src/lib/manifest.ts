@@ -8,7 +8,7 @@ export type Manifest = {
   category: string;
   description: string;
   license: string;
-  howToRun: string;
+  howToRun?: string;
   screenshots?: string[];
   tags?: string[];
   lineage?: { parentRepo: string; changeSummary?: string };
@@ -27,7 +27,7 @@ export function validateManifest(data: unknown): string[] {
   const m = data as Record<string, unknown>;
 
   const str = (key: string, required: boolean, min: number, max: number) => {
-    const v = m[key];
+    const v = m[key] === "" ? undefined : m[key];
     if (v === undefined) {
       if (required) errors.push(`"${key}" is required.`);
       return;
@@ -42,7 +42,10 @@ export function validateManifest(data: unknown): string[] {
   str("variant", false, 2, 40);
   str("description", true, 20, 500);
   str("license", true, 1, 60);
-  str("howToRun", true, 10, 2000);
+  // Optional: the readme covers this for most projects and every page links
+  // to the repo. Requiring it meant a project with a perfectly good README
+  // still couldn't be listed without writing the instructions out twice.
+  str("howToRun", false, 10, 2000);
 
   if (m.category === undefined) errors.push(`"category" is required.`);
   else if (typeof m.category !== "string" || !CATEGORIES.includes(m.category))

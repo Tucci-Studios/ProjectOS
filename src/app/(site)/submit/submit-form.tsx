@@ -119,11 +119,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
         <span className="mb-1.5 block font-mono text-xs text-neutral-400">GitHub repo</span>
         <input value={repo} onChange={(e) => setRepo(e.target.value)} placeholder="owner/repo" required className={input} />
         <span className="mt-1.5 block text-xs text-neutral-400">
-          Needs project.json and AGENTS.md in the root — the{" "}
-          <a href="/submit/wizard" className="text-emerald-400 hover:underline">
-            wizard
-          </a>{" "}
-          writes both for you.
+          Public, and yours. A github.com URL works too.
         </span>
       </label>
 
@@ -147,7 +143,7 @@ export function SubmitForm({ needsTos, forkOf }: { needsTos: boolean; forkOf?: s
           className={input}
         />
         <span className="mt-1 block text-xs text-neutral-400">
-          Blank uses the description from your project.json. {description.length}/500
+          Leave blank to use GitHub's description. {description.length}/500
         </span>
       </label>
 

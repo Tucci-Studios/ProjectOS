@@ -22,13 +22,13 @@ export default async function SubmitPage() {
   return (
     <div className="max-w-xl">
       <h1 className="mb-2 font-mono text-lg font-bold text-white">Publish a project</h1>
-      <p className="mb-6 text-sm text-neutral-400">
-        Your repo needs <code className="text-emerald-400">project.json</code> +{" "}
-        <code className="text-emerald-400">AGENTS.md</code> in its root —{" "}
+      <p className="mb-6 text-sm leading-relaxed text-neutral-400">
+        Paste a repo you own and pick a section. Everything else — description, licence, language — comes off GitHub.
+        If you want it to carry AI continuation instructions too, the{" "}
         <a href="/submit/wizard" className="text-emerald-400 hover:underline">
-          use the wizard
+          manifest wizard
         </a>{" "}
-        to generate both in ~2 minutes.
+        writes those, but it&apos;s optional and you can add it any time.
       </p>
       <SubmitForm needsTos={!user.tos_accepted_at} />
     </div>

@@ -23,6 +23,8 @@ export function headers(): Record<string, string> {
 
 export type RepoInfo = {
   full_name: string;
+  description: string | null;
+  language: string | null;
   default_branch: string;
   fork: boolean;
   parent?: { full_name: string };

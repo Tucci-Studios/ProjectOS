@@ -69,24 +69,42 @@ export async function POST(request: Request) {
       `That repo belongs to @${repo.split("/")[0]}, not you. You can only publish your own repos — if it's yours through an organisation, open an issue and we'll sort it.`,
     ], 403);
 
-  const [manifestText, agentsText] = await Promise.all([
-    getFileText(repo, "project.json"),
-    getFileText(repo, "AGENTS.md"),
-  ]);
-  if (!manifestText) return bad(["No project.json in the repo root. Use the wizard at /submit/wizard to generate one."]);
-  if (!agentsText || agentsText.trim().length < 100)
-    return bad(["No AGENTS.md in the repo root (or it's under 100 characters). Every project ships AI continuation instructions — the wizard generates a template."]);
+  /**
+   * The manifest is an upgrade, not a gate.
+   *
+   * Publishing used to require project.json AND a 100-character AGENTS.md
+   * committed to the repo root before the form would accept you — a pull
+   * request to your own project before you could list it. Almost everything
+   * those files carried is already on the GitHub record we just fetched, and
+   * the rest is in the form. So: use the manifest where it exists, fall back to
+   * the repo where it doesn't, and let people add one later if they want the
+   * AI-continuation part.
+   */
+  const manifestText = await getFileText(repo, "project.json");
 
   let manifest: Manifest;
-  try {
-    manifest = JSON.parse(manifestText) as Manifest;
-  } catch {
-    return bad(["project.json is not valid JSON."]);
+  if (manifestText) {
+    try {
+      manifest = JSON.parse(manifestText) as Manifest;
+    } catch {
+      return bad(["There's a project.json in the repo but it isn't valid JSON. Fix it, or delete it and we'll read the repo instead."]);
+    }
+  } else {
+    manifest = {
+      name: repo.split("/")[1] ?? repo,
+      category: "",
+      description: (info.description ?? "").trim(),
+      license: info.license?.spdx_id ?? "NOASSERTION",
+    };
   }
   // Anything typed in the form wins over the manifest — the form is the human's
   // last word, and most people fill it in there rather than editing JSON.
   const typedDescription = typeof body.description === "string" ? body.description.trim() : "";
   if (typedDescription.length >= 20) manifest.description = typedDescription.slice(0, 500);
+  if (!manifest.description || manifest.description.trim().length < 20)
+    return bad(["Add a description — a sentence or two saying what it does. GitHub's is used if the repo has one."]);
+  if (!manifest.license || manifest.license === "NOASSERTION")
+    manifest.license = info.license?.spdx_id ?? "NOASSERTION";
 
   const typedSummary = typeof body.changeSummary === "string" ? body.changeSummary.trim().slice(0, 280) : "";
 
@@ -176,7 +194,7 @@ export async function POST(request: Request) {
       manifest.description,
       manifest.license,
       repo,
-      manifestText,
+      JSON.stringify(manifest),
       parentId,
       rootId ?? id,
       typedSummary || manifest.lineage?.changeSummary || null,
