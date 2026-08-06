@@ -38,3 +38,17 @@ export function siteUrl(): string {
  * inbox for free, and until that's set up this address bounces.
  */
 export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "hello@project-open-source.com";
+
+/**
+ * Whether search engines are welcome yet.
+ *
+ * Deploying isn't launching. The site needs to be up and exercised long before
+ * it's ready to be found — cron has never run, OAuth has never completed
+ * against a real callback, and half the sections are empty. Getting indexed in
+ * that state means the half-finished version is what people find for months,
+ * and you don't get to take it back on your own schedule.
+ *
+ * While this is false, robots.txt disallows everything and every page carries
+ * noindex. Flip it when the site is worth finding.
+ */
+export const INDEXING_ALLOWED = process.env.ALLOW_INDEXING === "true";

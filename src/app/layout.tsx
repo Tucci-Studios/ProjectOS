@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteUrl } from "@/lib/site";
+import { INDEXING_ALLOWED, siteUrl } from "@/lib/site";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   // Without this, Next has no origin to resolve relative OG image paths
   // against, so every link preview points at a URL that doesn't exist.
   metadataBase: new URL(siteUrl()),
+  // Belt and braces: robots.txt is a polite request, this is the directive
+  // crawlers actually honour.
+  robots: INDEXING_ALLOWED ? undefined : { index: false, follow: false },
   title: "Project OS — the operating system for open source",
   description:
     "Publish open-source projects, fork each other's work, and watch every lineage grow as a public family tree. Built for vibe coders.",
