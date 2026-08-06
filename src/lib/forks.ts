@@ -95,20 +95,25 @@ export async function syncForks(projectId: string, repo: string): Promise<ForkPi
   const firstEverSync = known.size === 0;
   const arrivals = data.forks.filter((f) => !known.has(f.full_name));
 
-  await env.DB.prepare("DELETE FROM github_forks WHERE project_id = ?1").bind(projectId).run();
-  for (const f of data.forks) {
-    await env.DB.prepare(
-      "INSERT OR REPLACE INTO github_forks (project_id, full_name, owner_login, stars, pushed_at) VALUES (?1, ?2, ?3, ?4, ?5)",
-    )
-      .bind(projectId, f.full_name, f.owner_login, f.stars, f.pushed_at)
-      .run();
-  }
-
-  await env.DB.prepare(
-    "INSERT INTO fork_sync (project_id, total, synced_at) VALUES (?1, ?2, ?3) ON CONFLICT(project_id) DO UPDATE SET total = ?2, synced_at = ?3",
-  )
-    .bind(projectId, data.total, now)
-    .run();
+  // One batch, not one call per fork. Every D1 statement counts against the
+  // Worker's subrequest limit, and a project with fifty forks was spending
+  // fifty of them on its own — so the scheduled run died partway through the
+  // first project and reported nothing. batch() sends the lot as one.
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM github_forks WHERE project_id = ?1").bind(projectId),
+    ...data.forks.map((f) =>
+      env.DB
+        .prepare(
+          "INSERT OR REPLACE INTO github_forks (project_id, full_name, owner_login, stars, pushed_at) VALUES (?1, ?2, ?3, ?4, ?5)",
+        )
+        .bind(projectId, f.full_name, f.owner_login, f.stars, f.pushed_at),
+    ),
+    env.DB
+      .prepare(
+        "INSERT INTO fork_sync (project_id, total, synced_at) VALUES (?1, ?2, ?3) ON CONFLICT(project_id) DO UPDATE SET total = ?2, synced_at = ?3",
+      )
+      .bind(projectId, data.total, now),
+  ]);
 
   // Everything looks new the first time we look, so that run stays quiet.
   if (!firstEverSync && arrivals.length > 0) await announceForks(projectId, arrivals.length, now);

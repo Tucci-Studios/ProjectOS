@@ -6241,7 +6241,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__0lr5hy1._.js": {
-      "bytes": 6973,
+      "bytes": 6954,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
@@ -6282,7 +6282,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/node_modules_next_dist_esm_build_templates_app-route_1kkywe1.js": {
-      "bytes": 12740,
+      "bytes": 12749,
       "imports": [],
       "format": "cjs"
     },
@@ -7230,7 +7230,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__20-xda-._.js": {
-      "bytes": 13419,
+      "bytes": 13400,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
@@ -14807,13 +14807,13 @@
           "bytesInOutput": 275
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__0lr5hy1._.js": {
-          "bytesInOutput": 7059
+          "bytesInOutput": 7041
         },
         ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_cron_[job]_route_actions_08kr55a.js": {
           "bytesInOutput": 277
         },
         ".open-next/server-functions/default/.next/server/chunks/node_modules_next_dist_esm_build_templates_app-route_1kkywe1.js": {
-          "bytesInOutput": 13349
+          "bytesInOutput": 13357
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__0igdzn7._.js": {
           "bytesInOutput": 12867
@@ -14957,7 +14957,7 @@
           "bytesInOutput": 275
         },
         ".open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__20-xda-._.js": {
-          "bytesInOutput": 13702
+          "bytesInOutput": 13684
         },
         ".open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_api_sync-forks_route_actions_0xvbvbp.js": {
           "bytesInOutput": 279
@@ -15428,7 +15428,7 @@
           "bytesInOutput": 69906
         }
       },
-      "bytes": 6130898
+      "bytes": 6130870
     }
   }
 }

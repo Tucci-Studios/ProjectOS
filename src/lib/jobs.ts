@@ -184,7 +184,21 @@ export async function discover(perQuery = 30): Promise<JobResult> {
  * Refresh the numbers on projects we already hold, oldest-checked first, then
  * record today's star reading so the Popular charts have history to measure.
  */
-export async function refresh(batch = 150): Promise<JobResult> {
+/**
+ * Batch sizes are capped by Cloudflare, not by GitHub.
+ *
+ * A Worker invocation may only make so many outbound requests, and these jobs
+ * were sized against GitHub's hourly budget instead — so every scheduled run
+ * died partway through with "Too many API requests by single Worker
+ * invocation" and reported nothing. Refresh spends up to two calls per project
+ * (the repo, sometimes its readme), so its batch is half the ceiling.
+ *
+ * They're cron jobs on a rolling oldest-first order: a smaller batch more often
+ * covers the same ground, it just takes a few more days to come round.
+ */
+const SUBREQUEST_BUDGET = 12;
+
+export async function refresh(batch = Math.floor(SUBREQUEST_BUDGET / 2)): Promise<JobResult> {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT id, github_repo, source, readme_at FROM projects
@@ -292,7 +306,7 @@ export async function refresh(batch = 150): Promise<JobResult> {
 }
 
 /** Re-read fork lists, oldest first, so the whole set stays fresh in rotation. */
-export async function forkRound(batch = 200): Promise<JobResult> {
+export async function forkRound(batch = SUBREQUEST_BUDGET): Promise<JobResult> {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT p.id, p.github_repo FROM projects p
