@@ -60,7 +60,16 @@ export function OwnerBanner({ mark, ownProject }: { mark: OwnerMark; ownProject?
 }
 
 /** The owner's controls, shown only to them. */
-export function OwnerControls({ postId, mark }: { postId: string; mark: OwnerMark }) {
+export function OwnerControls({
+  postId,
+  mark,
+  demo = false,
+}: {
+  postId: string;
+  mark: OwnerMark;
+  /** Lab only: keep the interaction, skip the write. */
+  demo?: boolean;
+}) {
   const [current, setCurrent] = useState<OwnerMark>(mark);
   const [writing, setWriting] = useState(false);
   const [note, setNote] = useState(mark?.note ?? "");
@@ -70,6 +79,12 @@ export function OwnerControls({ postId, mark }: { postId: string; mark: OwnerMar
   async function send(kind: "approved" | "disputed" | "clear") {
     setBusy(true);
     setError(null);
+    if (demo) {
+      setCurrent(kind === "clear" ? null : { kind, note, by: "you" });
+      setWriting(false);
+      setBusy(false);
+      return;
+    }
     try {
       const res = await fetch("/api/owner-mark", {
         method: "POST",
