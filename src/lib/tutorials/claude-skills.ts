@@ -31,10 +31,23 @@ export const CLAUDE_SKILLS: Guide = {
     {
       title: "Make the folder",
       body:
-        "A skill is a directory containing a file called SKILL.md. The directory name becomes the command you type, so name it the way you'd ask for it. Put it in ~/.claude/skills/ to have it everywhere, or in .claude/skills/ inside a project to keep it to that repo.",
+        "A skill is a folder with a SKILL.md inside it. The folder name becomes the command you type, so name it the way you'd ask for it.",
       code: {
         lang: "bash",
         text: "mkdir -p ~/.claude/skills/commit-style",
+      },
+      figure: {
+        kind: "tree",
+        caption: "Two places a skill can live. Pick one.",
+        lines: [
+          { text: "~/.claude/skills/", note: "personal — every project" },
+          { text: "  commit-style/", note: "the folder name is the command" },
+          { text: "    SKILL.md", note: "required" },
+          { text: "" },
+          { text: "your-project/.claude/skills/", note: "project — this repo only", dim: true },
+          { text: "  commit-style/", dim: true },
+          { text: "    SKILL.md", dim: true },
+        ],
       },
       check: "The folder exists and is empty. Nothing else has happened yet.",
     },
@@ -80,7 +93,18 @@ Never mention the tools used to make the change. Never pad with filler like
     {
       title: "Grow it when it earns it",
       body:
-        "A skill can be a folder rather than a single file — put templates, example outputs, reference material or scripts alongside SKILL.md and mention them in the body so Claude knows what they are and when to open them. Do this when the skill needs it, not before. A skill that's one clear file beats a directory of things nobody reads.",
+        "Put templates, example outputs or scripts alongside SKILL.md and mention them in the body, so Claude knows what they are and when to open them. Do this when the skill needs it — one clear file beats a directory nobody reads.",
+      figure: {
+        kind: "tree",
+        caption: "Only SKILL.md is required. The rest is there when you need it.",
+        lines: [
+          { text: "commit-style/" },
+          { text: "  SKILL.md", note: "required" },
+          { text: "  template.md", note: "optional — for Claude to fill in", dim: true },
+          { text: "  examples/", note: "optional — what good output looks like", dim: true },
+          { text: "  check.sh", note: "optional — a script it can run", dim: true },
+        ],
+      },
     },
   ],
   troubleshooting: [

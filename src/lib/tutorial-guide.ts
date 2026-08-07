@@ -17,6 +17,12 @@ export type GuideStep = {
   /** Prose. Why this step exists, not a restatement of the command. */
   body: string;
   code?: { lang: string; text: string; filename?: string };
+  /**
+   * A drawing of the state after this step. Text descriptions of file layouts
+   * are the thing readers skim past and then get wrong, so where a step changes
+   * the shape of a directory, the step shows the shape.
+   */
+  figure?: { kind: "tree"; caption?: string; lines: { text: string; note?: string; dim?: boolean }[] };
   /** What you should see if it worked. */
   check?: string;
 };
