@@ -23,6 +23,11 @@ can use a terminal and have never seen the tool you're describing.
 
 ${t}
 
+If none of them genuinely fits your subject, **stop and say so** rather than
+picking the nearest one. A guide filed in the wrong section is worse than one
+that waited for a section to exist — say which subject you were asked to cover
+and that no section matches it, and let a person decide.
+
 ## Field rules
 
 - \`title\`: what the reader will be able to do. Not a noun phrase.
@@ -60,7 +65,8 @@ A step can carry one image: \`"image": { "url": "https://...", "alt": "...", "ca
 
 ## What you cannot do
 
-- **No HTML.** Every field is plain text and is rendered as text. Markup will show up as characters.
+- **No HTML in prose fields.** \`title\`, \`summary\`, \`body\` and the rest are plain text and render as text; markup shows up as characters.
+- **Do not HTML-escape code samples.** A \`code.text\` value is displayed exactly as written, so write \`<style>\`, not \`&lt;style&gt;\`. Escaping it makes the reader copy entities that won't run.
 - **No scripts, no iframes, no embeds.**
 - **No links except in \`sources\`.** Cite documentation there, not inline.
 - **One image per step**, and it must already be hosted somewhere public.
