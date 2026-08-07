@@ -53,6 +53,7 @@
   "/api/likes/route": "app/api/likes/route.js",
   "/api/lineage-confirm/route": "app/api/lineage-confirm/route.js",
   "/api/mod/route": "app/api/mod/route.js",
+  "/api/owner-mark/route": "app/api/owner-mark/route.js",
   "/api/post-react/route": "app/api/post-react/route.js",
   "/api/posts/manage/route": "app/api/posts/manage/route.js",
   "/api/posts/route": "app/api/posts/route.js",

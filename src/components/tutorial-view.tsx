@@ -20,6 +20,7 @@ import {
   Pencil,
 } from "lucide-react";
 import type { Guide } from "@/lib/tutorial-guide";
+import { OwnerBanner, OwnerControls, type OwnerMark } from "@/components/owner-mark";
 
 /**
  * How a tutorial reads.
@@ -271,6 +272,7 @@ export function TutorialView({
   spec,
   specUrl,
   post,
+  owner,
 }: {
   t: Guide;
   spec?: string;
@@ -286,6 +288,8 @@ export function TutorialView({
     canReact: boolean;
     canEdit?: boolean;
   };
+  /** Present when the tutorial is attached to a project. */
+  owner?: { mark: OwnerMark; writtenByOwner: boolean; viewerIsOwner: boolean };
 }) {
   return (
     <article className="rounded-2xl border border-neutral-800 bg-gradient-to-b from-[#1a1a14] to-[#161d18] p-6 sm:p-8">
@@ -331,6 +335,13 @@ export function TutorialView({
             />
           </div>
         </div>
+      )}
+
+      {/* Above the steps, always. Someone about to follow instructions the
+          maintainer says are wrong needs to know before step one. */}
+      {owner && <OwnerBanner mark={owner.mark} ownProject={owner.writtenByOwner} />}
+      {owner?.viewerIsOwner && post && !owner.writtenByOwner && (
+        <OwnerControls postId={post.id} mark={owner.mark} />
       )}
 
       <div className="mt-5 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">

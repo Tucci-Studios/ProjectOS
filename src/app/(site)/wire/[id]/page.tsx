@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/lib/auth";
 import { TutorialView } from "@/components/tutorial-view";
+import type { OwnerMark } from "@/components/owner-mark";
 import { parseGuide, TUTORIAL_SPEC } from "@/lib/tutorial-guide";
 import { siteUrl } from "@/lib/site";
 import { timeAgo } from "@/lib/categories";
@@ -44,6 +45,26 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   // Guide-format tutorials render themselves; the page only supplies the
   // things that live outside the body — who wrote it, and the reactions.
   const guide = post.kind === "tutorial" ? parseGuide(post.body_md) : null;
+
+  // The project owner's verdict, and whether the person reading is that owner.
+  const ownerRow = post.project_id
+    ? await env.DB.prepare(
+        `SELECT m.kind, m.note, u.github_login AS by, p.owner_id
+         FROM projects p
+         LEFT JOIN tutorial_owner_marks m ON m.post_id = ?1
+         LEFT JOIN users u ON u.id = m.by_user_id
+         WHERE p.id = ?2`,
+      )
+        .bind(post.id, post.project_id)
+        .first<{ kind: string | null; note: string | null; by: string | null; owner_id: string }>()
+    : null;
+
+  const ownerMark: OwnerMark =
+    ownerRow?.kind === "approved" || ownerRow?.kind === "disputed"
+      ? { kind: ownerRow.kind as "approved" | "disputed", note: ownerRow.note, by: ownerRow.by ?? "the owner" }
+      : null;
+  const writtenByOwner = !!ownerRow && ownerRow.owner_id === post.author_id;
+  const viewerOwnsProject = !!user && !!ownerRow && ownerRow.owner_id === user.id;
 
   const [likeRow, likedRow, savedRow] = await Promise.all([
     env.DB.prepare("SELECT COUNT(*) AS n FROM post_likes WHERE post_id = ?1").bind(post.id).first<{ n: number }>(),
@@ -96,6 +117,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             canReact: !!user,
             canEdit: !!user && (user.id === post.author_id || user.role === "admin" || user.role === "mod"),
           }}
+          owner={{ mark: ownerMark, writtenByOwner, viewerIsOwner: viewerOwnsProject }}
         />
       ) : (
       <article className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-5">

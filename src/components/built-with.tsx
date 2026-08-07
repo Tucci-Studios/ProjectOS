@@ -7,6 +7,9 @@ export type CreditedPost = {
   kind: string;
   created_at: number;
   github_login: string;
+  owner_mark?: string | null;
+  by_owner?: number;
+  likes?: number;
 };
 
 /**
@@ -40,6 +43,19 @@ export function BuiltWith({ posts, repo }: { posts: CreditedPost[]; repo: string
             <span className="min-w-0 flex-1 truncate font-mono text-[13px] text-neutral-200">
               {p.title ?? "(untitled)"}
             </span>
+            {p.by_owner ? (
+              <span className="shrink-0 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 font-mono text-[10px] font-bold text-emerald-300">
+                by owner
+              </span>
+            ) : p.owner_mark === "approved" ? (
+              <span className="shrink-0 rounded-full border border-emerald-400/30 px-2 py-0.5 font-mono text-[10px] text-emerald-300/80">
+                approved
+              </span>
+            ) : p.owner_mark === "disputed" ? (
+              <span className="shrink-0 rounded-full border border-rose-400/40 px-2 py-0.5 font-mono text-[10px] text-rose-300">
+                disputed
+              </span>
+            ) : null}
             <span className="shrink-0 font-mono text-[11px] text-neutral-400">@{p.github_login}</span>
           </Link>
         ))}

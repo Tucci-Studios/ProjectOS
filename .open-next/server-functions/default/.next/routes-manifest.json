@@ -227,6 +227,12 @@
       "namedRegex": "^/api/mod(?:/)?$"
     },
     {
+      "page": "/api/owner-mark",
+      "regex": "^/api/owner\\-mark(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/owner\\-mark(?:/)?$"
+    },
+    {
       "page": "/api/post-react",
       "regex": "^/api/post\\-react(?:/)?$",
       "routeKeys": {},

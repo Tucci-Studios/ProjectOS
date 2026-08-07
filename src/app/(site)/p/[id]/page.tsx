@@ -150,11 +150,22 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     ).bind(id).all<ProjectComment>(),
     env.DB.prepare("SELECT url FROM project_images WHERE project_id = ?1 ORDER BY position").bind(id).all<{ url: string }>(),
     // Posts that credit this project — the thing GitHub can't hold.
+    // The owner's own guide first, then ones they've approved, then by how
+    // useful people found them. A disputed guide sinks but is never hidden.
     env.DB.prepare(
-      `SELECT po.id, po.title, po.kind, po.created_at, u.github_login
-       FROM posts po JOIN users u ON u.id = po.author_id
+      `SELECT po.id, po.title, po.kind, po.created_at, u.github_login,
+              m.kind AS owner_mark,
+              (po.author_id = p.owner_id) AS by_owner,
+              (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = po.id) AS likes
+       FROM posts po
+       JOIN users u ON u.id = po.author_id
+       JOIN projects p ON p.id = po.project_id
+       LEFT JOIN tutorial_owner_marks m ON m.post_id = po.id
        WHERE po.project_id = ?1 AND po.status='live'
-       ORDER BY po.created_at DESC LIMIT 8`,
+       ORDER BY by_owner DESC,
+                CASE m.kind WHEN 'approved' THEN 0 WHEN 'disputed' THEN 2 ELSE 1 END,
+                likes DESC, po.created_at DESC
+       LIMIT 8`,
     ).bind(id).all<CreditedPost>(),
     (async () => {
       const owner = await env.DB.prepare("SELECT owner_id FROM projects WHERE id = ?1").bind(id).first<{ owner_id: string }>();
