@@ -2,6 +2,9 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSessionUser } from "@/lib/auth";
+import { TutorialView } from "@/components/tutorial-view";
+import { parseGuide, TUTORIAL_SPEC } from "@/lib/tutorial-guide";
+import { siteUrl } from "@/lib/site";
 import { timeAgo } from "@/lib/categories";
 import { RichBody, type ProjectRef } from "@/components/rich-body";
 import { TutorialBody } from "@/components/tutorial-body";
@@ -37,6 +40,23 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
     .first<PostRow>();
   if (!post) notFound();
 
+  // Guide-format tutorials render themselves; the page only supplies the
+  // things that live outside the body — who wrote it, and the reactions.
+  const guide = post.kind === "tutorial" ? parseGuide(post.body_md) : null;
+
+  const [likeRow, likedRow, savedRow] = await Promise.all([
+    env.DB.prepare("SELECT COUNT(*) AS n FROM post_likes WHERE post_id = ?1").bind(post.id).first<{ n: number }>(),
+    user
+      ? env.DB.prepare("SELECT 1 FROM post_likes WHERE user_id = ?1 AND post_id = ?2").bind(user.id, post.id).first()
+      : Promise.resolve(null),
+    user
+      ? env.DB.prepare("SELECT 1 FROM post_saves WHERE user_id = ?1 AND post_id = ?2").bind(user.id, post.id).first()
+      : Promise.resolve(null),
+  ]);
+  const likeCount = likeRow?.n ?? 0;
+  const hasLiked = !!likedRow;
+  const hasSaved = !!savedRow;
+
   const [{ results: comments }, { results: projectRefs }] = await Promise.all([
     env.DB.prepare(
       `SELECT c.id, c.body_md, c.created_at, u.github_login
@@ -60,6 +80,22 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           &larr; wire
         </Link>
       </p>
+      {guide ? (
+        <TutorialView
+          t={guide}
+          spec={TUTORIAL_SPEC}
+          specUrl={`${siteUrl()}/tutorial-template.md`}
+          post={{
+            id: post.id,
+            author: post.github_login,
+            when: timeAgo(post.created_at),
+            likes: likeCount,
+            liked: hasLiked,
+            saved: hasSaved,
+            canReact: !!user,
+          }}
+        />
+      ) : (
       <article className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-5">
         <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="font-mono text-xl font-bold tracking-tight text-white">{post.title ?? "(untitled)"}</h1>
@@ -94,6 +130,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           )}
         </div>
       </article>
+      )}
 
       <section className="mt-6">
         <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-400">

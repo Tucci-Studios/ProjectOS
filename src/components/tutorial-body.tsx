@@ -101,7 +101,11 @@ export function TutorialCard({
   when: string;
   comments: number;
 }) {
-  const t = parse(bodyMd);
+  const guide = parseGuide(bodyMd);
+  const t = guide ? null : parse(bodyMd);
+  const stepCount = guide ? guide.steps.length : t!.steps.length;
+  const mins = guide ? guide.minutes : minutes(t!);
+  const blurb = guide ? guide.summary : t!.goal;
 
   return (
     <article className="group relative flex overflow-hidden rounded-xl border border-amber-400/20 bg-amber-400/[0.03] transition hover:border-amber-400/45 hover:bg-amber-400/[0.06]">
@@ -110,13 +114,13 @@ export function TutorialCard({
         <p className="flex items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-widest text-amber-400">
           <Target size={11} aria-hidden /> Tutorial
           <span className="font-normal tracking-normal text-amber-400/50">
-            {t.steps.length || "?"} step{t.steps.length === 1 ? "" : "s"} · {minutes(t)} min
+            {stepCount || "?"} step{stepCount === 1 ? "" : "s"} · {mins} min
           </span>
         </p>
         <h3 className="mt-1.5 font-mono text-[16px] font-bold leading-snug tracking-tight text-white transition group-hover:text-amber-200">
           {title ?? "(untitled)"}
         </h3>
-        {t.goal && <p className="mt-1 line-clamp-2 text-[14px] leading-relaxed text-neutral-400">{t.goal}</p>}
+        {blurb && <p className="mt-1 line-clamp-2 text-[14px] leading-relaxed text-neutral-400">{blurb}</p>}
         <p className="mt-2 font-mono text-[11.5px] text-neutral-400">
           @{author} · {when} · {comments} comment{comments === 1 ? "" : "s"}
         </p>

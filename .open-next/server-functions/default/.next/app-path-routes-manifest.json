@@ -51,6 +51,7 @@
   "/api/likes/route": "/api/likes",
   "/api/lineage-confirm/route": "/api/lineage-confirm",
   "/api/mod/route": "/api/mod",
+  "/api/post-react/route": "/api/post-react",
   "/api/posts/manage/route": "/api/posts/manage",
   "/api/posts/route": "/api/posts",
   "/api/project-comments/manage/route": "/api/project-comments/manage",

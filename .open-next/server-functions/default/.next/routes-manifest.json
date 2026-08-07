@@ -219,6 +219,12 @@
       "namedRegex": "^/api/mod(?:/)?$"
     },
     {
+      "page": "/api/post-react",
+      "regex": "^/api/post\\-react(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/post\\-react(?:/)?$"
+    },
+    {
       "page": "/api/posts",
       "regex": "^/api/posts(?:/)?$",
       "routeKeys": {},

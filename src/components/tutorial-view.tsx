@@ -15,6 +15,8 @@ import {
   Download,
   ChevronRight,
   X,
+  Heart,
+  Bookmark,
 } from "lucide-react";
 import type { Guide } from "@/lib/tutorial-guide";
 
@@ -186,7 +188,92 @@ function AiPanel({ spec, specUrl }: { spec: string; specUrl?: string }) {
   );
 }
 
-export function TutorialView({ t, spec, specUrl }: { t: Guide; spec?: string; specUrl?: string }) {
+/** Like and save, on the post rather than the project. */
+function Reactions({
+  postId,
+  likes,
+  saved,
+  liked,
+  canReact,
+}: {
+  postId: string;
+  likes: number;
+  saved: boolean;
+  liked: boolean;
+  canReact: boolean;
+}) {
+  const [state, setState] = useState({ likes, liked, saved });
+  const [busy, setBusy] = useState(false);
+
+  async function toggle(kind: "like" | "save") {
+    if (!canReact || busy) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/post-react", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId, kind }),
+      });
+      const d = (await res.json()) as { on?: boolean; count?: number };
+      if (!res.ok) return;
+      setState((s) =>
+        kind === "like" ? { ...s, liked: !!d.on, likes: d.count ?? s.likes } : { ...s, saved: !!d.on },
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const base =
+    "inline-flex min-h-[30px] items-center gap-1.5 rounded-lg border px-2.5 font-mono text-[11.5px] outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50";
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <button
+        onClick={() => toggle("like")}
+        disabled={!canReact || busy}
+        aria-pressed={state.liked}
+        title={canReact ? "Useful" : "Sign in to react"}
+        className={`${base} ${
+          state.liked
+            ? "border-rose-400/60 bg-rose-400/10 text-rose-200"
+            : "border-neutral-700 text-neutral-400 hover:border-neutral-500"
+        } ${canReact ? "cursor-pointer" : "cursor-default"}`}
+      >
+        <Heart size={12} className={state.liked ? "fill-current" : ""} aria-hidden />
+        {state.likes > 0 ? state.likes : "Useful"}
+      </button>
+      <button
+        onClick={() => toggle("save")}
+        disabled={!canReact || busy}
+        aria-pressed={state.saved}
+        aria-label={state.saved ? "Saved" : "Save for later"}
+        title={canReact ? "Save for later" : "Sign in to save"}
+        className={`${base} ${
+          state.saved
+            ? "border-sky-400/60 bg-sky-400/10 text-sky-200"
+            : "border-neutral-700 text-neutral-400 hover:border-neutral-500"
+        } ${canReact ? "cursor-pointer" : "cursor-default"}`}
+      >
+        <Bookmark size={12} className={state.saved ? "fill-current" : ""} aria-hidden />
+        {state.saved ? "Saved" : "Save"}
+      </button>
+    </div>
+  );
+}
+
+export function TutorialView({
+  t,
+  spec,
+  specUrl,
+  post,
+}: {
+  t: Guide;
+  spec?: string;
+  specUrl?: string;
+  /** Present when rendered as a real post rather than a preview. */
+  post?: { id: string; author: string; when: string; likes: number; liked: boolean; saved: boolean; canReact: boolean };
+}) {
   return (
     <article className="rounded-2xl border border-neutral-800 bg-gradient-to-b from-[#1a1a14] to-[#161d18] p-6 sm:p-8">
       <div className="flex items-start justify-between gap-3">
@@ -207,6 +294,21 @@ export function TutorialView({ t, spec, specUrl }: { t: Guide; spec?: string; sp
         {t.title}
       </h1>
       <p className="mt-2 text-[15.5px] leading-relaxed text-neutral-300">{t.summary}</p>
+
+      {post && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-y border-neutral-800 py-2.5">
+          <p className="font-mono text-[12px] text-neutral-400">
+            by <span className="text-neutral-200">@{post.author}</span> · {post.when}
+          </p>
+          <Reactions
+            postId={post.id}
+            likes={post.likes}
+            liked={post.liked}
+            saved={post.saved}
+            canReact={post.canReact}
+          />
+        </div>
+      )}
 
       <div className="mt-5 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
         <p className="font-mono text-[11px] uppercase tracking-widest text-emerald-300">What you&apos;ll end up with</p>
