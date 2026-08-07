@@ -24,7 +24,7 @@ export default async function TutorialsPage() {
             po.category,
             (SELECT COUNT(*) FROM comments c WHERE c.post_id = po.id AND c.status = 'live') AS comment_count
      FROM posts po JOIN users u ON u.id = po.author_id
-     WHERE po.status = 'live' AND po.kind IN ('tutorial','request')
+     WHERE po.status = 'live' AND po.kind = 'tutorial'
      ORDER BY po.created_at DESC LIMIT 100`,
   ).all<{
     id: string;
@@ -38,7 +38,6 @@ export default async function TutorialsPage() {
   }>();
 
   const tutorials = results.filter((r) => r.kind === "tutorial");
-  const requests = results.filter((r) => r.kind === "request");
 
   // A tutorial's section is on the post row; fall back to the guide body for
   // anything written before the column existed.
@@ -137,28 +136,6 @@ export default async function TutorialsPage() {
         </div>
       )}
 
-      {requests.length > 0 && (
-        <section className="mt-9 border-t border-neutral-800 pt-6">
-          <h2 className="font-mono text-[15px] font-bold text-white">Asked for, not written yet</h2>
-          <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-400">
-            People stuck on something specific. Pick one off and you know somebody wants it.
-          </p>
-          <div className="mt-3 space-y-2">
-            {requests.map((r) => (
-              <Link
-                key={r.id}
-                href={`/wire/${r.id}`}
-                className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1 rounded-lg border border-neutral-800 bg-neutral-900/30 p-3 transition hover:border-violet-400/40"
-              >
-                <span className="font-mono text-[14px] text-neutral-200">{r.title ?? "(untitled)"}</span>
-                <span className="font-mono text-[11px] text-neutral-400">
-                  @{r.github_login} · {timeAgo(r.created_at)}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

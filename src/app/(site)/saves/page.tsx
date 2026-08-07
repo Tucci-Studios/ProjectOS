@@ -5,6 +5,8 @@ import { getSessionUser } from "@/lib/auth";
 import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds, getSavedIds } from "@/lib/queries";
 import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
 import { PageHeader } from "@/components/page-header";
+import { TutorialCard } from "@/components/tutorial-body";
+import { timeAgo } from "@/lib/categories";
 import { ButtonLink } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
@@ -39,6 +41,32 @@ export default async function SavesPage() {
       ])
     : [[], new Map<string, number>(), new Set<string>(), new Set<string>(), new Set<string>()];
 
+  // Saving a tutorial wrote a row nothing ever read, so the button lit up and
+  // the guide appeared nowhere. Same page, second list.
+  const savedTutorials = user
+    ? (
+        await env.DB.prepare(
+          `SELECT po.id, po.title, po.body_md, po.category, po.created_at, u.github_login,
+                  (SELECT COUNT(*) FROM comments c WHERE c.post_id = po.id AND c.status='live') AS comment_count
+           FROM post_saves ps
+           JOIN posts po ON po.id = ps.post_id
+           JOIN users u ON u.id = po.author_id
+           WHERE ps.user_id = ?1 AND po.status='live' AND po.kind='tutorial'
+           ORDER BY ps.created_at DESC`,
+        )
+          .bind(user.id)
+          .all<{
+            id: string;
+            title: string | null;
+            body_md: string;
+            category: string | null;
+            created_at: number;
+            github_login: string;
+            comment_count: number;
+          }>()
+      ).results
+    : [];
+
   const saved = rows.filter((p) => !blocked.has(p.owner_id ?? ""));
   const badges = await getBadgesFor(saved.map((p) => p.owner_id ?? ""));
 
@@ -58,14 +86,44 @@ export default async function SavesPage() {
           body="Saving keeps a private shelf of things you want to come back to."
           cta={{ href: "/login", label: "Sign in with GitHub" }}
         />
-      ) : saved.length === 0 ? (
+      ) : saved.length === 0 && savedTutorials.length === 0 ? (
         <Empty
           title="Nothing saved yet"
-          body="Hit the bookmark on any project and it lands here. Nobody is told, and the author never sees it."
+          body="Hit the bookmark on any project or tutorial and it lands here. Nobody is told, and the author never sees it."
           cta={{ href: "/explore", label: "Find something to save" }}
         />
       ) : (
-        <div className="stagger space-y-3">
+        <div className="space-y-8">
+          {savedTutorials.length > 0 && (
+            <section>
+              <h2 className="mb-3 border-b border-neutral-800 pb-2 font-mono text-[13px] font-bold text-amber-300">
+                Tutorials · {savedTutorials.length}
+              </h2>
+              <div className="stagger space-y-2.5">
+                {savedTutorials.map((t) => (
+                  <TutorialCard
+                    key={t.id}
+                    id={t.id}
+                    title={t.title}
+                    bodyMd={t.body_md}
+                    author={t.github_login}
+                    when={timeAgo(t.created_at)}
+                    comments={t.comment_count}
+                    category={t.category ?? undefined}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {saved.length > 0 && (
+            <section>
+              {savedTutorials.length > 0 && (
+                <h2 className="mb-3 border-b border-neutral-800 pb-2 font-mono text-[13px] font-bold text-emerald-300">
+                  Projects · {saved.length}
+                </h2>
+              )}
+              <div className="stagger space-y-3">
           {saved.map((p) => (
             <ProjectCard
               key={p.id}
@@ -77,6 +135,9 @@ export default async function SavesPage() {
               badges={badges.get(p.owner_id ?? "")}
             />
           ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
     </div>

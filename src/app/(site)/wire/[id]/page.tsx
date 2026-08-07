@@ -119,6 +119,8 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             author: post.github_login,
             when: timeAgo(post.created_at),
             editedWhen: post.edited_at ? timeAgo(post.edited_at) : null,
+            canCheck: !!user && (user.role === "admin" || user.role === "mod"),
+            canDelete: !!user && (user.id === post.author_id || user.role === "admin" || user.role === "mod"),
             likes: likeCount,
             liked: hasLiked,
             saved: hasSaved,

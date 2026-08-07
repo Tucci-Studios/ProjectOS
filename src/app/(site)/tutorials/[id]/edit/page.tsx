@@ -17,15 +17,19 @@ export default async function EditTutorialPage({ params }: { params: Promise<{ i
 
   const { env } = getCloudflareContext();
   const post = await env.DB.prepare(
-    "SELECT id, author_id, body_md FROM posts WHERE id = ?1 AND kind='tutorial' AND status='live'",
+    "SELECT id, author_id, body_md, project_id FROM posts WHERE id = ?1 AND kind='tutorial' AND status='live'",
   )
     .bind(id)
-    .first<{ id: string; author_id: string; body_md: string }>();
+    .first<{ id: string; author_id: string; body_md: string; project_id: string | null }>();
   if (!post) notFound();
 
   // Same rule as the API — the page just shouldn't offer what the API refuses.
   const isMod = user.role === "admin" || user.role === "mod";
   if (post.author_id !== user.id && !isMod) notFound();
+
+  const { results: projects } = await env.DB.prepare(
+    "SELECT id, base_name AS name FROM projects WHERE status='live' ORDER BY stars DESC LIMIT 500",
+  ).all<{ id: string; name: string }>();
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -35,7 +39,7 @@ export default async function EditTutorialPage({ params }: { params: Promise<{ i
         purpose="Change it with your AI, paste the new version, and check the preview before saving."
         Icon={GraduationCap}
       />
-      <TutorialIntake specUrl={`${siteUrl()}/tutorial-template.md`} editing={{ id: post.id, current: post.body_md }} />
+      <TutorialIntake specUrl={`${siteUrl()}/tutorial-template.md`} editing={{ id: post.id, current: post.body_md, projectId: post.project_id }} projects={projects} />
     </div>
   );
 }

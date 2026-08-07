@@ -1,5 +1,5 @@
 var R=require("../../../chunks/ssr/[turbopack]_runtime.js")("server/app/(site)/ideas/page.js")
-R.c("server/chunks/ssr/[root-of-the-server]__2110_h4._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__02su-wo._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_0bw_x_7._.js")
 R.c("server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0khlryf.js")
 R.c("server/chunks/ssr/[root-of-the-server]__1zopqd7._.js")

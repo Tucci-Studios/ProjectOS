@@ -18,10 +18,13 @@ import { TutorialView } from "@/components/tutorial-view";
 export function TutorialIntake({
   specUrl,
   editing,
+  projects,
 }: {
   specUrl: string;
   /** Present when changing an existing one rather than posting a new one. */
-  editing?: { id: string; current: string };
+  editing?: { id: string; current: string; projectId?: string | null };
+  /** Projects this tutorial could be about. */
+  projects: { id: string; name: string }[];
 }) {
   const router = useRouter();
   // Pretty-printed, because the thing you're about to hand back to an AI should
@@ -34,6 +37,7 @@ export function TutorialIntake({
       return editing.current;
     }
   });
+  const [projectId, setProjectId] = useState(editing?.projectId ?? "");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -49,7 +53,7 @@ export function TutorialIntake({
       const res = await fetch("/api/tutorials", {
         method: editing ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editing ? { id: editing.id, text } : { text }),
+        body: JSON.stringify(editing ? { id: editing.id, text, projectId: projectId || null } : { text, projectId: projectId || null }),
       });
       const d = (await res.json()) as { id?: string; error?: string };
       if (!res.ok || !d.id) {
@@ -104,6 +108,26 @@ export function TutorialIntake({
         />
         <span className="mt-1.5 block text-[12px] text-neutral-400">
           The JSON itself, a fenced code block, or a link to a raw file — all fine.
+        </span>
+      </label>
+
+      <label className="mt-5 block">
+        <span className="mb-1.5 block font-mono text-[12px] text-neutral-300">Is it about a project here?</span>
+        <select
+          value={projectId}
+          onChange={(e) => setProjectId(e.target.value)}
+          className="w-full rounded-lg border border-neutral-700 bg-neutral-900/60 px-3 py-2.5 font-mono text-[13px] text-white outline-none transition focus:border-emerald-400/60"
+        >
+          <option value="">Not about a specific project</option>
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+        <span className="mt-1.5 block text-[12px] leading-relaxed text-neutral-400">
+          It gets listed on that project&apos;s page, and its owner can vouch for it — or say publicly that
+          something&apos;s wrong. They can&apos;t take it down.
         </span>
       </label>
 

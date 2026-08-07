@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { Guide } from "@/lib/tutorial-guide";
 import { OwnerBanner, OwnerControls, type OwnerMark } from "@/components/owner-mark";
+import { TutorialAdmin } from "@/components/tutorial-admin";
 
 /**
  * How a tutorial reads.
@@ -288,6 +289,8 @@ export function TutorialView({
     canReact: boolean;
     canEdit?: boolean;
     editedWhen?: string | null;
+    canCheck?: boolean;
+    canDelete?: boolean;
   };
   /** Present when the tutorial is attached to a project. */
   owner?: { mark: OwnerMark; writtenByOwner: boolean; viewerIsOwner: boolean };
@@ -446,6 +449,15 @@ export function TutorialView({
             ))}
           </div>
         </section>
+      )}
+
+      {post && (
+        <TutorialAdmin
+          postId={post.id}
+          checked={!!t.verified}
+          canCheck={!!post.canCheck}
+          canDelete={!!post.canDelete}
+        />
       )}
 
       <section className="mt-8 border-t border-neutral-800 pt-5">
