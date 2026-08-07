@@ -1,3 +1,5 @@
+import { CATEGORY_META } from "@/lib/categories";
+
 /**
  * A richer tutorial format — proposed, not live.
  *
@@ -58,6 +60,13 @@ export type Guide = {
  * something that already fits. Written as instructions to a model rather than
  * documentation for a person, because that's what will read it.
  */
+/**
+ * Generated from the sections themselves rather than typed out, so the list a
+ * writer sees can never drift from the list the API enforces. Without it, an
+ * AI guesses the slug, gets a 400, and has nothing to correct against.
+ */
+const SECTION_LIST = CATEGORY_META.map((c) => `- \`${c.slug}\` — ${c.label}: ${c.use}`).join("\n");
+
 export const TUTORIAL_SPEC = `# Writing a tutorial for Project Open Source
 
 You are drafting a tutorial for Project Open Source. Read this whole file, then
@@ -76,6 +85,12 @@ can use a terminal and have never seen the tool you're describing.
 - **Cite the official docs.** You are a guide, not the source of truth. Send the reader there for anything version-specific.
 - **Don't reproduce documentation.** Explain it in your own words with your own examples. Quoting a line for precision is fine; copying a page is not.
 - **Be honest about time.** Estimate for a careful first-timer, not for you.
+
+## Sections
+
+\`category\` must be exactly one of these. Anything else is rejected:
+
+${SECTION_LIST}
 
 ## Field rules
 
