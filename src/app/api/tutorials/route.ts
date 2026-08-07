@@ -93,8 +93,14 @@ export async function PATCH(request: Request) {
   const previous = parseGuide(post.body_md);
   if (isMod && previous?.verified) read.guide.verified = previous.verified;
 
-  await env.DB.prepare("UPDATE posts SET title = ?1, body_md = ?2, category = ?3 WHERE id = ?4")
-    .bind(read.guide.title.slice(0, 200), JSON.stringify(read.guide), read.guide.category || null, post.id)
+  await env.DB.prepare("UPDATE posts SET title = ?1, body_md = ?2, category = ?3, edited_at = ?4 WHERE id = ?5")
+    .bind(
+      read.guide.title.slice(0, 200),
+      JSON.stringify(read.guide),
+      read.guide.category || null,
+      Math.floor(Date.now() / 1000),
+      post.id,
+    )
     .run();
 
   return NextResponse.json({ ok: true, id: post.id });

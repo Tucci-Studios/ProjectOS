@@ -20,6 +20,7 @@ type Case = {
   note: string;
   owner?: { mark: OwnerMark; writtenByOwner: boolean; viewerIsOwner: boolean };
   controls?: OwnerMark;
+  edited?: string;
 };
 
 const CASES: Case[] = [
@@ -63,6 +64,40 @@ const CASES: Case[] = [
       writtenByOwner: false,
       viewerIsOwner: false,
     },
+  },
+  {
+    key: "edited",
+    label: "Edited since posting",
+    note: "The byline says so. A reader following a guide should know it isn't the version that was published.",
+    owner: { mark: null, writtenByOwner: false, viewerIsOwner: false },
+    edited: "20m ago",
+  },
+  {
+    key: "stale-approve",
+    label: "Approved, then edited",
+    note: "The important one. The approval goes grey rather than green, because it's vouching for text nobody re-read. The owner said it once; the site shouldn't keep saying it on their behalf.",
+    owner: {
+      mark: { kind: "approved", note: null, by: "n8n-io", stale: true },
+      writtenByOwner: false,
+      viewerIsOwner: false,
+    },
+    edited: "5m ago",
+  },
+  {
+    key: "stale-dispute",
+    label: "Disputed, then edited",
+    note: "The correction stays — it was a real objection — but it now says the author has edited since, so it may already be fixed. Fair to both.",
+    owner: {
+      mark: {
+        kind: "disputed",
+        note: "Step 4 is out of date. The Inspector CLI changed its flags in v2.",
+        by: "n8n-io",
+        stale: true,
+      },
+      writtenByOwner: false,
+      viewerIsOwner: false,
+    },
+    edited: "just now",
   },
   {
     key: "controls",
@@ -148,6 +183,7 @@ export function LabClient({ guide }: { guide: Guide }) {
               liked: false,
               saved: false,
               canReact: false,
+              editedWhen: c.edited ?? null,
             }}
             owner={c.owner}
           />

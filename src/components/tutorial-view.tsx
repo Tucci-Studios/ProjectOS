@@ -287,6 +287,7 @@ export function TutorialView({
     saved: boolean;
     canReact: boolean;
     canEdit?: boolean;
+    editedWhen?: string | null;
   };
   /** Present when the tutorial is attached to a project. */
   owner?: { mark: OwnerMark; writtenByOwner: boolean; viewerIsOwner: boolean };
@@ -316,6 +317,12 @@ export function TutorialView({
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-y border-neutral-800 py-2.5">
           <p className="font-mono text-[12px] text-neutral-400">
             by <span className="text-neutral-200">@{post.author}</span> · {post.when}
+            {post.editedWhen && (
+              <>
+                {" · "}
+                <span title="The guide has changed since it was first posted">edited {post.editedWhen}</span>
+              </>
+            )}
           </p>
           <div className="flex items-center gap-1.5">
             {post.canEdit && (

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { BadgeCheck, AlertTriangle, X, Check } from "lucide-react";
+import { BadgeCheck, AlertTriangle, X, Check, History } from "lucide-react";
 
 export type OwnerMark = {
   kind: "approved" | "disputed";
   note: string | null;
   by: string;
+  /** True when the guide changed after the owner gave this verdict. */
+  stale?: boolean;
 } | null;
 
 /**
@@ -36,7 +38,20 @@ export function OwnerBanner({ mark, ownProject }: { mark: OwnerMark; ownProject?
   if (!mark) return null;
 
   if (mark.kind === "approved")
-    return (
+    return mark.stale ? (
+      // Deliberately not green. An approval given before an edit is vouching
+      // for text nobody re-read, and showing it as current would be a lie the
+      // owner didn't tell.
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-neutral-700 bg-neutral-900/60 px-3.5 py-2.5">
+        <History size={15} className="mt-[2px] shrink-0 text-neutral-400" aria-hidden />
+        <p className="text-[13px] leading-relaxed text-neutral-300">
+          <span className="font-bold">@{mark.by} approved an earlier version.</span>{" "}
+          <span className="text-neutral-400">
+            The guide has been edited since, so this isn&apos;t a verdict on what you&apos;re reading now.
+          </span>
+        </p>
+      </div>
+    ) : (
       <div className="mt-4 flex items-center gap-2 rounded-lg border border-emerald-400/35 bg-emerald-400/[0.06] px-3.5 py-2.5">
         <BadgeCheck size={15} className="shrink-0 text-emerald-400" aria-hidden />
         <p className="text-[13px] text-emerald-100">
@@ -55,6 +70,12 @@ export function OwnerBanner({ mark, ownProject }: { mark: OwnerMark; ownProject?
       <p className="mt-2 font-mono text-[11px] text-rose-200/60">
         — @{mark.by}, who maintains the project this is about. The guide is left up so you can judge for yourself.
       </p>
+      {mark.stale && (
+        <p className="mt-2 flex items-start gap-1.5 border-t border-rose-400/20 pt-2 font-mono text-[11px] leading-relaxed text-rose-100/70">
+          <History size={11} className="mt-[2px] shrink-0" aria-hidden />
+          The author has edited the guide since this was written — it may already be fixed.
+        </p>
+      )}
     </div>
   );
 }
