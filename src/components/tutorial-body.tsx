@@ -1,3 +1,6 @@
+import { TutorialView } from "@/components/tutorial-view";
+import { parseGuide, TUTORIAL_SPEC } from "@/lib/tutorial-guide";
+import { siteUrl } from "@/lib/site";
 import { Target, Package, CheckCircle2 } from "lucide-react";
 import { RichBody, type ProjectRef } from "./rich-body";
 import { parse, minutes } from "@/lib/tutorial";
@@ -11,6 +14,11 @@ import { parse, minutes } from "@/lib/tutorial";
  * a word of it.
  */
 export function TutorialBody({ text, projects }: { text: string; projects: ProjectRef[] }) {
+  // Posts written to the richer guide format store JSON. Anything else is the
+  // original prose format and renders as it always did.
+  const guide = parseGuide(text);
+  if (guide) return <TutorialView t={guide} spec={TUTORIAL_SPEC} specUrl={`${siteUrl()}/tutorial-template.md`} />;
+
   const t = parse(text);
   if (t.steps.length === 0) return <RichBody text={text} projects={projects} />;
 

@@ -257,21 +257,23 @@ export function TutorialView({ t, spec, specUrl }: { t: Guide; spec?: string; sp
         </ol>
       </section>
 
+      {/* Boxed in red: it's the section people reach already stuck, and it
+          should be findable by scrolling fast without reading anything. */}
       {t.troubleshooting.length > 0 && (
-        <section className="mt-9">
-          <h2 className="flex items-center gap-2 font-mono text-[13px] font-bold text-white">
-            <AlertCircle size={14} className="text-amber-400" aria-hidden /> When it doesn&apos;t work
+        <section className="mt-9 rounded-xl border border-rose-400/30 bg-rose-500/[0.05] p-4">
+          <h2 className="flex items-center gap-2 font-mono text-[13px] font-bold text-rose-200">
+            <AlertCircle size={14} className="text-rose-400" aria-hidden /> When it doesn&apos;t work
           </h2>
           {/* Symptoms visible, fixes folded away. Nobody reads all of these —
               you scan for the one that matches you, so the list should be
               scannable rather than a page of prose. */}
-          <div className="mt-2.5 divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800">
+          <div className="mt-2.5 divide-y divide-rose-400/15 overflow-hidden rounded-lg border border-rose-400/20 bg-[#160f11]">
             {t.troubleshooting.map((x) => (
               <details key={x.symptom} className="group">
-                <summary className="flex cursor-pointer list-none items-center gap-2 px-3.5 py-2.5 text-[13px] text-neutral-200 transition hover:bg-neutral-800/40">
+                <summary className="flex cursor-pointer list-none items-center gap-2 px-3.5 py-2.5 text-[13px] text-neutral-200 transition hover:bg-rose-500/[0.07]">
                   <ChevronRight
                     size={12}
-                    className="shrink-0 text-neutral-500 transition group-open:rotate-90"
+                    className="shrink-0 text-rose-400/70 transition group-open:rotate-90"
                     aria-hidden
                   />
                   {x.symptom}

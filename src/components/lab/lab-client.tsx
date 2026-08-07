@@ -1,7 +1,7 @@
 "use client";
 
 import { FlaskConical } from "lucide-react";
-import { TutorialView } from "./tutorial-view";
+import { TutorialView } from "@/components/tutorial-view";
 import { CLAUDE_SKILLS } from "@/lib/tutorials/claude-skills";
 import { TUTORIAL_SPEC } from "@/lib/tutorial-guide";
 

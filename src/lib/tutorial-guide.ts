@@ -107,3 +107,35 @@ Return only the JSON object, no commentary:
 }
 \`\`\`
 `;
+
+/**
+ * Reads a stored guide back, and says no to anything that isn't one.
+ *
+ * Post bodies are free text, so this has to be certain rather than hopeful — a
+ * half-parsed guide would render as a tutorial with missing sections, which is
+ * worse than falling through to the prose renderer.
+ */
+export function parseGuide(text: string): Guide | null {
+  const t = text.trim();
+  if (!t.startsWith("{")) return null;
+  try {
+    const g = JSON.parse(t) as Partial<Guide>;
+    if (!g.title || !Array.isArray(g.steps) || !g.steps.length) return null;
+    return {
+      slug: g.slug ?? "",
+      title: g.title,
+      summary: g.summary ?? "",
+      minutes: typeof g.minutes === "number" ? g.minutes : 5,
+      level: g.level ?? "first time",
+      category: g.category ?? "",
+      outcome: g.outcome ?? "",
+      prerequisites: Array.isArray(g.prerequisites) ? g.prerequisites : [],
+      steps: g.steps,
+      troubleshooting: Array.isArray(g.troubleshooting) ? g.troubleshooting : [],
+      sources: Array.isArray(g.sources) ? g.sources : [],
+      verified: g.verified,
+    };
+  } catch {
+    return null;
+  }
+}
