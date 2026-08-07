@@ -103,6 +103,36 @@ export async function PATCH(request: Request) {
     )
     .run();
 
+  /**
+   * Tell whoever left a verdict that the guide has changed underneath it.
+   *
+   * Without this, a correction sits on a tutorial that may already be fixed and
+   * the only person who can lift it never finds out. The author edits, the
+   * owner never looks again, and a stale red banner does permanent damage to
+   * work that was put right days ago.
+   */
+  const mark = await env.DB.prepare(
+    "SELECT kind, by_user_id FROM tutorial_owner_marks WHERE post_id = ?1",
+  )
+    .bind(post.id)
+    .first<{ kind: string; by_user_id: string }>();
+
+  if (mark && mark.by_user_id !== user.id)
+    await env.DB.prepare(
+      `INSERT INTO notifications (id, user_id, kind, body, href, created_at)
+       VALUES (?1, ?2, 'tutorial_edited', ?3, ?4, ?5)`,
+    )
+      .bind(
+        crypto.randomUUID(),
+        mark.by_user_id,
+        mark.kind === "disputed"
+          ? `"${read.guide.title}" was edited after your correction. Does it still stand?`
+          : `"${read.guide.title}" was edited after you approved it. Your approval now shows as out of date.`,
+        `/wire/${post.id}`,
+        Math.floor(Date.now() / 1000),
+      )
+      .run();
+
   return NextResponse.json({ ok: true, id: post.id });
 }
 

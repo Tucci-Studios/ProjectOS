@@ -346,7 +346,13 @@ export function TutorialView({
 
       {/* Above the steps, always. Someone about to follow instructions the
           maintainer says are wrong needs to know before step one. */}
-      {owner && <OwnerBanner mark={owner.mark} ownProject={owner.writtenByOwner} />}
+      {owner && (
+        <OwnerBanner
+          mark={owner.mark}
+          ownProject={owner.writtenByOwner}
+          discussHref={post ? "#comments" : undefined}
+        />
+      )}
       {owner?.viewerIsOwner && post && !owner.writtenByOwner && (
         <OwnerControls postId={post.id} mark={owner.mark} />
       )}

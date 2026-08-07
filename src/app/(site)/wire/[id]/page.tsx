@@ -164,7 +164,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       </article>
       )}
 
-      <section className="mt-6">
+      <section id="comments" className="mt-6 scroll-mt-24">
         <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.25em] text-neutral-400">
           {comments.length} comment{comments.length === 1 ? "" : "s"}
         </h2>

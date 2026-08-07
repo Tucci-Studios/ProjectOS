@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   // The author should hear it from us, not from a reader.
   if (post.author_id !== user.id)
     await env.DB.prepare(
-      `INSERT INTO notifications (id, user_id, kind, body, link, created_at)
+      `INSERT INTO notifications (id, user_id, kind, body, href, created_at)
        VALUES (?1, ?2, ?3, ?4, ?5, ?6)`,
     )
       .bind(
@@ -84,8 +84,7 @@ export async function POST(request: Request) {
         `/wire/${post.id}`,
         Math.floor(Date.now() / 1000),
       )
-      .run()
-      .catch(() => {});
+      .run();
 
   return NextResponse.json({ ok: true, kind });
 }

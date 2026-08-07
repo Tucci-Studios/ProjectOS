@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BadgeCheck, AlertTriangle, X, Check, History } from "lucide-react";
+import { BadgeCheck, AlertTriangle, X, Check, History, MessageSquare } from "lucide-react";
 
 export type OwnerMark = {
   kind: "approved" | "disputed";
@@ -24,7 +24,16 @@ export type OwnerMark = {
  * A dispute never hides the tutorial. The owner gets to say so loudly; they
  * don't get to delete a competitor.
  */
-export function OwnerBanner({ mark, ownProject }: { mark: OwnerMark; ownProject?: boolean }) {
+export function OwnerBanner({
+  mark,
+  ownProject,
+  discussHref,
+}: {
+  mark: OwnerMark;
+  ownProject?: boolean;
+  /** Where the two of them can talk about it. */
+  discussHref?: string;
+}) {
   if (ownProject)
     return (
       <div className="mt-4 flex items-center gap-2 rounded-lg border border-emerald-400/40 bg-emerald-400/[0.07] px-3.5 py-2.5">
@@ -70,12 +79,22 @@ export function OwnerBanner({ mark, ownProject }: { mark: OwnerMark; ownProject?
       <p className="mt-2 font-mono text-[11px] text-rose-200/60">
         — @{mark.by}, who maintains the project this is about. The guide is left up so you can judge for yourself.
       </p>
-      {mark.stale && (
-        <p className="mt-2 flex items-start gap-1.5 border-t border-rose-400/20 pt-2 font-mono text-[11px] leading-relaxed text-rose-100/70">
-          <History size={11} className="mt-[2px] shrink-0" aria-hidden />
-          The author has edited the guide since this was written — it may already be fixed.
-        </p>
-      )}
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-rose-400/20 pt-2">
+        {mark.stale && (
+          <p className="flex items-start gap-1.5 font-mono text-[11px] leading-relaxed text-rose-100/70">
+            <History size={11} className="mt-[2px] shrink-0" aria-hidden />
+            Edited since this was written — it may already be fixed.
+          </p>
+        )}
+        {discussHref && (
+          <a
+            href={discussHref}
+            className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] text-rose-200 underline-offset-4 hover:underline"
+          >
+            <MessageSquare size={11} aria-hidden /> Talk about it
+          </a>
+        )}
+      </div>
     </div>
   );
 }
