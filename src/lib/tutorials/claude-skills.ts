@@ -16,17 +16,17 @@ export const CLAUDE_SKILLS: Guide = {
   level: "first time",
   category: "claude-skills",
   outcome:
-    "A working skill in ~/.claude/skills/ that Claude picks up automatically when it's relevant, and that you can also run by typing its name with a slash.",
+    "A skill Claude loads on its own when it's relevant, and that you can run with a slash.",
   prerequisites: [
-    "Claude Code installed and working — you can start it and get a prompt.",
-    "A terminal, and any text editor.",
-    "Something you repeat. A checklist, a review procedure, house style rules — anything you've pasted into a chat more than twice.",
+    "Claude Code installed.",
+    "A terminal and a text editor.",
+    "Something you've pasted into a chat more than twice.",
   ],
   steps: [
     {
       title: "Pick the thing you keep re-explaining",
       body:
-        "A skill earns its place when you're tired of typing the same instructions. Don't invent one to learn the format — reach for something real, because the format is trivial and the content is the hard part. Good first candidates: how your team writes commit messages, the steps to cut a release, the checklist you run before opening a PR.",
+        "Use something real — the format is trivial, the content is the hard part. Commit message style, release steps, your pre-PR checklist.",
     },
     {
       title: "Make the folder",
@@ -49,12 +49,12 @@ export const CLAUDE_SKILLS: Guide = {
           { text: "    SKILL.md", dim: true },
         ],
       },
-      check: "The folder exists and is empty. Nothing else has happened yet.",
+      check: "The folder exists.",
     },
     {
       title: "Write SKILL.md",
       body:
-        "Two parts: YAML frontmatter between --- markers, then the instructions in markdown. Every frontmatter field is optional, but write a description — it's the only thing Claude sees when deciding whether your skill is relevant, so it should say what the skill does AND when to use it. The body is only loaded once the skill is actually invoked, so it costs you nothing to be thorough there.",
+        "Frontmatter between --- markers, then instructions. Every field is optional, but write a description: it's the only thing Claude sees when deciding to use the skill. The body only loads when the skill runs, so length costs nothing.",
       code: {
         lang: "markdown",
         filename: "~/.claude/skills/commit-style/SKILL.md",
@@ -73,27 +73,27 @@ Write commit messages as:
 Never mention the tools used to make the change. Never pad with filler like
 "this commit". If the change is trivial, the subject line alone is enough.`,
       },
-      check: "The file is saved and the frontmatter has --- above and below it.",
+      check: "Saved, with --- above and below the frontmatter.",
     },
     {
       title: "Use it",
       body:
-        "Claude Code watches the skills directories and picks up new files during the session, so you shouldn't need to restart. There are two ways in: ask for the thing in normal language and let Claude load the skill because your description matched, or invoke it directly by name.",
+        "New files are picked up during the session — no restart. Either ask in plain language and let the description match, or invoke it by name.",
       code: { lang: "text", text: "/commit-style" },
       check:
-        "Claude follows your instructions rather than its defaults. If you invoked it by name and nothing happened, the folder name and the command don't match.",
+        "Claude follows your instructions instead of its defaults.",
     },
     {
       title: "Tighten the description",
       body:
-        "This is the step people skip, and it's the one that decides whether the skill ever fires on its own. Claude only sees your description when choosing — not the body. So put the trigger in it: the words someone would actually say. \"Use when the user asks for a commit message\" works; \"commit helper\" does not. There's also a when_to_use field if you want to list trigger phrases separately.",
+        "The step people skip, and the one that decides whether it ever fires on its own. Claude sees only the description, never the body — so put the trigger words in it. \"Use when the user asks for a commit message\" works; \"commit helper\" doesn't.",
       check:
-        "Start a fresh conversation, ask for the thing in your own words without naming the skill, and see whether it loads.",
+        "In a new chat, ask in your own words without naming it — see if it loads.",
     },
     {
       title: "Grow it when it earns it",
       body:
-        "Put templates, example outputs or scripts alongside SKILL.md and mention them in the body, so Claude knows what they are and when to open them. Do this when the skill needs it — one clear file beats a directory nobody reads.",
+        "Add templates, examples or scripts next to SKILL.md and mention them in the body. Only when the skill needs it — one clear file beats a folder nobody reads.",
       figure: {
         kind: "tree",
         caption: "Only SKILL.md is required. The rest is there when you need it.",

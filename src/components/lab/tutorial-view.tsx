@@ -13,6 +13,7 @@ import {
   Cpu,
   Link2,
   Download,
+  ChevronRight,
   X,
 } from "lucide-react";
 import type { Guide } from "@/lib/tutorial-guide";
@@ -135,9 +136,10 @@ function AiPanel({ spec, specUrl }: { spec: string; specUrl?: string }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label="Write one of these with AI"
-        className="inline-flex min-h-[34px] cursor-pointer items-center gap-1.5 rounded-lg border border-sky-400/50 bg-sky-400/10 px-3 font-mono text-[12px] font-bold text-sky-200 outline-none transition hover:border-sky-400 hover:bg-sky-400/20 focus-visible:ring-2 focus-visible:ring-sky-400"
+        title="Write one of these with AI"
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-sky-400/50 bg-sky-400/10 text-sky-200 outline-none transition hover:border-sky-400 hover:bg-sky-400/20 focus-visible:ring-2 focus-visible:ring-sky-400"
       >
-        <Cpu size={14} aria-hidden /> Write one
+        <Cpu size={16} aria-hidden />
       </button>
 
       {open && (
@@ -260,12 +262,22 @@ export function TutorialView({ t, spec, specUrl }: { t: Guide; spec?: string; sp
           <h2 className="flex items-center gap-2 font-mono text-[13px] font-bold text-white">
             <AlertCircle size={14} className="text-amber-400" aria-hidden /> When it doesn&apos;t work
           </h2>
-          <div className="mt-3 space-y-2">
+          {/* Symptoms visible, fixes folded away. Nobody reads all of these —
+              you scan for the one that matches you, so the list should be
+              scannable rather than a page of prose. */}
+          <div className="mt-2.5 divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800">
             {t.troubleshooting.map((x) => (
-              <div key={x.symptom} className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-3.5">
-                <p className="text-[13.5px] font-bold text-neutral-100">{x.symptom}</p>
-                <p className="mt-1 text-[13px] leading-relaxed text-neutral-400">{x.fix}</p>
-              </div>
+              <details key={x.symptom} className="group">
+                <summary className="flex cursor-pointer list-none items-center gap-2 px-3.5 py-2.5 text-[13px] text-neutral-200 transition hover:bg-neutral-800/40">
+                  <ChevronRight
+                    size={12}
+                    className="shrink-0 text-neutral-500 transition group-open:rotate-90"
+                    aria-hidden
+                  />
+                  {x.symptom}
+                </summary>
+                <p className="px-3.5 pb-3 pl-[30px] text-[12.5px] leading-relaxed text-neutral-400">{x.fix}</p>
+              </details>
             ))}
           </div>
         </section>
