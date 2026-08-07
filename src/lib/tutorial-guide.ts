@@ -245,6 +245,16 @@ The JSON object, written to \`tutorial.json\` and also shown in your reply:
  * half-parsed guide would render as a tutorial with missing sections, which is
  * worse than falling through to the prose renderer.
  */
+/** The handful a model actually produces. Deliberately not a full HTML decoder. */
+function unescapeEntities(text: string): string {
+  return text
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
 export function parseGuide(text: string): Guide | null {
   const t = text.trim();
   if (!t.startsWith("{")) return null;
@@ -262,6 +272,11 @@ export function parseGuide(text: string): Guide | null {
       prerequisites: Array.isArray(g.prerequisites) ? g.prerequisites : [],
       steps: g.steps.map((st) => ({
         ...st,
+        // Models keep handing back &lt;style&gt; in code samples however plainly
+        // the spec asks them not to, and a reader copying entities out of a
+        // code block gets something that doesn't run. Decoded here so the
+        // instruction isn't the only thing standing between them and it.
+        code: st.code ? { ...st.code, text: unescapeEntities(st.code.text) } : undefined,
         // https only, and no data: URIs — a tutorial body is author-supplied
         // text and an <img src> is the easiest place to smuggle something.
         image:
