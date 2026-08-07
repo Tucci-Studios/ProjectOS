@@ -92,6 +92,18 @@ can use a terminal and have never seen the tool you're describing.
 - \`troubleshooting\`: symptom as the reader experiences it, fix as an action.
 - \`sources\`: official documentation only. At least one.
 
+## Drawings
+
+Where a step changes the shape of a directory, draw it rather than describing it
+in prose — a written-out path is what readers skim and then get wrong:
+
+\`"figure": { "kind": "tree", "caption": "...", "lines": [{ "text": "  SKILL.md", "note": "required", "dim": false }] }\`
+
+- \`text\` is the line, indented with spaces to show nesting.
+- \`note\` is an optional label rendered to the right with an arrow.
+- \`dim\` greys a line out — use it for the optional or alternative parts.
+- An empty \`text\` inserts a gap.
+
 ## Pictures
 
 A step can carry one image: \`"image": { "url": "https://...", "alt": "...", "caption": "..." }\`.
