@@ -69,7 +69,7 @@ and that no section matches it, and let a person decide.
 
 ## Field rules
 
-- \`title\`: what the reader will be able to do. Not a noun phrase.
+- \`title\`: start with **"How to"** and finish the sentence — "How to make a Claude Code skill". House style, so a list of them scans. Not a noun phrase, and not a slogan.
 - \`summary\`: one sentence, under 140 characters, no marketing.
 - \`minutes\`: integer, rounded up.
 - \`level\`: "first time" | "comfortable" | "deep end".

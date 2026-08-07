@@ -10,7 +10,7 @@ import type { Guide } from "@/lib/tutorial-guide";
  */
 export const CLAUDE_SKILLS: Guide = {
   slug: "write-your-first-claude-skill",
-  title: "Write your first Claude Code skill",
+  title: "How to make a Claude Code skill",
   summary: "Turn a set of instructions you keep repeating into a skill Claude loads by itself.",
   minutes: 10,
   level: "first time",
