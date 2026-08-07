@@ -930,9 +930,9 @@ module.exports = (sourcePath)=>({
       case "server/chunks/ssr/_0-yy_1p._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_0-yy_1p._.js");
       case "server/chunks/ssr/_0wicfl4._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_0wicfl4._.js");
       case "server/chunks/ssr/_0xd13m_._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_0xd13m_._.js");
+      case "server/chunks/ssr/_1fb2hs6._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1fb2hs6._.js");
       case "server/chunks/ssr/_1hxp0t4._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1hxp0t4._.js");
       case "server/chunks/ssr/_1igyvts._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1igyvts._.js");
-      case "server/chunks/ssr/_1pz4z5g._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1pz4z5g._.js");
       case "server/chunks/ssr/_1x7pcp5._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1x7pcp5._.js");
       case "server/chunks/ssr/_next-internal_server_app_(site)_explore_page_actions_1x3ap0b.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app_(site)_explore_page_actions_1x3ap0b.js");
       case "server/chunks/ssr/node_modules_next_1iemwhs._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_1iemwhs._.js");
@@ -947,7 +947,7 @@ module.exports = (sourcePath)=>({
       case "server/chunks/ssr/_next-internal_server_app_(site)_help_page_actions_1tlbjvd.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app_(site)_help_page_actions_1tlbjvd.js");
       case "server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0xt6kt2.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0xt6kt2.js");
       case "server/chunks/ssr/[root-of-the-server]__0pgyjcy._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0pgyjcy._.js");
-      case "server/chunks/ssr/_1tcs3zp._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1tcs3zp._.js");
+      case "server/chunks/ssr/_20brv1l._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_20brv1l._.js");
       case "server/chunks/ssr/_next-internal_server_app_(site)_ideas_[id]_page_actions_1x1cb4m.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app_(site)_ideas_[id]_page_actions_1x1cb4m.js");
       case "server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0yncenx.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0yncenx.js");
       case "server/chunks/ssr/[root-of-the-server]__1m3zt5u._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__1m3zt5u._.js");
@@ -964,6 +964,7 @@ module.exports = (sourcePath)=>({
       case "server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0khlryf.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0khlryf.js");
       case "server/chunks/ssr/[root-of-the-server]__17_tf8j._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__17_tf8j._.js");
       case "server/chunks/ssr/_next-internal_server_app_(site)_lab_page_actions_1k0n-pj.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app_(site)_lab_page_actions_1k0n-pj.js");
+      case "server/chunks/ssr/node_modules_lucide-react_dist_esm_icons_0w_9m7e._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_lucide-react_dist_esm_icons_0w_9m7e._.js");
       case "server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_1vlttaz.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_1vlttaz.js");
       case "server/chunks/ssr/src_components_lab_lab-client_tsx_1wt3toy._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/src_components_lab_lab-client_tsx_1wt3toy._.js");
       case "server/chunks/ssr/[root-of-the-server]__0te5lkt._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0te5lkt._.js");
@@ -997,7 +998,7 @@ module.exports = (sourcePath)=>({
       case "server/chunks/[turbopack]_runtime.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/[turbopack]_runtime.js");
       case "server/chunks/node_modules_next_08s853w._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/node_modules_next_08s853w._.js");
       case "server/chunks/ssr/[root-of-the-server]__0vsljp9._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0vsljp9._.js");
-      case "server/chunks/ssr/_19e2kyq._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_19e2kyq._.js");
+      case "server/chunks/ssr/_1jlzff4._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_1jlzff4._.js");
       case "server/chunks/ssr/_next-internal_server_app_(site)_p_[id]_page_actions_0omfrzu.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app_(site)_p_[id]_page_actions_0omfrzu.js");
       case "server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0cyiwso.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0cyiwso.js");
       case "server/chunks/ssr/src_10bmiu5._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/ssr/src_10bmiu5._.js");
@@ -1152,6 +1153,8 @@ module.exports = (sourcePath)=>({
       case "server/chunks/_next-internal_server_app_robots_txt_route_actions_15vc_89.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_robots_txt_route_actions_15vc_89.js");
       case "server/chunks/[root-of-the-server]__16ycjro._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__16ycjro._.js");
       case "server/chunks/_next-internal_server_app_sitemap_xml_route_actions_05l5km9.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_sitemap_xml_route_actions_05l5km9.js");
+      case "server/chunks/[root-of-the-server]__0-fnhug._.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/[root-of-the-server]__0-fnhug._.js");
+      case "server/chunks/_next-internal_server_app_tutorial-template_md_route_actions_03dh0cn.js": return require("/Users/jacob/Documents/ProjectOS/.open-next/server-functions/default/.next/server/chunks/_next-internal_server_app_tutorial-template_md_route_actions_03dh0cn.js");
       default:
         throw new Error(`Not found ${chunkPath}`);
     }

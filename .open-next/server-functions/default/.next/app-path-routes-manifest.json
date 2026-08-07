@@ -75,5 +75,6 @@
   "/favicon.ico/route": "/favicon.ico",
   "/icon.png/route": "/icon.png",
   "/robots.txt/route": "/robots.txt",
-  "/sitemap.xml/route": "/sitemap.xml"
+  "/sitemap.xml/route": "/sitemap.xml",
+  "/tutorial-template.md/route": "/tutorial-template.md"
 }

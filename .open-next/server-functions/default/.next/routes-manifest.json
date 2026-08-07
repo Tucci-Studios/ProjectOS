@@ -477,6 +477,12 @@
       "namedRegex": "^/terms(?:/)?$"
     },
     {
+      "page": "/tutorial-template.md",
+      "regex": "^/tutorial\\-template\\.md(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tutorial\\-template\\.md(?:/)?$"
+    },
+    {
       "page": "/tutorials",
       "regex": "^/tutorials(?:/)?$",
       "routeKeys": {},
