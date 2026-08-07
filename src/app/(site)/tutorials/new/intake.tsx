@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Cpu, Copy, Check, Send, Eye } from "lucide-react";
+import { PenLine, Copy, Check, Send, Eye } from "lucide-react";
 import { parseGuide } from "@/lib/tutorial-guide";
 import { TutorialView } from "@/components/tutorial-view";
 
@@ -66,9 +66,9 @@ export function TutorialIntake({
 
   return (
     <div>
-      <div className="rounded-xl border border-sky-400/30 bg-sky-400/[0.05] p-4">
-        <p className="flex items-center gap-2 font-mono text-[13px] font-bold text-sky-200">
-          <Cpu size={14} aria-hidden /> {editing ? "Change it with your AI" : "First, have your AI write it"}
+      <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-4">
+        <p className="flex items-center gap-2 font-mono text-[13px] font-bold text-neutral-100">
+          <PenLine size={14} aria-hidden /> {editing ? "Change it with your AI" : "First, have your AI write it"}
         </p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-neutral-300">
           {editing
@@ -82,7 +82,7 @@ export function TutorialIntake({
               setCopied(true);
               setTimeout(() => setCopied(false), 1600);
             }}
-            className="inline-flex min-h-[32px] cursor-pointer items-center gap-1.5 rounded-lg border border-sky-400/50 bg-sky-400/10 px-3 font-mono text-[12px] font-bold text-sky-200 outline-none transition hover:border-sky-400 focus-visible:ring-2 focus-visible:ring-sky-400"
+            className="inline-flex min-h-[32px] cursor-pointer items-center gap-1.5 rounded-lg border border-emerald-400/50 bg-emerald-400/10 px-3 font-mono text-[12px] font-bold text-emerald-200 outline-none transition hover:border-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
             {copied ? <Check size={12} aria-hidden /> : <Copy size={12} aria-hidden />}
             {copied ? "Copied" : "Copy the link"}

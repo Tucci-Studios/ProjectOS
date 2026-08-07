@@ -4,6 +4,7 @@ import { siteUrl } from "@/lib/site";
 import { Target, Package, CheckCircle2 } from "lucide-react";
 import { RichBody, type ProjectRef } from "./rich-body";
 import { parse, minutes } from "@/lib/tutorial";
+import { CATEGORY_META, categoryMeta, GROUPS } from "@/lib/categories";
 
 /**
  * A tutorial, rendered in the one shape every tutorial has.
@@ -93,6 +94,7 @@ export function TutorialCard({
   author,
   when,
   comments,
+  category,
 }: {
   id: string;
   title: string | null;
@@ -100,24 +102,34 @@ export function TutorialCard({
   author: string;
   when: string;
   comments: number;
+  category?: string;
 }) {
   const guide = parseGuide(bodyMd);
   const t = guide ? null : parse(bodyMd);
   const stepCount = guide ? guide.steps.length : t!.steps.length;
   const mins = guide ? guide.minutes : minutes(t!);
   const blurb = guide ? guide.summary : t!.goal;
+  const slug = category ?? guide?.category ?? "";
+  const meta = CATEGORY_META.some((c) => c.slug === slug) ? categoryMeta(slug) : null;
+  const hex = meta ? GROUPS[meta.group].hex : "#f5b544";
 
   return (
-    <article className="group relative flex overflow-hidden rounded-xl border border-amber-400/20 bg-amber-400/[0.03] transition hover:border-amber-400/45 hover:bg-amber-400/[0.06]">
-      <span aria-hidden className="w-[3px] shrink-0 bg-amber-400/60" />
+    <article
+      className="group relative flex overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/40 transition hover:bg-neutral-800/40"
+      style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
+    >
       <div className="min-w-0 flex-1 p-4">
-        <p className="flex items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-widest text-amber-400">
-          <Target size={11} aria-hidden /> Tutorial
-          <span className="font-normal tracking-normal text-amber-400/50">
+        <p className="flex flex-wrap items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-widest">
+          {meta ? (
+            <span style={{ color: hex }}>{meta.label}</span>
+          ) : (
+            <span className="text-amber-400">Tutorial</span>
+          )}
+          <span className="font-normal tracking-normal text-neutral-500">
             {stepCount || "?"} step{stepCount === 1 ? "" : "s"} · {mins} min
           </span>
         </p>
-        <h3 className="mt-1.5 font-mono text-[16px] font-bold leading-snug tracking-tight text-white transition group-hover:text-amber-200">
+        <h3 className="mt-1.5 font-mono text-[16px] font-bold leading-snug tracking-tight text-white">
           {title ?? "(untitled)"}
         </h3>
         {blurb && <p className="mt-1 line-clamp-2 text-[14px] leading-relaxed text-neutral-400">{blurb}</p>}

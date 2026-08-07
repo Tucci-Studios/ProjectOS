@@ -10,7 +10,7 @@ import {
   Check,
   BadgeCheck,
   Copy,
-  Cpu,
+  PenLine,
   Link2,
   Download,
   ChevronRight,
@@ -139,18 +139,18 @@ function AiPanel({ spec, specUrl }: { spec: string; specUrl?: string }) {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label="Write one of these with AI"
-        title="Write one of these with AI"
-        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-sky-400/50 bg-sky-400/10 text-sky-200 outline-none transition hover:border-sky-400 hover:bg-sky-400/20 focus-visible:ring-2 focus-visible:ring-sky-400"
+        title="Write one of these"
+        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-neutral-700 text-neutral-400 outline-none transition hover:border-neutral-500 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-emerald-400"
       >
-        <Cpu size={16} aria-hidden />
+        <PenLine size={15} aria-hidden />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[min(92vw,340px)] rounded-xl border border-sky-400/30 bg-[#101614] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.9)]">
+        <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[min(92vw,340px)] rounded-xl border border-neutral-700 bg-[#101614] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.9)]">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="flex items-center gap-1.5 font-mono text-[13px] font-bold text-sky-200">
-                <Cpu size={13} aria-hidden /> Write one of these
+              <p className="flex items-center gap-1.5 font-mono text-[13px] font-bold text-neutral-100">
+                <PenLine size={13} aria-hidden /> Write one of these
               </p>
               <p className="mt-1.5 text-[12.5px] leading-relaxed text-neutral-300">
                 Give your AI the link and say what you want to teach. No prompt to write — the file is the prompt.
@@ -166,6 +166,9 @@ function AiPanel({ spec, specUrl }: { spec: string; specUrl?: string }) {
           </div>
 
           <div className="mt-3.5 flex flex-col gap-2">
+            <p className="text-[11.5px] leading-relaxed text-neutral-400">
+              Your AI writes it from this link — no prompt to compose.
+            </p>
             {specUrl && <CopyButton text={specUrl} label="Copy the link" className="!min-h-[30px] justify-center !text-[11px]" />}
             <CopyButton text={spec} label="Copy the whole thing" className="!min-h-[30px] justify-center !text-[11px]" />
             <a

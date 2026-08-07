@@ -1,7 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
 import { GraduationCap, Target } from "lucide-react";
-import { timeAgo } from "@/lib/categories";
+import { timeAgo, CATEGORY_META, categoryMeta, GROUPS, GROUP_ORDER } from "@/lib/categories";
+import { parseGuide } from "@/lib/tutorial-guide";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
 import { TutorialCard } from "@/components/tutorial-body";
@@ -20,6 +21,7 @@ export default async function TutorialsPage() {
   const { env } = getCloudflareContext();
   const { results } = await env.DB.prepare(
     `SELECT po.id, po.title, po.body_md, po.kind, po.created_at, u.github_login,
+            po.category,
             (SELECT COUNT(*) FROM comments c WHERE c.post_id = po.id AND c.status = 'live') AS comment_count
      FROM posts po JOIN users u ON u.id = po.author_id
      WHERE po.status = 'live' AND po.kind IN ('tutorial','request')
@@ -31,11 +33,27 @@ export default async function TutorialsPage() {
     kind: string;
     created_at: number;
     github_login: string;
+    category: string | null;
     comment_count: number;
   }>();
 
   const tutorials = results.filter((r) => r.kind === "tutorial");
   const requests = results.filter((r) => r.kind === "request");
+
+  // A tutorial's section is on the post row; fall back to the guide body for
+  // anything written before the column existed.
+  const groupOf = (r: (typeof results)[number]) => {
+    const slug = r.category || parseGuide(r.body_md)?.category || "";
+    return CATEGORY_META.some((c) => c.slug === slug) ? categoryMeta(slug).group : null;
+  };
+
+  const byGroup = GROUP_ORDER.map((key) => ({
+    key,
+    group: GROUPS[key],
+    items: tutorials.filter((t) => groupOf(t) === key),
+  })).filter((g) => g.items.length > 0);
+
+  const unfiled = tutorials.filter((t) => groupOf(t) === null);
 
   return (
     <div className="mx-auto w-full max-w-3xl">
@@ -67,18 +85,55 @@ export default async function TutorialsPage() {
           </Link>
         </div>
       ) : (
-        <div className="stagger space-y-3">
-          {tutorials.map((t) => (
-            <TutorialCard
-              key={t.id}
-              id={t.id}
-              title={t.title}
-              bodyMd={t.body_md}
-              author={t.github_login}
-              when={timeAgo(t.created_at)}
-              comments={t.comment_count}
-            />
+        <div className="space-y-9">
+          {byGroup.map(({ key, group, items }) => (
+            <section key={key}>
+              <div className="mb-3 flex items-baseline gap-2.5 border-b border-neutral-800 pb-2">
+                <group.Icon size={15} style={{ color: group.hex }} aria-hidden />
+                <h2 className="font-mono text-[15px] font-bold" style={{ color: group.hex }}>
+                  {group.label}
+                </h2>
+                <span className="font-mono text-[11.5px] text-neutral-400">
+                  {items.length} guide{items.length === 1 ? "" : "s"}
+                </span>
+              </div>
+              <div className="stagger space-y-2.5">
+                {items.map((t) => (
+                  <TutorialCard
+                    key={t.id}
+                    id={t.id}
+                    title={t.title}
+                    bodyMd={t.body_md}
+                    author={t.github_login}
+                    when={timeAgo(t.created_at)}
+                    comments={t.comment_count}
+                    category={t.category ?? undefined}
+                  />
+                ))}
+              </div>
+            </section>
           ))}
+
+          {unfiled.length > 0 && (
+            <section>
+              <h2 className="mb-3 border-b border-neutral-800 pb-2 font-mono text-[15px] font-bold text-neutral-400">
+                Everything else
+              </h2>
+              <div className="stagger space-y-2.5">
+                {unfiled.map((t) => (
+                  <TutorialCard
+                    key={t.id}
+                    id={t.id}
+                    title={t.title}
+                    bodyMd={t.body_md}
+                    author={t.github_login}
+                    when={timeAgo(t.created_at)}
+                    comments={t.comment_count}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       )}
 
