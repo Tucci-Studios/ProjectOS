@@ -18,6 +18,11 @@ export type GuideStep = {
   body: string;
   code?: { lang: string; text: string; filename?: string };
   /**
+   * A picture. Hosted anywhere over https — a raw GitHub URL is the usual
+   * answer, since the author's AI is already working in a repo.
+   */
+  image?: { url: string; alt: string; caption?: string };
+  /**
    * A drawing of the state after this step. Text descriptions of file layouts
    * are the thing readers skim past and then get wrong, so where a step changes
    * the shape of a directory, the step shows the shape.
@@ -87,6 +92,28 @@ can use a terminal and have never seen the tool you're describing.
 - \`troubleshooting\`: symptom as the reader experiences it, fix as an action.
 - \`sources\`: official documentation only. At least one.
 
+## Pictures
+
+A step can carry one image: \`"image": { "url": "https://...", "alt": "...", "caption": "..." }\`.
+
+- **https only.** No data: URIs, no http. A raw GitHub URL from the repo you're working in is the usual answer.
+- **alt is required.** Describe what it shows, for anyone who can't see it.
+- Use a picture when the thing is visual — a screenshot of what success looks like. Don't screenshot a terminal you could paste as text; text can be copied and searched, a picture can't.
+
+## What you cannot do
+
+- **No HTML.** Every field is plain text and is rendered as text. Markup will show up as characters.
+- **No scripts, no iframes, no embeds.**
+- **No links except in \`sources\`.** Cite documentation there, not inline.
+- **One image per step**, and it must already be hosted somewhere public.
+- **Don't invent fields.** Anything outside the shape below is dropped.
+
+## How to post it
+
+Take the JSON you produced and give it to the author. They paste it — or a link
+to it — at project-open-source.com/tutorials/new. Nothing gets published without
+a signed-in human doing that; you cannot post on their behalf.
+
 ## Output
 
 Return only the JSON object, no commentary:
@@ -130,7 +157,15 @@ export function parseGuide(text: string): Guide | null {
       category: g.category ?? "",
       outcome: g.outcome ?? "",
       prerequisites: Array.isArray(g.prerequisites) ? g.prerequisites : [],
-      steps: g.steps,
+      steps: g.steps.map((st) => ({
+        ...st,
+        // https only, and no data: URIs — a tutorial body is author-supplied
+        // text and an <img src> is the easiest place to smuggle something.
+        image:
+          st.image && /^https:\/\//.test(st.image.url)
+            ? { url: st.image.url, alt: st.image.alt ?? "", caption: st.image.caption }
+            : undefined,
+      })),
       troubleshooting: Array.isArray(g.troubleshooting) ? g.troubleshooting : [],
       sources: Array.isArray(g.sources) ? g.sources : [],
       verified: g.verified,

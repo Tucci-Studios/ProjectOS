@@ -345,6 +345,20 @@ export function TutorialView({
               <h3 className="font-mono text-[15.5px] font-bold text-white">{s.title}</h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-neutral-300">{s.body}</p>
               {s.code && <Code {...s.code} />}
+              {s.image && (
+                <figure className="mt-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={s.image.url}
+                    alt={s.image.alt}
+                    loading="lazy"
+                    className="w-full rounded-lg border border-neutral-800"
+                  />
+                  {s.image.caption && (
+                    <figcaption className="mt-1.5 text-[11.5px] text-neutral-400">{s.image.caption}</figcaption>
+                  )}
+                </figure>
+              )}
               {s.figure && <Tree figure={s.figure} />}
               {s.check && (
                 <p className="mt-2.5 flex gap-2 rounded-lg border border-neutral-800 bg-neutral-900/40 px-3 py-2 text-[13px] leading-relaxed text-neutral-400">

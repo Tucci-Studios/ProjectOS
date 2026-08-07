@@ -46,7 +46,7 @@ export default async function TutorialsPage() {
         Icon={GraduationCap}
         accent="text-amber-400"
         action={
-          <ButtonLink href="/wire/new?kind=tutorial" variant="outline">
+          <ButtonLink href="/tutorials/new" variant="outline">
             + Write one
           </ButtonLink>
         }
@@ -60,7 +60,7 @@ export default async function TutorialsPage() {
             person doesn&apos;t lose an afternoon to it. Write one and you&apos;ve helped everybody who comes after.
           </p>
           <Link
-            href="/wire/new?kind=tutorial"
+            href="/tutorials/new"
             className="mt-3 inline-block font-mono text-[13px] font-bold text-amber-300 hover:underline"
           >
             Write one now →

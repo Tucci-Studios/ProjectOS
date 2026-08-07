@@ -309,6 +309,12 @@
       "namedRegex": "^/api/sync\\-forks(?:/)?$"
     },
     {
+      "page": "/api/tutorials",
+      "regex": "^/api/tutorials(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/tutorials(?:/)?$"
+    },
+    {
       "page": "/api/updates",
       "regex": "^/api/updates(?:/)?$",
       "routeKeys": {},
@@ -493,6 +499,12 @@
       "regex": "^/tutorials(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/tutorials(?:/)?$"
+    },
+    {
+      "page": "/tutorials/new",
+      "regex": "^/tutorials/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/tutorials/new(?:/)?$"
     },
     {
       "page": "/updates",
