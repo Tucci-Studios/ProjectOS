@@ -24,6 +24,7 @@
   "/(site)/submit/page": "app/(site)/submit/page.js",
   "/(site)/submit/wizard/page": "app/(site)/submit/wizard/page.js",
   "/(site)/terms/page": "app/(site)/terms/page.js",
+  "/(site)/tutorials/[id]/edit/page": "app/(site)/tutorials/[id]/edit/page.js",
   "/(site)/tutorials/new/page": "app/(site)/tutorials/new/page.js",
   "/(site)/tutorials/page": "app/(site)/tutorials/page.js",
   "/(site)/u/[login]/page": "app/(site)/u/[login]/page.js",

@@ -87,6 +87,14 @@
       "namedRegex": "^/s/(?<nxtPcategory>[^/]+?)(?:/)?$"
     },
     {
+      "page": "/tutorials/[id]/edit",
+      "regex": "^/tutorials/([^/]+?)/edit(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/tutorials/(?<nxtPid>[^/]+?)/edit(?:/)?$"
+    },
+    {
       "page": "/u/[login]",
       "regex": "^/u/([^/]+?)(?:/)?$",
       "routeKeys": {

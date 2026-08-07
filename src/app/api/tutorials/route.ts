@@ -18,6 +18,88 @@ export const dynamic = "force-dynamic";
  * A URL is fetched server-side rather than in the browser so a raw GitHub link
  * works without CORS getting in the way.
  */
+/** Shared by both verbs: turn what was pasted into a guide, or say why not. */
+async function readGuide(raw0: string) {
+  let raw = raw0.trim();
+  if (!raw) return { error: "Paste what your AI wrote, or a link to it." };
+
+  if (/^https:\/\/\S+$/.test(raw)) {
+    try {
+      const res = await fetch(raw, { headers: { Accept: "application/json, text/plain" } });
+      if (!res.ok) return { error: `That link returned ${res.status}.` };
+      raw = (await res.text()).trim();
+    } catch {
+      return { error: "Couldn't fetch that link." };
+    }
+  }
+
+  const fence = /```(?:json)?\s*([\s\S]*?)```/.exec(raw);
+  if (fence) raw = fence[1].trim();
+
+  const guide = parseGuide(raw);
+  if (!guide)
+    return {
+      error:
+        "That isn't a tutorial in our format — it needs at least a title and one step. Point your AI at /tutorial-template.md.",
+    };
+  if (guide.category && !CATEGORY_SLUGS.includes(guide.category))
+    return { error: `"${guide.category}" isn't one of our sections.` };
+
+  // Verification is a moderator's to give, never the author's to claim.
+  delete guide.verified;
+  return { guide };
+}
+
+/**
+ * Editing one.
+ *
+ * A tutorial published with a wrong path or a broken step is worse than no
+ * tutorial, and until this existed the only fix was posting a second copy. The
+ * author owns theirs; a moderator can fix anyone's, because they're the ones
+ * who put a Checked badge on it.
+ *
+ * A moderator's own badge survives an edit — the author rewriting the body
+ * shouldn't silently keep a stamp for content nobody has re-read, so it's
+ * cleared unless a moderator is the one saving.
+ */
+export async function PATCH(request: Request) {
+  const user = await getSessionUser();
+  if (!user) return NextResponse.json({ error: "Sign in first." }, { status: 401 });
+
+  let body: { id?: string; text?: string };
+  try {
+    body = (await request.json()) as typeof body;
+  } catch {
+    return NextResponse.json({ error: "Bad request." }, { status: 400 });
+  }
+  if (!body.id) return NextResponse.json({ error: "Which tutorial?" }, { status: 400 });
+
+  const { env } = getCloudflareContext();
+  const post = await env.DB.prepare(
+    "SELECT id, author_id, body_md FROM posts WHERE id = ?1 AND kind='tutorial' AND status='live'",
+  )
+    .bind(body.id)
+    .first<{ id: string; author_id: string; body_md: string }>();
+  if (!post) return NextResponse.json({ error: "No such tutorial." }, { status: 404 });
+
+  const isMod = user.role === "admin" || user.role === "mod";
+  if (post.author_id !== user.id && !isMod)
+    return NextResponse.json({ error: "That isn't yours to edit." }, { status: 403 });
+
+  const read = await readGuide(body.text ?? "");
+  if (!read.guide) return NextResponse.json({ error: read.error }, { status: 400 });
+
+  // Keep an existing badge only when a moderator is the one saving.
+  const previous = parseGuide(post.body_md);
+  if (isMod && previous?.verified) read.guide.verified = previous.verified;
+
+  await env.DB.prepare("UPDATE posts SET title = ?1, body_md = ?2, category = ?3 WHERE id = ?4")
+    .bind(read.guide.title.slice(0, 200), JSON.stringify(read.guide), read.guide.category || null, post.id)
+    .run();
+
+  return NextResponse.json({ ok: true, id: post.id });
+}
+
 export async function POST(request: Request) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "Sign in first." }, { status: 401 });
@@ -32,36 +114,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Bad request." }, { status: 400 });
   }
 
-  let raw = (body.text ?? "").trim();
-  if (!raw) return NextResponse.json({ error: "Paste what your AI wrote, or a link to it." }, { status: 400 });
-
-  // A link instead of the text itself.
-  if (/^https:\/\/\S+$/.test(raw)) {
-    try {
-      const res = await fetch(raw, { headers: { Accept: "application/json, text/plain" } });
-      if (!res.ok) return NextResponse.json({ error: `That link returned ${res.status}.` }, { status: 400 });
-      raw = (await res.text()).trim();
-    } catch {
-      return NextResponse.json({ error: "Couldn't fetch that link." }, { status: 400 });
-    }
-  }
-
-  // Tolerate a fenced block, since that's how models hand JSON over.
-  const fence = /```(?:json)?\s*([\s\S]*?)```/.exec(raw);
-  if (fence) raw = fence[1].trim();
-
-  const guide = parseGuide(raw);
-  if (!guide)
-    return NextResponse.json(
-      { error: "That isn't a tutorial in our format — it needs at least a title and one step. Point your AI at /tutorial-template.md." },
-      { status: 400 },
-    );
-
-  if (guide.category && !CATEGORY_SLUGS.includes(guide.category))
-    return NextResponse.json({ error: `"${guide.category}" isn't one of our sections.` }, { status: 400 });
-
-  // Verification is a moderator's to give, never the author's to claim.
-  delete guide.verified;
+  const read = await readGuide(body.text ?? "");
+  if (!read.guide) return NextResponse.json({ error: read.error }, { status: 400 });
+  const guide = read.guide;
 
   const { env } = getCloudflareContext();
   const id = `t_${crypto.randomUUID().slice(0, 12)}`;

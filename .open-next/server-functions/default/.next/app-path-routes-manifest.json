@@ -24,6 +24,7 @@
   "/(site)/submit/page": "/submit",
   "/(site)/submit/wizard/page": "/submit/wizard",
   "/(site)/terms/page": "/terms",
+  "/(site)/tutorials/[id]/edit/page": "/tutorials/[id]/edit",
   "/(site)/tutorials/new/page": "/tutorials/new",
   "/(site)/tutorials/page": "/tutorials",
   "/(site)/u/[login]/page": "/u/[login]",

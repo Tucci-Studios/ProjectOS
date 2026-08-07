@@ -15,9 +15,25 @@ import { TutorialView } from "@/components/tutorial-view";
  * more than the input: it's the only chance to notice the AI got something
  * wrong before it's on the site under your name.
  */
-export function TutorialIntake({ specUrl }: { specUrl: string }) {
+export function TutorialIntake({
+  specUrl,
+  editing,
+}: {
+  specUrl: string;
+  /** Present when changing an existing one rather than posting a new one. */
+  editing?: { id: string; current: string };
+}) {
   const router = useRouter();
-  const [text, setText] = useState("");
+  // Pretty-printed, because the thing you're about to hand back to an AI should
+  // be readable rather than one long line.
+  const [text, setText] = useState(() => {
+    if (!editing) return "";
+    try {
+      return JSON.stringify(JSON.parse(editing.current), null, 2);
+    } catch {
+      return editing.current;
+    }
+  });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -31,9 +47,9 @@ export function TutorialIntake({ specUrl }: { specUrl: string }) {
     setError(null);
     try {
       const res = await fetch("/api/tutorials", {
-        method: "POST",
+        method: editing ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify(editing ? { id: editing.id, text } : { text }),
       });
       const d = (await res.json()) as { id?: string; error?: string };
       if (!res.ok || !d.id) {
@@ -52,11 +68,12 @@ export function TutorialIntake({ specUrl }: { specUrl: string }) {
     <div>
       <div className="rounded-xl border border-sky-400/30 bg-sky-400/[0.05] p-4">
         <p className="flex items-center gap-2 font-mono text-[13px] font-bold text-sky-200">
-          <Cpu size={14} aria-hidden /> First, have your AI write it
+          <Cpu size={14} aria-hidden /> {editing ? "Change it with your AI" : "First, have your AI write it"}
         </p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-neutral-300">
-          Give it this link and say what you want to teach. It knows the format, what it can&apos;t do, and how to hand
-          the result back.
+          {editing
+            ? "Paste the current version below to your AI along with this link, say what to change, and paste the result back."
+            : "Give it this link and say what you want to teach. It knows the format, what it can't do, and how to hand the result back."}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <button
@@ -75,7 +92,9 @@ export function TutorialIntake({ specUrl }: { specUrl: string }) {
       </div>
 
       <label className="mt-6 block">
-        <span className="mb-1.5 block font-mono text-[12px] text-neutral-300">Then paste what it gave you</span>
+        <span className="mb-1.5 block font-mono text-[12px] text-neutral-300">
+          {editing ? "The current version — replace it with the new one" : "Then paste what it gave you"}
+        </span>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -109,11 +128,13 @@ export function TutorialIntake({ specUrl }: { specUrl: string }) {
           disabled={busy || !preview}
           className="inline-flex min-h-[44px] cursor-pointer items-center gap-2 rounded-lg bg-emerald-400 px-5 font-mono text-[13px] font-bold text-black outline-none transition hover:bg-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:cursor-default disabled:opacity-40"
         >
-          <Send size={14} aria-hidden /> {busy ? "Posting..." : "Post it"}
+          <Send size={14} aria-hidden /> {busy ? (editing ? "Saving..." : "Posting...") : editing ? "Save changes" : "Post it"}
         </button>
         <span className="text-[12px] text-neutral-400">
           {preview
-            ? "Read it through first — it goes up under your name."
+            ? editing
+              ? "Read it through before saving."
+              : "Read it through first — it goes up under your name."
             : text.trim()
               ? "Not a tutorial in our format yet."
               : "Nothing pasted yet."}

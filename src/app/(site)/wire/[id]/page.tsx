@@ -13,6 +13,7 @@ import { CommentForm } from "./comment-form";
 export const dynamic = "force-dynamic";
 
 type PostRow = {
+  author_id: string;
   id: string;
   title: string | null;
   body_md: string;
@@ -29,7 +30,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
   const user = await getSessionUser();
   const { env } = getCloudflareContext();
   const post = await env.DB.prepare(
-    `SELECT po.id, po.title, po.body_md, po.kind, po.created_at, po.project_id, u.github_login,
+    `SELECT po.id, po.title, po.body_md, po.kind, po.created_at, po.project_id, po.author_id, u.github_login,
             (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
                          ELSE pp.base_name || ' // ' || pp.variant_name END
              FROM projects pp WHERE pp.id = po.project_id) AS project_display
@@ -93,6 +94,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             liked: hasLiked,
             saved: hasSaved,
             canReact: !!user,
+            canEdit: !!user && (user.id === post.author_id || user.role === "admin" || user.role === "mod"),
           }}
         />
       ) : (

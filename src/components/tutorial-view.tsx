@@ -17,6 +17,7 @@ import {
   X,
   Heart,
   Bookmark,
+  Pencil,
 } from "lucide-react";
 import type { Guide } from "@/lib/tutorial-guide";
 
@@ -272,7 +273,16 @@ export function TutorialView({
   spec?: string;
   specUrl?: string;
   /** Present when rendered as a real post rather than a preview. */
-  post?: { id: string; author: string; when: string; likes: number; liked: boolean; saved: boolean; canReact: boolean };
+  post?: {
+    id: string;
+    author: string;
+    when: string;
+    likes: number;
+    liked: boolean;
+    saved: boolean;
+    canReact: boolean;
+    canEdit?: boolean;
+  };
 }) {
   return (
     <article className="rounded-2xl border border-neutral-800 bg-gradient-to-b from-[#1a1a14] to-[#161d18] p-6 sm:p-8">
@@ -300,13 +310,23 @@ export function TutorialView({
           <p className="font-mono text-[12px] text-neutral-400">
             by <span className="text-neutral-200">@{post.author}</span> · {post.when}
           </p>
-          <Reactions
-            postId={post.id}
-            likes={post.likes}
-            liked={post.liked}
-            saved={post.saved}
-            canReact={post.canReact}
-          />
+          <div className="flex items-center gap-1.5">
+            {post.canEdit && (
+              <Link
+                href={`/tutorials/${post.id}/edit`}
+                className="inline-flex min-h-[30px] items-center gap-1.5 rounded-lg border border-neutral-700 px-2.5 font-mono text-[11.5px] text-neutral-400 transition hover:border-neutral-500 hover:text-neutral-200"
+              >
+                <Pencil size={12} aria-hidden /> Edit
+              </Link>
+            )}
+            <Reactions
+              postId={post.id}
+              likes={post.likes}
+              liked={post.liked}
+              saved={post.saved}
+              canReact={post.canReact}
+            />
+          </div>
         </div>
       )}
 
