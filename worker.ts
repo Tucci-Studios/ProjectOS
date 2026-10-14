@@ -29,15 +29,26 @@ export default {
     const job = SCHEDULE[event.cron];
     if (!job) return;
 
-    const base = env.SITE_URL ?? "https://project-os.workers.dev";
+    // Handed straight to the app handler rather than fetched over the network.
+    // Going out to https://<our own domain> means the subrequest leaves the
+    // Worker, hits the edge, and loops back into this same Worker — which
+    // times out and returns 522. That is exactly what was happening: the
+    // schedule fired every night and every run died at the self-fetch, which
+    // is why star_history sat at a single day. Calling handler.fetch keeps it
+    // in-process, so there is no loop and no network to fail.
+    const base = env.SITE_URL ?? "https://project-open-source.com";
+    const req = new Request(`${base}/api/cron/${job}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${env.CRON_SECRET ?? ""}` },
+    });
+
     ctx.waitUntil(
-      fetch(`${base}/api/cron/${job}`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${env.CRON_SECRET ?? ""}` },
-      }).then(
-        async (r) => console.log(`[cron] ${job}`, r.status, await r.text()),
-        (e) => console.error(`[cron] ${job} failed`, e),
-      ),
+      handler
+        .fetch(req, env, ctx)
+        .then(
+          async (r: Response) => console.log(`[cron] ${job}`, r.status, (await r.text()).slice(0, 300)),
+          (e: unknown) => console.error(`[cron] ${job} failed`, e),
+        ),
     );
   },
 };

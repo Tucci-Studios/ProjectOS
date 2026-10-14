@@ -28,18 +28,61 @@ async function resolveProject(
   return p ? { id: projectId } : { error: "That project isn't on Project OS." };
 }
 
+/**
+ * Where we're willing to go and get a file.
+ *
+ * Without this, anyone signed in could point the Worker at any address the
+ * Cloudflare network can reach — internal services, cloud metadata, a port
+ * scan — and read the answer back out of our own error message. The template
+ * tells authors to use a raw GitHub URL, so that's the whole list.
+ */
+const FETCHABLE_HOSTS = new Set([
+  "raw.githubusercontent.com",
+  "gist.githubusercontent.com",
+  "gist.github.com",
+]);
+
+const MAX_FETCH_BYTES = 512 * 1024;
+
+/** One message for every failure, so this can't be used to probe what exists. */
+const GENERIC_FETCH_FAIL = "Couldn't read that link. Paste the JSON in directly instead.";
+
+function isFetchableHost(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" && FETCHABLE_HOSTS.has(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
 /** Shared by both verbs: turn what was pasted into a guide, or say why not. */
 async function readGuide(raw0: string) {
   let raw = raw0.trim();
   if (!raw) return { error: "Paste what your AI wrote, or a link to it." };
 
   if (/^https:\/\/\S+$/.test(raw)) {
+    if (!isFetchableHost(raw)) {
+      return {
+        error: "Link it from a GitHub raw URL or a gist — or just paste the JSON straight in.",
+      };
+    }
     try {
-      const res = await fetch(raw, { headers: { Accept: "application/json, text/plain" } });
-      if (!res.ok) return { error: `That link returned ${res.status}.` };
-      raw = (await res.text()).trim();
+      const res = await fetch(raw, {
+        headers: { Accept: "application/json, text/plain" },
+        // Nothing decides where this request goes except the allowlist above,
+        // so a redirect off the allowlisted host is a refusal, not a hop.
+        redirect: "manual",
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) return { error: GENERIC_FETCH_FAIL };
+      const body = await res.text();
+      // A tutorial is a few KB. Anything past this is either the wrong link or
+      // someone trying to make us hold a large response in memory.
+      if (body.length > MAX_FETCH_BYTES) return { error: "That file is too big to be a tutorial." };
+      raw = body.trim();
     } catch {
-      return { error: "Couldn't fetch that link." };
+      return { error: GENERIC_FETCH_FAIL };
     }
   }
 
@@ -75,6 +118,11 @@ async function readGuide(raw0: string) {
 export async function PATCH(request: Request) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "Sign in first." }, { status: 401 });
+
+  // Editing goes through the same link-fetching path as posting, so it needs
+  // the same ceiling — otherwise it's the cheaper way to hammer it.
+  const rate = await checkRate(user.id, "tutorial-edit");
+  if (!rate.ok) return NextResponse.json({ error: rate.message }, { status: 429 });
 
   let body: { id?: string; text?: string; projectId?: string | null };
   try {

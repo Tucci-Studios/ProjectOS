@@ -1,0 +1,28 @@
+{
+  "slug": "photo-editor",
+  "title": "A photo editor",
+  "examples": [
+    "Lightroom",
+    "Photoshop",
+    "Luminar"
+  ],
+  "costPerYear": 120,
+  "verdict": "no",
+  "oneLine": "Edit RAW photos, retouch, export.",
+  "why": "This is the one everyone wants and the one that isn't there yet. The viral AI-built Adobe clones self-report around 30% feature parity and alpha-quality bugs. A few experienced developers have built personal editors over open-source libraries, after weeks of daily fixes. A beginner should not start here. Use the free tools that already exist instead.",
+  "tool": "Don't build it. Use Darktable (RAW), GIMP, or Photopea in the browser",
+  "hours": 0,
+  "keep": "Everything. This is a 'use free software' answer, not a 'build it' answer.",
+  "breaks": "Not applicable.",
+  "sources": [
+    {
+      "label": "Shokunin Studio: Attack of the vibe-coded Photoshop clones",
+      "url": "https://www.shokunin.studio/blog/2026/10/9/attack-of-the-vibe-coded-photoshop-clones"
+    },
+    {
+      "label": "Futurism on the open-source Adobe clone project",
+      "url": "https://futurism.com/future-society/adobe-creative-suite-software-open-source-artcraft"
+    }
+  ],
+  "verified": "2026-10-13"
+}

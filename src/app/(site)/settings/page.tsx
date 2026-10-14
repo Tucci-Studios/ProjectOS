@@ -1,5 +1,6 @@
-import { Settings, UserCircle, ShieldCheck, ExternalLink } from "lucide-react";
+import { Settings, UserCircle, ShieldCheck, ExternalLink, Trash2 } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
+import { DeleteAccount } from "@/components/delete-account";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
 import Link from "next/link";
@@ -12,7 +13,7 @@ export default async function SettingsPage() {
   if (!user) {
     return (
       <div className="mx-auto max-w-lg">
-        <PageHeader crumbs={[{ label: "Settings" }]} title="Settings" purpose="Your account and preferences." Icon={Settings} />
+        <PageHeader crumbs={[{ label: "Settings" }]} title="Settings" Icon={Settings} />
         <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-8 text-center">
           <p className="text-sm text-neutral-400">Sign in to manage your account.</p>
           <div className="mt-4 flex justify-center">
@@ -27,7 +28,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader crumbs={[{ label: "Settings" }]} title="Settings" purpose="Your account and how you use Project OS." Icon={Settings} />
+      <PageHeader crumbs={[{ label: "Settings" }]} title="Settings" Icon={Settings} />
 
       <Card title="Account" Icon={UserCircle}>
         <Row label="Signed in as" value={`@${user.github_login}`} />
@@ -52,13 +53,20 @@ export default async function SettingsPage() {
           full{" "}
           <Link href="/terms" className="text-emerald-400 transition hover:underline">
             terms
+          </Link>{" "}
+          and what we store about you in{" "}
+          <Link href="/privacy" className="text-emerald-400 transition hover:underline">
+            privacy
           </Link>
           .
         </p>
       </Card>
 
       <Card title="Sign out" Icon={Settings}>
-        <p className="mb-4 text-sm text-neutral-400">Signing out ends this session on this device.</p>
+        <p className="mb-4 text-sm text-neutral-400">
+          Signing out ends this session everywhere, not just on this device — the token stops working the moment you
+          press it.
+        </p>
         <form action="/api/auth/logout" method="post">
           <button
             type="submit"
@@ -67,6 +75,18 @@ export default async function SettingsPage() {
             Sign out
           </button>
         </form>
+      </Card>
+
+      <Card title="Delete account" Icon={Trash2}>
+        <p className="mb-4 text-sm leading-relaxed text-neutral-400">
+          Removes you and everything private to you. What you published stays up under a deleted account — the full
+          detail is in{" "}
+          <Link href="/privacy" className="text-emerald-400 transition hover:underline">
+            privacy
+          </Link>
+          .
+        </p>
+        <DeleteAccount />
       </Card>
     </div>
   );

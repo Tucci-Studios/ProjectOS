@@ -1,0 +1,24 @@
+{
+  "slug": "social-feed-embed",
+  "title": "A social-media feed on your site",
+  "examples": [
+    "Curator",
+    "Juicer",
+    "EmbedSocial"
+  ],
+  "costPerYear": 276,
+  "verdict": "partly",
+  "oneLine": "Show your latest Instagram or X posts on your own website.",
+  "why": "A documented attempt built this with Claude Code and Airtable, then went back to paying. Social platforms expire your access tokens and rate-limit you, so the thing you build keeps quietly breaking. The building is easy. The owning is not.",
+  "tool": "Claude Code; a small server that refreshes tokens",
+  "hours": 6,
+  "keep": "Working tokens. Honestly, that's the whole product.",
+  "breaks": "Tokens expire. APIs change. The author's payback period on this one was about seven years.",
+  "sources": [
+    {
+      "label": "Signal to Noise: what it was actually like to replace SaaS with Claude Code",
+      "url": "https://signaltonoise.substack.com/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

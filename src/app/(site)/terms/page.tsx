@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ScrollText } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
-import { CONTACT_EMAIL, REPO_IS_PUBLIC, SOURCE_REPO, SOURCE_URL } from "@/lib/site";
+import { REPO_IS_PUBLIC, SOURCE_REPO, SOURCE_URL } from "@/lib/site";
 
 export const metadata = { title: "Terms — Project OS" };
 
@@ -135,9 +135,9 @@ export default function TermsPage() {
             <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
             <span>
               Or write to{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
-                {CONTACT_EMAIL}
-              </a>
+              <Link href="/contact" className="text-emerald-400 hover:underline">
+                the contact form
+              </Link>
               . No account needed, and you don&apos;t have to explain why.
             </span>
           </li>

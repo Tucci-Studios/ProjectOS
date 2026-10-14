@@ -32,7 +32,6 @@ export default async function HelpPage() {
       <PageHeader
         crumbs={[{ label: "Help wanted" }]}
         title="Help wanted"
-        purpose="Project OS is one person and a lot of unfinished edges. These are the ones worth another pair of hands."
         Icon={HeartHandshake}
       />
 

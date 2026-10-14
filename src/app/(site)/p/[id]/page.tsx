@@ -16,6 +16,7 @@ import { ForksPanel } from "@/components/forks-panel";
 import { ReadmeButton } from "@/components/readme";
 import { ClaimBanner } from "@/components/claim-banner";
 import { LicenseNote } from "@/components/license-note";
+import { SetupPanel } from "@/components/setup-mark";
 import { BuiltWith, type CreditedPost } from "@/components/built-with";
 import { ProjectFacts, Contributors } from "@/components/project-facts";
 import { getForkPicture, forksAreStale } from "@/lib/forks";
@@ -86,6 +87,8 @@ type Row = {
   pushed_at: number | null;
   open_issues: number | null;
   contributors_json: string | null;
+  setup_tier: string | null;
+  setup_json: string | null;
   github_repo: string;
   change_summary: string | null;
   parent_id: string | null;
@@ -116,7 +119,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             p.github_repo, p.change_summary, p.parent_id, p.root_id, p.created_at,
             u.github_login, u.avatar_url, u.is_shadow,
             (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-            p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at, p.archived, p.release_tag, p.release_at, p.pushed_at, p.open_issues, p.contributors_json,
+            p.image_url, p.owner_id, p.lineage_source, p.parent_confirmed_at, p.stars, p.source, p.github_forks, p.readme_md, p.readme_at, p.archived, p.release_tag, p.release_at, p.pushed_at, p.open_issues, p.contributors_json, p.setup_tier, p.setup_json,
             (SELECT owner_id FROM projects pp WHERE pp.id = p.parent_id) AS parent_owner_id
      FROM projects p JOIN users u ON u.id = p.owner_id
      WHERE p.id = ?1 AND p.status = 'live'`,
@@ -332,6 +335,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
       )}
 
       <BuiltWith posts={creditedPosts.results} repo={p.github_repo} />
+
+      <div className="mt-7">
+        <SetupPanel tier={p.setup_tier} factsJson={p.setup_json} />
+      </div>
 
       <Contributors json={p.contributors_json} />
 

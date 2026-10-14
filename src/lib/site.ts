@@ -8,9 +8,9 @@
  *
  * Flip it the moment the repo goes public. Nothing else needs changing.
  */
-export const SOURCE_REPO = "jacobt72401/ProjectOS";
+export const SOURCE_REPO = "Tucci-Studios/ProjectOS";
 export const SOURCE_URL = `https://github.com/${SOURCE_REPO}`;
-export const REPO_IS_PUBLIC = false;
+export const REPO_IS_PUBLIC = true;
 
 /**
  * Where the site lives, absolutely.

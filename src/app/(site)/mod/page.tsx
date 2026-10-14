@@ -8,6 +8,8 @@ import { ModActions } from "./mod-actions";
 import { ApplicationActions } from "./application-actions";
 import { roleByKey } from "@/lib/help-roles";
 import { timeAgo } from "@/lib/categories";
+import { topPages } from "@/lib/counts";
+import { recentErrors } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +34,13 @@ export default async function ModPage() {
     created_at: number;
     reporter: string;
   }>();
+
+  const views = user!.role === "admin" ? await topPages(7, 12) : null;
+  const errors = user!.role === "admin" ? await recentErrors(15) : null;
+  const { results: messages } = await env.DB.prepare(
+    `SELECT id, created_at, kind, reply_to, body FROM contact_messages
+     WHERE handled_at IS NULL ORDER BY created_at DESC LIMIT 20`,
+  ).all<{ id: string; created_at: number; kind: string; reply_to: string | null; body: string }>();
 
   const { results: apps } = user!.role === "admin" ? await env.DB.prepare(
     `SELECT a.id, a.role, a.body, a.contact, a.created_at, u.github_login, u.avatar_url
@@ -61,6 +70,94 @@ export default async function ModPage() {
         purpose={`${open.length} open report${open.length === 1 ? "" : "s"}. Removing delists the content; dismissing keeps it up.`}
         Icon={ShieldAlert}
       />
+
+      {messages.length > 0 && (
+        <section className="mb-7 rounded-xl border border-sky-400/30 bg-sky-500/[0.05] p-4">
+          <h2 className="font-mono text-[13px] font-bold text-sky-200">Messages ({messages.length})</h2>
+          <p className="mt-1 text-[12px] leading-relaxed text-neutral-400">
+            Sent through the contact form. Takedown requests first.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {messages.map((m) => (
+              <li key={m.id} className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-3">
+                <p className="flex flex-wrap items-center gap-x-2 font-mono text-[10.5px] uppercase tracking-widest">
+                  <span className={m.kind === "takedown" ? "text-rose-300" : "text-sky-300"}>{m.kind}</span>
+                  <span className="normal-case tracking-normal text-neutral-500">{timeAgo(m.created_at)}</span>
+                  {m.reply_to && (
+                    <a
+                      href={`mailto:${m.reply_to}`}
+                      className="normal-case tracking-normal text-neutral-300 underline-offset-4 hover:underline"
+                    >
+                      {m.reply_to}
+                    </a>
+                  )}
+                </p>
+                <p className="mt-1.5 whitespace-pre-wrap break-words text-[13px] leading-relaxed text-neutral-200">
+                  {m.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {errors && errors.length > 0 && (
+        <section className="mb-7 rounded-xl border border-rose-400/30 bg-rose-500/[0.05] p-4">
+          <h2 className="font-mono text-[13px] font-bold text-rose-200">
+            Recent errors ({errors.length})
+          </h2>
+          <p className="mt-1 text-[12px] leading-relaxed text-neutral-400">
+            Captured on our own servers. Nothing is sent to a third party.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {errors.map((e) => (
+              <li key={e.id} className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-2.5">
+                <p className="flex flex-wrap items-center gap-x-2 font-mono text-[10.5px] uppercase tracking-widest">
+                  <span className={e.source === "server" ? "text-rose-300" : "text-amber-300"}>{e.source}</span>
+                  {e.path && <span className="normal-case tracking-normal text-neutral-400">{e.path}</span>}
+                  <span className="normal-case tracking-normal text-neutral-400">{timeAgo(e.created_at)}</span>
+                </p>
+                <p className="mt-1 break-words font-mono text-[12.5px] leading-relaxed text-neutral-200">
+                  {e.message}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {views && (
+        <section className="mb-7 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 className="font-mono text-[13px] font-bold text-white">Most opened, last 7 days</h2>
+            <p className="font-mono text-[12px] text-neutral-400">
+              {views.total.toLocaleString()} view{views.total === 1 ? "" : "s"} total
+            </p>
+          </div>
+          <p className="mt-1 text-[12px] leading-relaxed text-neutral-400">
+            Counts only — a path, a date and a number. Nothing here identifies anyone, by design.
+          </p>
+          {views.rows.length === 0 ? (
+            <p className="mt-3 font-mono text-[12.5px] text-neutral-400">Nothing counted yet.</p>
+          ) : (
+            <ul className="mt-3 space-y-1">
+              {views.rows.map((r) => (
+                <li key={r.path} className="flex items-center gap-3 font-mono text-[12.5px]">
+                  <span className="w-12 shrink-0 text-right font-bold text-emerald-300">
+                    {r.views.toLocaleString()}
+                  </span>
+                  <span className="h-1 shrink-0 rounded-full bg-emerald-400/40"
+                        style={{ width: `${Math.max(2, Math.round((r.views / views.rows[0].views) * 160))}px` }}
+                        aria-hidden />
+                  <Link href={r.path} className="truncate text-neutral-300 transition hover:text-emerald-300">
+                    {r.path}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
       {user!.role === "admin" && (
       <section className="mb-7 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">

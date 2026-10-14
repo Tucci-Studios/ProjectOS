@@ -1,0 +1,23 @@
+{
+  "slug": "dictation",
+  "title": "Voice dictation",
+  "examples": [
+    "Wispr Flow",
+    "Dragon"
+  ],
+  "costPerYear": 144,
+  "verdict": "yes",
+  "oneLine": "Talk, and text appears wherever your cursor is.",
+  "why": "Open-source speech models (Whisper and its faster variants) are as good as the paid apps for plain dictation. Wiring one to a hotkey is a one-afternoon build and it runs entirely on your machine.",
+  "tool": "faster-whisper plus a small script; Claude Code or Gemini CLI writes the glue",
+  "hours": 4,
+  "keep": "Automatic formatting, the AI 'clean up what I said' layer, phone support.",
+  "breaks": "Microphone permissions reset after OS updates. Larger models are slow without a GPU.",
+  "sources": [
+    {
+      "label": "How-To Geek write-up (dictation section)",
+      "url": "https://www.howtogeek.com/canceled-hundreds-in-yearly-subscriptions-by-vibe-coding-own-alternatives/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

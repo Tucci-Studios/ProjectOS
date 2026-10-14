@@ -1,0 +1,23 @@
+{
+  "slug": "food-log",
+  "title": "A food and calorie log",
+  "examples": [
+    "MyFitnessPal Premium",
+    "Lose It!"
+  ],
+  "costPerYear": 80,
+  "verdict": "yes",
+  "oneLine": "Log what you ate, see totals.",
+  "why": "A photo-to-log version was one of the three apps in a documented 'replaced my subscriptions' project. The hard part is the nutrition database, and there are free public ones.",
+  "tool": "Lovable or Bolt free tier, plus a free nutrition API",
+  "hours": 8,
+  "keep": "Barcode scanning, the enormous verified food database, the community recipes.",
+  "breaks": "Free nutrition APIs change their terms. Keep your data exportable.",
+  "sources": [
+    {
+      "label": "DEV: I replaced 3 SaaS subscriptions",
+      "url": "https://dev.to/godnick/i-replaced-3-saas-subscriptions-with-tools-i-built-myself-1j8f"
+    }
+  ],
+  "verified": "2026-10-13"
+}

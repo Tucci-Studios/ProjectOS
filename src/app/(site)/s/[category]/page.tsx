@@ -214,7 +214,7 @@ export default async function SectionPage({
       <PageHeader
         crumbs={[{ label: "Explore", href: "/explore" }, { label: g.label }, { label: meta.label }]}
         title={meta.label}
-        purpose={activeTab.blurb ?? `Everything published under ${meta.label}.`}
+        
         accent={g.text}
         glyph={<SectionMark category={category} size={24} color={g.hex} />}
         action={

@@ -1,0 +1,23 @@
+{
+  "slug": "usage-dashboard",
+  "title": "A personal dashboard",
+  "examples": [
+    "Geckoboard",
+    "paid 'life dashboard' apps"
+  ],
+  "costPerYear": 100,
+  "verdict": "yes",
+  "oneLine": "One screen with the numbers you check every day.",
+  "why": "Dashboards are the single most-replaced category in Retool's build-vs-buy survey. For one person's numbers, it's a page that reads a few APIs. Beginners do this on day one.",
+  "tool": "Any browser tool on the free tier",
+  "hours": 3,
+  "keep": "Fancy charts, scheduled PDF reports, team sharing.",
+  "breaks": "Every API you read from will change eventually. Expect to fix one thing a year.",
+  "sources": [
+    {
+      "label": "Retool Build vs Buy 2026",
+      "url": "https://www.businesswire.com/news/home/20260217548274/en/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

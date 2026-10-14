@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, GitFork, Star } from "lucide-react";
 import { GroupTile } from "./project-card";
 import type { ProjectFeedRow } from "./project-card";
+import { SetupChip } from "@/components/setup-mark";
 
 /**
  * A compact tile for the curated strips.
@@ -34,6 +35,7 @@ export function DiscoverTile({ p }: { p: ProjectFeedRow }) {
               : (p.github_forks ?? 0)}
           </span>
           {p.language && <span className="truncate text-neutral-400">{p.language}</span>}
+          <SetupChip tier={p.setup_tier} />
         </p>
       </div>
 

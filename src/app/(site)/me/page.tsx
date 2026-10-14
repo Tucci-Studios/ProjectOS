@@ -33,7 +33,6 @@ export default async function MyStuffPage() {
         <PageHeader
           crumbs={[{ label: "You" }]}
           title="You"
-          purpose="Your projects, your posts, and the replies you've gotten — all in one place."
           Icon={User}
         />
         <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-10 text-center">
@@ -81,7 +80,6 @@ export default async function MyStuffPage() {
       <PageHeader
         crumbs={[{ label: "You" }]}
         title={`@${user.github_login}`}
-        purpose="Everything you've published, posted, liked — and what people said back."
         Icon={User}
         action={
           <ButtonLink href="/submit" variant="primary">

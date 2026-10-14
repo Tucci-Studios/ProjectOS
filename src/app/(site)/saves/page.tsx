@@ -75,7 +75,6 @@ export default async function SavesPage() {
       <PageHeader
         crumbs={[{ label: "Saves" }]}
         title="Saves"
-        purpose="Things you kept for later. Only you can see this list, and saving doesn't sign you up for any alerts — for that, follow it instead."
         Icon={Bookmark}
         accent="text-sky-400"
       />

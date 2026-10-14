@@ -1,0 +1,28 @@
+{
+  "slug": "time-tracker",
+  "title": "A time tracker",
+  "examples": [
+    "Rize",
+    "RescueTime",
+    "Toggl"
+  ],
+  "costPerYear": 120,
+  "verdict": "yes",
+  "oneLine": "What you spent your day on, by app and window.",
+  "why": "ActivityWatch already does the tracking for free and is open source. What people pay for is the dashboard on top. That dashboard is exactly the kind of thing a beginner can build in a day.",
+  "tool": "ActivityWatch for the data; any AI tool for the dashboard",
+  "hours": 5,
+  "keep": "Cross-device sync, the pretty weekly email, AI 'focus scores'.",
+  "breaks": "Nothing much. ActivityWatch is mature and local.",
+  "sources": [
+    {
+      "label": "ActivityWatch",
+      "url": "https://activitywatch.net/"
+    },
+    {
+      "label": "How-To Geek write-up",
+      "url": "https://www.howtogeek.com/canceled-hundreds-in-yearly-subscriptions-by-vibe-coding-own-alternatives/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

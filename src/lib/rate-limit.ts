@@ -10,6 +10,21 @@ const LIMITS: Record<string, { max: number; windowS: number; label: string }> = 
   detect: { max: 30, windowS: 600, label: "repo checks" },
   idea: { max: 5, windowS: 3600, label: "ideas" },
   report: { max: 20, windowS: 3600, label: "reports" },
+
+  // Keyed by IP rather than by user, for the endpoints anyone can reach
+  // without signing in. These aren't account-takeover risks — sign-in is
+  // GitHub's OAuth, so there is no password here to guess — they're
+  // resource-exhaustion risks: someone hammering them burns the shared GitHub
+  // hourly budget or fills a table.
+  "tutorial-edit": { max: 30, windowS: 3600, label: "tutorial edits" },
+  // Generous — this is one beacon per page a real person opens.
+  view: { max: 300, windowS: 3600, label: "page views" },
+  oops: { max: 60, windowS: 3600, label: "error reports" },
+  contact: { max: 4, windowS: 3600, label: "messages" },
+  waitlist: { max: 5, windowS: 3600, label: "waitlist signups" },
+  "sync-forks": { max: 20, windowS: 3600, label: "fork refreshes" },
+  readme: { max: 60, windowS: 3600, label: "readme fetches" },
+  "auth-callback": { max: 20, windowS: 900, label: "sign-in attempts" },
 };
 
 export type RateResult = { ok: true } | { ok: false; retryAfterS: number; message: string };
@@ -52,4 +67,16 @@ export async function checkRate(userId: string, action: keyof typeof LIMITS): Pr
     .bind(userId, action, now)
     .run();
   return { ok: true };
+}
+
+/**
+ * The caller's IP, as Cloudflare sees it.
+ *
+ * CF-Connecting-IP is set by the edge and cannot be spoofed by the client;
+ * X-Forwarded-For can be, so it is deliberately not consulted. Falls back to a
+ * single shared bucket when there is no header at all, which is the safe
+ * direction — a local dev request gets limited rather than exempted.
+ */
+export function clientKey(request: Request): string {
+  return `ip:${request.headers.get("CF-Connecting-IP") ?? "unknown"}`;
 }

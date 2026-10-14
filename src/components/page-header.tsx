@@ -19,7 +19,14 @@ export function PageHeader({
 }: {
   crumbs?: Crumb[];
   title: string;
-  purpose: string;
+  /**
+   * Only when it says something the title doesn't.
+   *
+   * A subhead under "Settings" reading "your account and preferences" teaches
+   * nobody anything and pushes the actual controls down the page. Write one to
+   * state a rule, a constraint or a distinction — otherwise leave it out.
+   */
+  purpose?: string;
   Icon?: LucideIcon;
   accent?: string;
   /** Rendered instead of Icon — for sections whose mark is type, not a drawing. */
@@ -50,7 +57,7 @@ export function PageHeader({
             {glyph ?? (Icon && <Icon size={22} className={accent} aria-hidden />)}
             {title}
           </h1>
-          <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">{purpose}</p>
+          {purpose && <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">{purpose}</p>}
         </div>
         {action}
       </div>

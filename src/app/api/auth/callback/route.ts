@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
+import { checkRate, clientKey } from "@/lib/rate-limit";
 import { signSession, sessionCookieName, sessionTtlSeconds } from "@/lib/auth";
 
 type GitHubUser = {
@@ -11,6 +12,13 @@ type GitHubUser = {
 };
 
 export async function GET(request: Request) {
+  // The token exchange costs us a GitHub call, so cap how fast one address can
+  // trigger it. Not brute-force protection — sign-in is GitHub's OAuth and
+  // there is no password here to guess — but it stops the endpoint being used
+  // to burn the shared API budget.
+  const rate = await checkRate(clientKey(request), "auth-callback");
+  if (!rate.ok) return NextResponse.redirect(`${new URL(request.url).origin}/login?error=rate`);
+
   const { env } = getCloudflareContext();
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
@@ -99,7 +107,12 @@ export async function GET(request: Request) {
       : `${url.origin}${returnTo}`,
   );
   res.cookies.set("pos_oauth_next", "", { path: "/api/auth", maxAge: 0 });
-  res.cookies.set(sessionCookieName, await signSession(userId, env.SESSION_SECRET), {
+  // Stamp the token with the user's current session generation. Signing out
+  // increments it, which is what makes the token we hand out here revocable.
+  const sv = await env.DB.prepare("SELECT session_version FROM users WHERE id = ?1")
+    .bind(userId)
+    .first<{ session_version: number }>();
+  res.cookies.set(sessionCookieName, await signSession(userId, env.SESSION_SECRET, sv?.session_version ?? 0), {
     httpOnly: true,
     sameSite: "lax",
     secure: url.origin.startsWith("https"),

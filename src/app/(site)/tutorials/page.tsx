@@ -55,11 +55,10 @@ export default async function TutorialsPage() {
   const unfiled = tutorials.filter((t) => groupOf(t) === null);
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto w-full max-w-4xl">
       <PageHeader
         crumbs={[{ label: "Tutorials" }]}
         title="Tutorials"
-        purpose="Every one has the same shape: what you'll have at the end, what you need, numbered steps, and how to tell it worked."
         Icon={GraduationCap}
         accent="text-amber-400"
         action={
@@ -84,7 +83,7 @@ export default async function TutorialsPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-9">
+        <div className="space-y-8">
           {byGroup.map(({ key, group, items }) => (
             <section key={key}>
               <div className="mb-3 flex items-baseline gap-2.5 border-b border-neutral-800 pb-2">
@@ -96,7 +95,7 @@ export default async function TutorialsPage() {
                   {items.length} guide{items.length === 1 ? "" : "s"}
                 </span>
               </div>
-              <div className="stagger space-y-2.5">
+              <div className="stagger grid gap-2.5 sm:grid-cols-2">
                 {items.map((t) => (
                   <TutorialCard
                     key={t.id}
@@ -118,7 +117,7 @@ export default async function TutorialsPage() {
               <h2 className="mb-3 border-b border-neutral-800 pb-2 font-mono text-[15px] font-bold text-neutral-400">
                 Everything else
               </h2>
-              <div className="stagger space-y-2.5">
+              <div className="stagger grid gap-2.5 sm:grid-cols-2">
                 {unfiled.map((t) => (
                   <TutorialCard
                     key={t.id}

@@ -45,7 +45,7 @@ export default async function GroupPage({ params }: { params: Promise<{ group: s
       <PageHeader
         crumbs={[{ label: "Explore", href: "/explore" }, { label: g.label }]}
         title={g.label}
-        purpose={`${g.blurb}. ${total.toLocaleString()} project${total === 1 ? "" : "s"} across ${sections.length} sections.`}
+        purpose={`${total.toLocaleString()} project${total === 1 ? "" : "s"} across ${sections.length} sections.`}
         accent={g.text}
         Icon={g.Icon}
       />

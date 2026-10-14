@@ -1,0 +1,24 @@
+{
+  "slug": "focus-timer",
+  "title": "A focus timer",
+  "examples": [
+    "Forest",
+    "Focusmate-style timers",
+    "Session"
+  ],
+  "costPerYear": 40,
+  "verdict": "yes",
+  "oneLine": "Pomodoro-style work and break timer with a log.",
+  "why": "This is the canonical first project. It's a timer, a list, and a sound. One developer replaced three small subscriptions, this among them, in two weeks part-time.",
+  "tool": "Any browser tool (Lovable, Bolt, Replit) on the free tier",
+  "hours": 2,
+  "keep": "Social accountability features, cute trees.",
+  "breaks": "Nothing. It's a timer.",
+  "sources": [
+    {
+      "label": "DEV: I replaced 3 SaaS subscriptions with tools I built myself",
+      "url": "https://dev.to/godnick/i-replaced-3-saas-subscriptions-with-tools-i-built-myself-1j8f"
+    }
+  ],
+  "verified": "2026-10-13"
+}

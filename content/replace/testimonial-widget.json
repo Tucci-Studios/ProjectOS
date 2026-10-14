@@ -1,0 +1,24 @@
+{
+  "slug": "testimonial-widget",
+  "title": "A testimonial widget",
+  "examples": [
+    "Shoutout.io",
+    "Senja",
+    "Testimonial.to"
+  ],
+  "costPerYear": 120,
+  "verdict": "yes",
+  "oneLine": "Collect quotes from customers and show them on your site.",
+  "why": "The most-cited example in the whole 'build don't subscribe' discussion: a well-known engineer rebuilt his use of a $120/yr tool in 20 minutes. His own caveat matters: he rebuilt the narrow slice he used, not the product.",
+  "tool": "Claude Code or Codex; a static site or a tiny database",
+  "hours": 1,
+  "keep": "The hosted form your customers fill in, video testimonials, moderation.",
+  "breaks": "If you want the collection form too, you now own a form, a database, and spam.",
+  "sources": [
+    {
+      "label": "Pragmatic Engineer: I replaced a $120/year micro-SaaS in 20 minutes",
+      "url": "https://blog.pragmaticengineer.com/i-replaced-a-120-year-micro-saas-in-20-minutes-with-llm-generated-code/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

@@ -1,0 +1,24 @@
+{
+  "slug": "note-taking",
+  "title": "A notes app",
+  "examples": [
+    "Notion Plus",
+    "Evernote",
+    "Obsidian Sync"
+  ],
+  "costPerYear": 96,
+  "verdict": "partly",
+  "oneLine": "Write, organise, search, on every device.",
+  "why": "A single-device notes app is a first-week project. Sync across devices and never losing a note are what you're really paying for, and they are genuinely hard. Obsidian itself is free; its sync is the paid part, and you can replace that with a free git or cloud-folder setup instead of building anything.",
+  "tool": "Obsidian (free) plus a free sync folder, rather than building",
+  "hours": 1,
+  "keep": "Reliable sync, collaboration, the mobile apps.",
+  "breaks": "Sync conflicts. Two devices editing the same note is the oldest unsolved problem in software.",
+  "sources": [
+    {
+      "label": "Where are the vibe-coded Photoshops? (HN discussion)",
+      "url": "https://news.ycombinator.com/item?id=48177228"
+    }
+  ],
+  "verified": "2026-10-13"
+}

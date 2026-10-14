@@ -82,7 +82,7 @@ export function Contributors({ json }: { json: string | null }) {
             <img
               key={c.login}
               src={c.avatar}
-              alt=""
+              alt={c.login}
               title={`${c.login} — ${c.commits.toLocaleString()} commits`}
               className="h-6 w-6 rounded-full border border-neutral-800 object-cover"
             />

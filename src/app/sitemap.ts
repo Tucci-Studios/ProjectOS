@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { CATEGORY_META, GROUP_ORDER } from "@/lib/categories";
 import { siteUrl } from "@/lib/site";
+import { cached } from "@/lib/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -24,22 +25,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/wire`, changeFrequency: "daily" as const, priority: 0.6 },
     { url: `${base}/tutorials`, changeFrequency: "weekly" as const, priority: 0.6 },
     { url: `${base}/updates`, changeFrequency: "weekly" as const, priority: 0.5 },
+    { url: `${base}/start`, changeFrequency: "monthly" as const, priority: 0.9 },
     { url: `${base}/terms`, changeFrequency: "yearly" as const, priority: 0.3 },
+    { url: `${base}/privacy`, changeFrequency: "yearly" as const, priority: 0.3 },
+    { url: `${base}/contact`, changeFrequency: "yearly" as const, priority: 0.3 },
     ...GROUP_ORDER.map((g) => ({ url: `${base}/g/${g}`, changeFrequency: "weekly" as const, priority: 0.7 })),
     ...CATEGORY_META.map((c) => ({ url: `${base}/s/${c.slug}`, changeFrequency: "weekly" as const, priority: 0.7 })),
   ].map((e) => ({ ...e, lastModified: now }));
 
   try {
     const { env } = getCloudflareContext();
-    const [{ results: projects }, { results: people }] = await Promise.all([
-      env.DB.prepare(
-        "SELECT id, updated_at FROM projects WHERE status='live' ORDER BY stars DESC LIMIT 5000",
-      ).all<{ id: string; updated_at: number }>(),
-      env.DB.prepare(
-        `SELECT DISTINCT u.github_login FROM users u JOIN projects p ON p.owner_id = u.id
-         WHERE p.status='live' AND u.banned_at IS NULL LIMIT 2000`,
-      ).all<{ github_login: string }>(),
-    ]);
+    // Search engines re-fetch this several times a day, and each fetch was two
+    // full table scans. The list changes once a night, so six hours is plenty.
+    const { projects, people } = await cached("sitemap:v1", 21600, async () => {
+      const [a, b] = await Promise.all([
+        env.DB.prepare(
+          "SELECT id, updated_at FROM projects WHERE status='live' ORDER BY stars DESC LIMIT 5000",
+        ).all<{ id: string; updated_at: number }>(),
+        env.DB.prepare(
+          `SELECT DISTINCT u.github_login FROM users u JOIN projects p ON p.owner_id = u.id
+           WHERE p.status='live' AND u.banned_at IS NULL LIMIT 2000`,
+        ).all<{ github_login: string }>(),
+      ]);
+      return { projects: a.results, people: b.results };
+    });
 
     return [
       ...fixed,

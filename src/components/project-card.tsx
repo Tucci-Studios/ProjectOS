@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GitFork } from "lucide-react";
+import { SetupChip } from "@/components/setup-mark";
 import { categoryMeta, groupOf, timeAgo } from "@/lib/categories";
 import { SectionMark } from "./section-mark";
 import { FollowButton } from "./follow-button";
@@ -32,6 +33,7 @@ export type ProjectFeedRow = {
   github_forks?: number | null;
   stars?: number | null;
   language?: string | null;
+  setup_tier?: string | null;
 };
 
 /** Monochrome "PROJECT /" byline, then the name. The headliner. */
@@ -136,6 +138,8 @@ export function ProjectCard({
                   <img
                     key={src}
                     src={src}
+                    // Decorative: the project name and description next to it
+                    // already say everything this shows.
                     alt=""
                     loading="lazy"
                     className="h-16 w-24 rounded-lg border border-neutral-800 object-cover"
@@ -165,6 +169,7 @@ export function ProjectCard({
               </span>
             ) : null}
             {p.language && <span className="text-neutral-400">{p.language}</span>}
+            <SetupChip tier={p.setup_tier} />
             {gained !== undefined && gained > 0 && (
               <span
                 className="inline-flex items-center gap-1 font-bold text-emerald-400"

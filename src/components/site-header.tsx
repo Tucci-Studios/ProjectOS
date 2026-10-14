@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { getSessionUser } from "@/lib/auth";
+import { cached } from "@/lib/cache";
 import { SiteHeaderClient } from "./site-header-client";
 import type { SplashUpdate } from "./update-splash";
 
@@ -15,10 +16,14 @@ export async function SiteHeader() {
   const unseen = !!user && !!latest && user.last_seen_update !== latest.id;
   const firstTime = !!user && user.last_seen_update === null;
 
-  const counts = await env.DB.prepare(
-    `SELECT (SELECT COUNT(*) FROM projects WHERE status='live') AS projects,
-            (SELECT COALESCE(SUM(github_forks), 0) FROM projects WHERE status='live') AS forks`,
-  ).first<{ projects: number; forks: number }>();
+  // Ran on every page load and scanned the whole projects table twice to
+  // produce two numbers that only move when the cron indexes something.
+  const counts = await cached("site:counts", 21600, async () =>
+    env.DB.prepare(
+      `SELECT (SELECT COUNT(*) FROM projects WHERE status='live') AS projects,
+              (SELECT COALESCE(SUM(github_forks), 0) FROM projects WHERE status='live') AS forks`,
+    ).first<{ projects: number; forks: number }>(),
+  );
 
   const unread = user
     ? await env.DB.prepare("SELECT COUNT(*) AS n FROM notifications WHERE user_id = ?1 AND read_at IS NULL")

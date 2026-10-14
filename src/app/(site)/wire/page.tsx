@@ -1,10 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { Radio } from "lucide-react";
+import { Radio, MessageSquare, HelpCircle } from "lucide-react";
 import { timeAgo } from "@/lib/categories";
 import { PageHeader } from "@/components/page-header";
 import { ButtonLink } from "@/components/ui";
-import { TutorialCard } from "@/components/tutorial-body";
 
 export const dynamic = "force-dynamic";
 
@@ -29,16 +28,15 @@ export default async function WirePage() {
                          ELSE pp.base_name || ' // ' || pp.variant_name END
              FROM projects pp WHERE pp.id = po.project_id) AS project_display
      FROM posts po JOIN users u ON u.id = po.author_id
-     WHERE po.status = 'live'
+     WHERE po.status = 'live' AND po.kind != 'tutorial'
      ORDER BY po.created_at DESC`,
   ).all<PostRow>();
 
   return (
-    <div className="max-w-3xl">
+    <div className="mx-auto w-full max-w-4xl">
       <PageHeader
         crumbs={[{ label: "Home", href: "/" }, { label: "Community feed" }]}
         title="Community feed"
-        purpose="Devlogs, tips, questions, and tutorials from people building here. Post an update, ask for help, or share what you learned."
         Icon={Radio}
         accent="text-sky-400"
         action={
@@ -63,51 +61,47 @@ export default async function WirePage() {
         </div>
       )}
 
-      <div className="space-y-3">
-        {results.map((post) =>
-          post.kind === "tutorial" ? (
-            <TutorialCard
+      <div className="stagger grid gap-2.5 sm:grid-cols-2">
+        {results.map((post) => {
+          // A dot per kind, so you can tell a question from a devlog while
+          // scanning rather than after reading the title.
+          const isRequest = post.kind === "request";
+          const hex = isRequest ? "#a78bfa" : "#38bdf8";
+          return (
+            <article
               key={post.id}
-              id={post.id}
-              title={post.title}
-              bodyMd={post.body_md}
-              author={post.github_login}
-              when={timeAgo(post.created_at)}
-              comments={post.comment_count}
-            />
-          ) : (
-          <article
-            key={post.id}
-            className="rounded-xl border border-neutral-700 bg-neutral-900/60 p-4 transition hover:border-emerald-400/40 hover:bg-neutral-800/40 hover:shadow-[0_0_24px_rgba(52,211,153,0.07)]"
-          >
-            <div className="flex flex-wrap items-center gap-2.5">
-              <Link href={`/wire/${post.id}`} className="font-mono text-lg font-bold tracking-tight text-white transition hover:text-emerald-400">
-                {post.title ?? "(untitled)"}
-              </Link>
-              {post.kind === "request" && (
-                <span className="rounded-md border border-violet-400/30 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-violet-400">
-                  request
-                </span>
-              )}
-              {post.project_display && post.project_id && (
-                <Link
-                  href={`/p/${post.project_id}`}
-                  className="rounded-md border border-neutral-700 bg-neutral-800/80 px-2 py-0.5 font-mono text-xs text-neutral-300 transition hover:border-neutral-500"
-                >
-                  @{post.project_display}
-                </Link>
-              )}
-            </div>
-            <p className="mt-1 font-mono text-xs text-neutral-400">
-              by <span className="text-neutral-400">@{post.github_login}</span> · {timeAgo(post.created_at)} ·{" "}
-              <Link href={`/wire/${post.id}`} className="transition hover:text-neutral-300">
-                {post.comment_count} comment{post.comment_count === 1 ? "" : "s"}
-              </Link>
-            </p>
-            <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-neutral-300">{post.body_md}</p>
-          </article>
-          ),
-        )}
+              className="group relative flex gap-3 overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/40 p-3 transition hover:border-neutral-600 hover:bg-neutral-800/40"
+              style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
+            >
+              <div
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border"
+                style={{ borderColor: `${hex}44`, backgroundColor: `${hex}14`, color: hex }}
+                aria-hidden
+              >
+                {isRequest ? <HelpCircle size={17} /> : <MessageSquare size={17} />}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="flex flex-wrap items-center gap-x-1.5 font-mono text-[10px] font-bold uppercase tracking-widest">
+                  <span style={{ color: hex }}>{isRequest ? "Help wanted" : "Devlog"}</span>
+                  {post.project_display && post.project_id && (
+                    <span className="font-normal tracking-normal text-neutral-400">· @{post.project_display}</span>
+                  )}
+                </p>
+                <h3 className="mt-1 line-clamp-2 font-mono text-[13.5px] font-bold leading-snug tracking-tight text-white">
+                  {post.title ?? "(untitled)"}
+                </h3>
+                <p className="mt-1 line-clamp-2 text-[12.5px] leading-relaxed text-neutral-400">{post.body_md}</p>
+                <p className="mt-1.5 truncate font-mono text-[11px] text-neutral-400">
+                  @{post.github_login} · {timeAgo(post.created_at)}
+                  {post.comment_count > 0 &&
+                    ` · ${post.comment_count} comment${post.comment_count === 1 ? "" : "s"}`}
+                </p>
+              </div>
+              <Link href={`/wire/${post.id}`} aria-label={post.title ?? "post"} className="absolute inset-0" />
+            </article>
+          );
+        })}
       </div>
     </div>
   );

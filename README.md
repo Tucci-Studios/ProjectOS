@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Project Open Source
 
-## Getting Started
+**Build your own software instead of renting it.** A site for people who've never written code: which subscriptions a beginner can honestly rebuild with free AI tools, how to start, and why it matters this month.
 
-First, run the development server:
+Live at [project-open-source.com](https://project-open-source.com).
+
+## The three doors
+
+- **Replace** — one card per kind of subscription, with an honest verdict (yes / partly / no), the free way to build it, and what breaks later. Each card is a file in [`content/replace/`](content/replace/).
+- **Learn** — a beginner path that ends with you having made a real thing, plus guides written in a fixed format so they're all the same shape.
+- **What's happening** — plain, sourced explanations of what's going on (the PS5 jailbreak, AI game mash-ups, "licensed, not sold"). Each story is a file in [`content/now/`](content/now/). We link to news and official project pages. We never host downloads.
+
+## Fix something
+
+You don't need to be a developer. Every card and story has a "Fix this page" link that opens GitHub's editor. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Run it locally
 
 ```bash
+npm install
+cp .dev.vars.example .dev.vars
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next.js on Cloudflare Workers, D1 for the database, content as files. `migrations/` has the schema.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## License
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[AGPL-3.0](LICENSE). Use it, change it, run it. If you run a changed version as a service, share your changes.

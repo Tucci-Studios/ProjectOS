@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { Compass } from "lucide-react";
 import { getSessionUser } from "@/lib/auth";
+import { cached } from "@/lib/cache";
 import {
   getProjectFeed,
   getUserVotes,
   getFollowedIds,
   getSavedIds,
   getBadgesFor,
+  getWeekPulse,
   type FeedSort,
 } from "@/lib/queries";
 import { ProjectCard } from "@/components/project-card";
 import { Strip } from "@/components/discover";
+import { WeekPulse } from "@/components/week-pulse";
 import { GROUPS, GROUP_ORDER, CATEGORY_META, categoryMeta, type GroupKey } from "@/lib/categories";
 
 export const dynamic = "force-dynamic";
@@ -66,20 +69,31 @@ export default async function ExplorePage({
 
   // Nothing chosen yet — show something edited rather than everything at once.
   if (!active && sort === "top" && page === 1) {
-    const [builtOn, fresh, ai, build, play, alive] = await Promise.all([
-      getProjectFeed(undefined, "builtOn", { limit: 4 }),
-      getProjectFeed(undefined, "new", { limit: 4 }),
-      getProjectFeed("ai", "top", { limit: 4 }),
-      getProjectFeed("build", "top", { limit: 4 }),
-      getProjectFeed("play", "top", { limit: 4 }),
-      getProjectFeed(undefined, "top", { limit: 4 }),
-    ]);
+    // Every one of these scans the projects table to return four cards, and the
+    // result is identical for every visitor — so it is computed once and shared
+    // rather than recomputed per request.
+    const [builtOn, fresh, ai, build, play, alive, week] = await cached(
+      "explore:landing",
+      3600,
+      async () =>
+        Promise.all([
+          getProjectFeed(undefined, "builtOn", { limit: 4 }),
+          getProjectFeed(undefined, "new", { limit: 4 }),
+          getProjectFeed("ai", "top", { limit: 4 }),
+          getProjectFeed("build", "top", { limit: 4 }),
+          getProjectFeed("play", "top", { limit: 4 }),
+          getProjectFeed(undefined, "top", { limit: 4 }),
+          getWeekPulse(),
+        ]),
+    );
 
     return (
       <div className="mx-auto w-full max-w-4xl">
-        <Header total={alive.total} tail="Start anywhere." />
+        <Header total={alive.total} />
         <Sorts sort={sort} href={href} />
         <Groups active={active} openGroup={openGroup} href={href} />
+
+        <WeekPulse week={week} />
 
         <Strip
           title="Most built on"
@@ -133,7 +147,7 @@ export default async function ExplorePage({
 
   return (
     <div className="mx-auto w-full max-w-4xl">
-      <Header total={total} where={where} tail={`${meta.blurb}.`} />
+      <Header total={total} where={where} />
       <Sorts sort={sort} href={href} />
       <Groups active={active} openGroup={openGroup} href={href} />
 
@@ -184,7 +198,7 @@ export default async function ExplorePage({
   );
 }
 
-function Header({ total, where, tail }: { total: number; where?: string | null; tail: string }) {
+function Header({ total, where }: { total: number; where?: string | null }) {
   return (
     <header className="mb-4">
       <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
@@ -192,7 +206,7 @@ function Header({ total, where, tail }: { total: number; where?: string | null; 
       </h1>
       <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-400">
         <span className="text-neutral-200">{total.toLocaleString()}</span> project{total === 1 ? "" : "s"}
-        {where && <> in {where}</>}. {tail}
+        {where && <> in {where}</>}.
       </p>
     </header>
   );

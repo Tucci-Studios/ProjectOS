@@ -44,7 +44,6 @@ export default async function UpdatesPage() {
       <PageHeader
         crumbs={[{ label: "Updates" }]}
         title="Updates"
-        purpose="Every change to Project OS, posted as it ships. Ideas the community voted for show up here when they go live."
         Icon={Megaphone}
       />
 

@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
+import { checkRate, clientKey } from "@/lib/rate-limit";
 import { forksAreStale, syncForks, getForkPicture } from "@/lib/forks";
 
 /**
@@ -10,6 +11,10 @@ import { forksAreStale, syncForks, getForkPicture } from "@/lib/forks";
  * again inside that window is a no-op.
  */
 export async function POST(request: Request) {
+  // Open to anyone, so limit by IP.
+  const rate = await checkRate(clientKey(request), "sync-forks");
+  if (!rate.ok) return NextResponse.json({ error: rate.message }, { status: 429 });
+
   let body: { projectId?: unknown };
   try {
     body = (await request.json()) as typeof body;

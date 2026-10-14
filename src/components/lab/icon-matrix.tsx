@@ -109,8 +109,8 @@ export function IconMatrix() {
               }`}
             >
               <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-neutral-400">
-                <span className="text-neutral-300">○</span> {ring} <span className="text-neutral-600">·</span>{" "}
-                <span className="text-neutral-300">&gt;</span> {prompt} <span className="text-neutral-600">·</span>{" "}
+                <span className="text-neutral-300">○</span> {ring} <span className="text-neutral-400">·</span>{" "}
+                <span className="text-neutral-300">&gt;</span> {prompt} <span className="text-neutral-400">·</span>{" "}
                 <span className="text-neutral-300">_</span> {cursor}
               </p>
               <div className="flex flex-wrap gap-2">

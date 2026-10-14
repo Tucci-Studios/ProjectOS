@@ -1,0 +1,24 @@
+{
+  "slug": "video-editor",
+  "title": "A video editor",
+  "examples": [
+    "Premiere",
+    "Final Cut",
+    "Descript"
+  ],
+  "costPerYear": 264,
+  "verdict": "no",
+  "oneLine": "Cut, arrange, colour and export video.",
+  "why": "Timelines, codecs, and real-time preview are deep engineering. Nobody has shown a credible AI-built editor. The free answer already exists and is excellent.",
+  "tool": "Don't build it. DaVinci Resolve's free version is professional-grade",
+  "hours": 0,
+  "keep": "Not applicable.",
+  "breaks": "Not applicable.",
+  "sources": [
+    {
+      "label": "HN: Where are the vibe-coded Photoshops?",
+      "url": "https://news.ycombinator.com/item?id=48177228"
+    }
+  ],
+  "verified": "2026-10-13"
+}

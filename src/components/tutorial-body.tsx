@@ -1,10 +1,11 @@
 import { TutorialView } from "@/components/tutorial-view";
 import { parseGuide, TUTORIAL_SPEC } from "@/lib/tutorial-guide";
 import { siteUrl } from "@/lib/site";
-import { Target, Package, CheckCircle2 } from "lucide-react";
+import { Target, Package, CheckCircle2, GraduationCap } from "lucide-react";
 import { RichBody, type ProjectRef } from "./rich-body";
 import { parse, minutes } from "@/lib/tutorial";
 import { CATEGORY_META, categoryMeta, GROUPS } from "@/lib/categories";
+import { GroupTile } from "@/components/project-card";
 
 /**
  * A tutorial, rendered in the one shape every tutorial has.
@@ -113,31 +114,41 @@ export function TutorialCard({
   const meta = CATEGORY_META.some((c) => c.slug === slug) ? categoryMeta(slug) : null;
   const hex = meta ? GROUPS[meta.group].hex : "#f5b544";
 
+  // Same bones as an Explore tile — square mark, title, two lines, a stat row —
+  // so a shelf of guides scans at the same rhythm as a shelf of projects. The
+  // vibe differs where it should: the mark is the section's, and the stats are
+  // steps and minutes rather than stars and forks.
   return (
-    <article
-      className="group relative flex overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/40 transition hover:bg-neutral-800/40"
-      style={{ borderLeftColor: hex, borderLeftWidth: 3 }}
-    >
-      <div className="min-w-0 flex-1 p-4">
-        <p className="flex flex-wrap items-center gap-2 font-mono text-[10.5px] font-bold uppercase tracking-widest">
-          {meta ? (
-            <span style={{ color: hex }}>{meta.label}</span>
-          ) : (
-            <span className="text-amber-400">Tutorial</span>
-          )}
-          <span className="font-normal tracking-normal text-neutral-500">
-            {stepCount || "?"} step{stepCount === 1 ? "" : "s"} · {mins} min
-          </span>
-        </p>
-        <h3 className="mt-1.5 font-mono text-[16px] font-bold leading-snug tracking-tight text-white">
+    <article className="group relative flex min-w-0 items-start gap-3 rounded-xl border border-neutral-800 bg-neutral-900/40 p-3 transition duration-200 hover:border-neutral-600 hover:bg-neutral-800/40">
+      {meta ? (
+        <GroupTile category={slug} />
+      ) : (
+        <span
+          className="relative flex h-full min-h-[52px] w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900 pl-[3px]"
+          aria-hidden
+        >
+          <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: hex }} />
+          <GraduationCap size={24} style={{ color: hex }} />
+        </span>
+      )}
+
+      <div className="min-w-0 flex-1">
+        <p className="line-clamp-2 font-mono text-[14px] font-bold leading-snug text-white transition group-hover:text-emerald-300">
           {title ?? "(untitled)"}
-        </h3>
-        {blurb && <p className="mt-1 line-clamp-2 text-[14px] leading-relaxed text-neutral-400">{blurb}</p>}
-        <p className="mt-2 font-mono text-[11.5px] text-neutral-400">
-          @{author} · {when} · {comments} comment{comments === 1 ? "" : "s"}
+        </p>
+        {blurb && <p className="mt-0.5 line-clamp-2 text-[13px] leading-snug text-neutral-400">{blurb}</p>}
+        <p className="mt-1.5 flex flex-wrap items-center gap-x-3 font-mono text-[11px] text-neutral-400">
+          <span className="inline-flex items-center gap-1 font-bold" style={{ color: hex }}>
+            <GraduationCap size={10} aria-hidden />
+            {stepCount || "?"} steps
+          </span>
+          <span>{mins} min</span>
+          {meta && <span className="truncate text-neutral-400">{meta.label}</span>}
+          {comments > 0 && <span className="text-neutral-400">{comments}</span>}
         </p>
       </div>
-      <a href={`/wire/${id}`} aria-label={`Read ${title ?? "tutorial"}`} className="absolute inset-0" />
+
+      <a href={`/wire/${id}`} aria-label={`Read ${title ?? "tutorial"}`} className="absolute inset-0 rounded-xl" />
     </article>
   );
 }

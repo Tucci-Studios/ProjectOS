@@ -1,142 +1,59 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import Link from "next/link";
-import { ScrollText, Compass } from "lucide-react";
-import { getSessionUser } from "@/lib/auth";
-import { getUserVotes, getFollowedIds, getBadgesFor, getBlockedIds , getSavedIds } from "@/lib/queries";
-import { ProjectCard, type ProjectFeedRow } from "@/components/project-card";
-import { UpdateCard, type FeedUpdate } from "@/components/update-card";
-import { ButtonLink } from "@/components/ui";
-import { WelcomeHome } from "@/components/welcome-home";
-import { getProjectFeed } from "@/lib/queries";
+import { Repeat, GraduationCap, Newspaper, ArrowRight, Radio } from "lucide-react";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { stories, replaceCards } from "@/lib/content";
+import { REPO_IS_PUBLIC, SOURCE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
-// Feed = what you follow. Empty for new people, so it explains itself and
-// points at Popular rather than showing a blank page.
-export default async function FeedPage() {
-  const user = await getSessionUser();
+/**
+ * Three doors.
+ *
+ * You open the site and there are exactly three things to click, each answering
+ * one question a person actually arrives with. Everything else is reachable
+ * from the rail, and nothing on this page needs a paragraph to explain itself.
+ */
+export default async function Home() {
   const { env } = getCloudflareContext();
+  const guides = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM posts WHERE kind='tutorial' AND status='live'",
+  ).first<{ n: number }>().catch(() => ({ n: 0 }));
+  const yes = replaceCards().filter((c) => c.verdict === "yes").length;
+  const latest = stories()[0];
 
-  const FEED_COLS = `p.id, p.base_name, p.variant_name, p.category, p.description, p.parent_id, p.created_at, p.image_url,
-    u.github_login, u.avatar_url, u.is_shadow, p.owner_id, p.source, p.stars, p.github_forks, p.language,
-    (SELECT COALESCE(SUM(l.value),0) FROM likes l WHERE l.project_id = p.id) AS like_count,
-    (SELECT COUNT(*) FROM projects f WHERE f.parent_id = p.id AND f.status='live') AS fork_count,
-              (SELECT COUNT(*) FROM project_comments pc WHERE pc.project_id = p.id AND pc.status='live') AS comment_count,
-            (SELECT GROUP_CONCAT(url, '|') FROM (SELECT url FROM project_images pi WHERE pi.project_id = p.id ORDER BY pi.position LIMIT 5)) AS image_urls,
-    (SELECT CASE WHEN pp.variant_name IS NULL THEN pp.base_name
-                 ELSE pp.base_name || ' // ' || pp.variant_name END
-     FROM projects pp WHERE pp.id = p.parent_id) AS parent_display`;
-
-  // A stranger gets real projects, not a login wall. Recently-pushed rather
-  // than most-starred: it shows the place is alive, which is the truer thing.
-  const welcomeFeed = user ? null : await getProjectFeed(undefined, "top", { limit: 4 });
-  const welcome = welcomeFeed?.results ?? [];
-  const liveTotal = welcomeFeed?.total ?? 0;
-
-  const [followedRaw, votes, follows, blocked, updateRows, savedIds] = user
-    ? await Promise.all([
-        env.DB.prepare(
-          `SELECT ${FEED_COLS} FROM projects p
-           JOIN users u ON u.id = p.owner_id
-           WHERE p.status='live' AND (
-             p.id IN (SELECT project_id FROM follows WHERE user_id = ?1)
-             OR p.parent_id IN (SELECT project_id FROM follows WHERE user_id = ?1)
-             OR p.root_id IN (SELECT project_id FROM follows WHERE user_id = ?1)
-           )
-           ORDER BY p.created_at DESC LIMIT 30`,
-        ).bind(user.id).all<ProjectFeedRow>().then((r) => r.results),
-        getUserVotes(user.id),
-        getFollowedIds(user.id),
-        getBlockedIds(user.id),
-        // Updates the owner posted to anything you follow. Forks are rare;
-        // this is what keeps the feed alive between them.
-        env.DB.prepare(
-          `SELECT pu.id, pu.project_id, pu.version, pu.body_md, pu.created_at, u.github_login, p.owner_id,
-                  CASE WHEN p.variant_name IS NULL THEN p.base_name
-                       ELSE p.base_name || ' // ' || p.variant_name END AS project_display
-           FROM project_updates pu
-           JOIN projects p ON p.id = pu.project_id
-           JOIN users u ON u.id = pu.author_id
-           WHERE pu.status='live' AND p.status='live'
-             AND pu.project_id IN (SELECT project_id FROM follows WHERE user_id = ?1)
-           ORDER BY pu.created_at DESC LIMIT 30`,
-        ).bind(user.id).all<FeedUpdate & { owner_id: string }>().then((r) => r.results),
-        getSavedIds(user.id),
-      ])
-    : [[], new Map<string, number>(), new Set<string>(), new Set<string>(), [], new Set<string>()];
-
-  const followed = followedRaw.filter((p) => !blocked.has(p.owner_id ?? ""));
-  const badges = await getBadgesFor(followed.map((p) => p.owner_id ?? ""));
-
-  // One timeline: new forks and updates interleaved by when they happened.
-  const timeline = [
-    ...followed.map((p) => ({ kind: "project" as const, at: p.created_at, p })),
-    ...updateRows.filter((u) => !blocked.has(u.owner_id)).map((u) => ({ kind: "update" as const, at: u.created_at, u })),
-  ].sort((a, b) => b.at - a.at);
+  const doors = [
+    { href: "/replace", Icon: Repeat, hex: "#34d399", title: "Replace", q: "Can I build what I'm paying for?", meta: `${yes} things a beginner can rebuild. ${replaceCards().length - yes} you shouldn't.` },
+    { href: "/start", Icon: GraduationCap, hex: "#f5b544", title: "Learn", q: "How do I even start?", meta: `${guides?.n ?? 0} guides. First one takes an hour and ends with a real thing.` },
+    { href: "/now", Icon: Newspaper, hex: "#38bdf8", title: "What's happening", q: "Why does this matter right now?", meta: latest ? latest.title : "Plain explanations, sourced." },
+  ];
 
   return (
     <div className="mx-auto w-full max-w-4xl">
-      <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-800 pb-5">
-        <div>
-          <h1 className="flex items-center gap-2.5 font-mono text-2xl font-bold tracking-tight text-white">
-            <ScrollText size={22} className="text-emerald-400" aria-hidden /> Feed
-          </h1>
-          <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-neutral-400">
-            Projects you follow — the updates their owners post, and every new fork someone makes of them.
-          </p>
-        </div>
+      <header className="mb-8 mt-2">
+        <h1 className="font-mono text-[28px] font-bold leading-tight tracking-tight text-white sm:text-[34px]">
+          Build your own software<br />
+          <span className="text-emerald-400">instead of renting it.</span>
+        </h1>
+        <p className="mt-3 max-w-xl text-[15.5px] leading-relaxed text-neutral-300">
+          For people who&apos;ve never written code. Free tools, honest verdicts, and no downloads of anything you&apos;d get in trouble for.
+        </p>
       </header>
 
-      {!user ? (
-        <WelcomeHome projects={welcome} total={liveTotal} />
-      ) : timeline.length === 0 ? (
-        <EmptyHome
-          title="You're not following anything yet"
-          body="Open any project and hit Follow. Its updates and any new forks of it land here automatically, so you can watch an idea evolve without checking back."
-          cta={{ href: "/explore", label: "Find something to follow" }}
-        />
-      ) : (
-        <div className="stagger space-y-3">
-          {timeline.map((item) =>
-            item.kind === "project" ? (
-              <ProjectCard
-                key={item.p.id}
-                p={item.p}
-                vote={votes.get(item.p.id) ?? 0}
-                following={follows.has(item.p.id)} saved={savedIds.has(item.p.id)}
-                canFollow={!!user}
-                badges={badges.get(item.p.owner_id ?? "")}
-              />
-            ) : (
-              <UpdateCard key={item.u.id} u={item.u} />
-            ),
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+      <div className="grid gap-3 sm:grid-cols-3">
+        {doors.map((d) => (
+          <Link key={d.href} href={d.href} className="group rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 outline-none transition hover:bg-neutral-800/50 focus-visible:ring-2 focus-visible:ring-emerald-400" style={{ borderTopColor: d.hex, borderTopWidth: 3 }}>
+            <d.Icon size={20} style={{ color: d.hex }} aria-hidden />
+            <h2 className="mt-3 font-mono text-[18px] font-bold tracking-tight text-white">{d.title}</h2>
+            <p className="mt-1 text-[14.5px] leading-snug text-neutral-200">{d.q}</p>
+            <p className="mt-3 text-[12.5px] leading-relaxed text-neutral-400">{d.meta}</p>
+            <p className="mt-4 inline-flex items-center gap-1 font-mono text-[12px] transition group-hover:gap-2" style={{ color: d.hex }}>Open <ArrowRight size={12} aria-hidden /></p>
+          </Link>
+        ))}
+      </div>
 
-function EmptyHome({
-  title,
-  body,
-  cta,
-}: {
-  title: string;
-  body: string;
-  cta: { href: string; label: string };
-}) {
-  return (
-    <div className="rounded-xl border border-dashed border-neutral-700 bg-neutral-900/30 p-10 text-center">
-      <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 bg-neutral-800/60 text-neutral-400">
-        <Compass size={20} aria-hidden />
-      </span>
-      <p className="font-mono text-base font-bold text-white">{title}</p>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-neutral-400">{body}</p>
-      <div className="mt-5 flex justify-center">
-        <ButtonLink href={cta.href} variant="primary">
-          {cta.label}
-        </ButtonLink>
+      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-neutral-800 pt-5 text-[13px] text-neutral-400">
+        <Link href="/wire" className="inline-flex items-center gap-1.5 text-neutral-300 underline-offset-4 hover:underline"><Radio size={13} aria-hidden /> What people are building</Link>
+        {REPO_IS_PUBLIC && <a href={SOURCE_URL} className="underline-offset-4 hover:underline">This site is open source. Fix anything.</a>}
       </div>
     </div>
   );

@@ -51,6 +51,10 @@ export function TermsGate({ login }: { login: string }) {
           read before you run anything. Full text in the{" "}
           <Link href="/terms" target="_blank" className="text-emerald-400 hover:underline">
             terms
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" target="_blank" className="text-emerald-400 hover:underline">
+            privacy
           </Link>
           .
         </p>

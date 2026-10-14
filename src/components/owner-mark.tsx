@@ -81,7 +81,11 @@ export function OwnerBanner({
       </p>
       <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-rose-400/20 pt-2">
         {mark.stale && (
-          <p className="flex items-start gap-1.5 font-mono text-[11px] leading-relaxed text-rose-100/70">
+          // Deliberately green inside a red box. The dispute is the warning;
+          // this line is the opposite — the author has been back since, so the
+          // complaint above may no longer apply. Colouring it like the rest of
+          // the warning buried the one hopeful fact in there.
+          <p className="flex items-start gap-1.5 rounded-md border border-emerald-400/40 bg-emerald-400/10 px-2 py-1 font-mono text-[11px] font-bold leading-relaxed text-emerald-300">
             <History size={11} className="mt-[2px] shrink-0" aria-hidden />
             Edited since this was written — it may already be fixed.
           </p>

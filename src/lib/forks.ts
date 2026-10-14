@@ -42,10 +42,13 @@ export async function getForkPicture(projectId: string, repo: string): Promise<F
       .bind(projectId)
       .first<{ total: number; synced_at: number }>(),
     env.DB.prepare(
+      // LEFT JOIN rather than NOT IN: the subquery form re-ran the projects
+      // scan for each candidate fork, which on 68k fork rows was the single
+      // most expensive read on the project page.
       `SELECT gf.full_name, gf.owner_login, gf.stars, gf.pushed_at
        FROM github_forks gf
-       WHERE gf.project_id = ?1
-         AND gf.full_name NOT IN (SELECT github_repo FROM projects WHERE status='live')
+       LEFT JOIN projects pr ON pr.github_repo = gf.full_name AND pr.status = 'live'
+       WHERE gf.project_id = ?1 AND pr.id IS NULL
        ORDER BY gf.stars DESC, gf.pushed_at DESC NULLS LAST
        LIMIT 50`,
     )
@@ -95,13 +98,28 @@ export async function syncForks(projectId: string, repo: string): Promise<ForkPi
   const firstEverSync = known.size === 0;
   const arrivals = data.forks.filter((f) => !known.has(f.full_name));
 
-  // One batch, not one call per fork. Every D1 statement counts against the
+  const incoming = new Set(data.forks.map((f) => f.full_name));
+  const departures = before.map((r) => r.full_name).filter((n) => !incoming.has(n));
+
+  // Write the difference, not the whole list.
+  //
+  // This used to DELETE every fork row for the project and re-INSERT all of
+  // them on each run. With ~1,400 forks on a popular project and the job
+  // running every 20 minutes, that was north of a million row writes a day
+  // against a 100,000/day allowance -- to record, almost always, that nothing
+  // had changed. Fork lists barely move, so a run that finds no arrivals and no
+  // departures now writes a single timestamp row.
+  //
+  // One batch, not one call per row: every D1 statement counts against the
   // Worker's subrequest limit, and a project with fifty forks was spending
-  // fifty of them on its own — so the scheduled run died partway through the
-  // first project and reported nothing. batch() sends the lot as one.
+  // fifty of them on its own.
   await env.DB.batch([
-    env.DB.prepare("DELETE FROM github_forks WHERE project_id = ?1").bind(projectId),
-    ...data.forks.map((f) =>
+    ...departures.map((name) =>
+      env.DB
+        .prepare("DELETE FROM github_forks WHERE project_id = ?1 AND full_name = ?2")
+        .bind(projectId, name),
+    ),
+    ...arrivals.map((f) =>
       env.DB
         .prepare(
           "INSERT OR REPLACE INTO github_forks (project_id, full_name, owner_login, stars, pushed_at) VALUES (?1, ?2, ?3, ?4, ?5)",
@@ -147,7 +165,9 @@ async function announceForks(projectId: string, count: number, now: number) {
        UNION
        SELECT ?5 AS user_id
      ) u
-     WHERE u.user_id IN (SELECT id FROM users WHERE is_shadow = 0)`,
+     -- Join on the primary key rather than IN (SELECT ...), which re-scanned
+     -- every user row for each recipient.
+     JOIN users us ON us.id = u.user_id AND us.is_shadow = 0`,
   )
     .bind(body, `/p/${projectId}`, now, projectId, project.owner_id)
     .run();

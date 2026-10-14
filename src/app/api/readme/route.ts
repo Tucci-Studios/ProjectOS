@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
+import { checkRate, clientKey } from "@/lib/rate-limit";
 import { getReadme } from "@/lib/github";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,10 @@ export const dynamic = "force-dynamic";
  * stored so nobody pays for it twice.
  */
 export async function GET(request: Request) {
+  // Open to anyone, so limit by IP.
+  const rate = await checkRate(clientKey(request), "readme");
+  if (!rate.ok) return NextResponse.json({ error: rate.message }, { status: 429 });
+
   const projectId = new URL(request.url).searchParams.get("projectId") ?? "";
   const { env } = getCloudflareContext();
 

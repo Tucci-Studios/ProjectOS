@@ -1,0 +1,5 @@
+# Copy to .dev.vars. Nothing here is required just to browse pages locally.
+SESSION_SECRET=change-me-to-a-long-random-string
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+CRON_SECRET=

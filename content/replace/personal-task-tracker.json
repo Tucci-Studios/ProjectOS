@@ -1,0 +1,24 @@
+{
+  "slug": "personal-task-tracker",
+  "title": "A personal task board",
+  "examples": [
+    "Trello paid",
+    "Todoist Pro",
+    "TickTick Premium"
+  ],
+  "costPerYear": 60,
+  "verdict": "yes",
+  "oneLine": "Lists, cards, due dates, for you alone.",
+  "why": "For one person, this is a list with drag-and-drop, and every AI tool's demo is basically this app. It stops being easy the moment you need it shared with a team.",
+  "tool": "Lovable, Bolt or Replit free tier",
+  "hours": 3,
+  "keep": "Phone apps, shared boards, reminders that reliably fire.",
+  "breaks": "Reminders. Push notifications are the part beginners always underestimate.",
+  "sources": [
+    {
+      "label": "daily.dev: vibe coding for beginners",
+      "url": "https://daily.dev/blog/vibe-coding-beginners-how-to-start/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

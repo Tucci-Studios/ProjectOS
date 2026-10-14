@@ -25,7 +25,7 @@ export default async function SearchPage({
   if (!query) {
     return (
       <div className="mx-auto max-w-3xl">
-        <PageHeader crumbs={[{ label: "Search" }]} title="Search" purpose="Find projects, posts, and people." Icon={SearchIcon} />
+        <PageHeader crumbs={[{ label: "Search" }]} title="Search" Icon={SearchIcon} />
         <p className="rounded-xl border border-dashed border-neutral-700 p-10 text-center text-sm text-neutral-400">
           Type something in the search box up top.
         </p>

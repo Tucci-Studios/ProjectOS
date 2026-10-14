@@ -22,6 +22,7 @@ import {
 import type { Guide } from "@/lib/tutorial-guide";
 import { OwnerBanner, OwnerControls, type OwnerMark } from "@/components/owner-mark";
 import { TutorialAdmin } from "@/components/tutorial-admin";
+import { CATEGORY_META, categoryMeta, GROUPS } from "@/lib/categories";
 
 /**
  * How a tutorial reads.
@@ -72,10 +73,10 @@ function Tree({ figure }: { figure: NonNullable<Guide["steps"][number]["figure"]
         {figure.lines.map((l, i) =>
           l.text ? (
             <div key={i} className="flex flex-wrap items-baseline gap-x-3">
-              <span className={l.dim ? "whitespace-pre text-neutral-500" : "whitespace-pre text-neutral-100"}>
+              <span className={l.dim ? "whitespace-pre text-neutral-400" : "whitespace-pre text-neutral-100"}>
                 {l.text}
               </span>
-              {l.note && <span className="text-[10.5px] text-neutral-500">← {l.note}</span>}
+              {l.note && <span className="text-[10.5px] text-neutral-400">← {l.note}</span>}
             </div>
           ) : (
             <div key={i} className="h-2.5" />
@@ -161,7 +162,7 @@ function AiPanel({ spec, specUrl }: { spec: string; specUrl?: string }) {
             <button
               onClick={() => setOpen(false)}
               aria-label="Close"
-              className="-mr-1 -mt-1 flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-neutral-500 transition hover:bg-neutral-800 hover:text-white"
+              className="-mr-1 -mt-1 flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
             >
               <X size={14} aria-hidden />
             </button>
@@ -183,7 +184,7 @@ function AiPanel({ spec, specUrl }: { spec: string; specUrl?: string }) {
           </div>
 
           {specUrl && (
-            <p className="mt-3 flex items-center gap-1.5 break-all border-t border-neutral-800 pt-2.5 font-mono text-[10.5px] text-neutral-500">
+            <p className="mt-3 flex items-center gap-1.5 break-all border-t border-neutral-800 pt-2.5 font-mono text-[10.5px] text-neutral-400">
               <Link2 size={10} className="shrink-0" aria-hidden />
               {specUrl}
             </p>
@@ -299,9 +300,19 @@ export function TutorialView({
     <article className="rounded-2xl border border-neutral-800 bg-gradient-to-b from-[#1a1a14] to-[#161d18] p-6 sm:p-8">
       <div className="flex items-start justify-between gap-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/10 px-2.5 py-1 font-mono text-[11px] font-bold text-amber-300">
-          <GraduationCap size={12} aria-hidden /> Tutorial
-        </span>
+        {(() => {
+          const known = CATEGORY_META.some((c) => c.slug === t.category);
+          const m = known ? categoryMeta(t.category) : null;
+          const hex = m ? GROUPS[m.group].hex : "#f5b544";
+          return (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] font-bold"
+              style={{ borderColor: `${hex}66`, backgroundColor: `${hex}1a`, color: hex }}
+            >
+              <GraduationCap size={12} aria-hidden /> {m ? m.label : "Tutorial"}
+            </span>
+          );
+        })()}
         {t.verified && <VerifiedTutorialBadge by={t.verified.by} />}
         <span className="inline-flex items-center gap-1.5 font-mono text-[11.5px] text-neutral-400">
           <Clock size={11} aria-hidden /> {t.minutes} min

@@ -1,9 +1,14 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
+import { checkRate, clientKey } from "@/lib/rate-limit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export async function POST(request: Request) {
+  // Open to anyone, so limit by IP.
+  const rate = await checkRate(clientKey(request), "waitlist");
+  if (!rate.ok) return NextResponse.json({ error: rate.message }, { status: 429 });
+
   let email: unknown;
   try {
     const body = (await request.json()) as { email?: unknown };

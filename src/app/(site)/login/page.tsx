@@ -21,6 +21,7 @@ const ERRORS: Record<string, string> = {
   token: "GitHub didn't complete the handshake. Usually temporary; try once more.",
   user: "GitHub signed you in but wouldn't tell us who you are. Try again, or check github.com is up.",
   denied: "You cancelled at GitHub. Nothing happened, and nothing was shared.",
+  rate: "That's a lot of sign-in attempts from your network in a short time. Wait a few minutes and try again.",
 };
 
 export default async function LoginPage({
@@ -91,7 +92,12 @@ export default async function LoginPage({
           <Link href="/terms" className="text-emerald-400 hover:underline">
             terms
           </Link>{" "}
-          only come up when you publish a project, and you&apos;ll see them before you do.
+          only come up when you publish a project, and you&apos;ll see them before you do. What we store about you
+          is in{" "}
+          <Link href="/privacy" className="text-emerald-400 hover:underline">
+            privacy
+          </Link>
+          — it&apos;s short.
         </Row>
       </div>
 

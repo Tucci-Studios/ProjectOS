@@ -100,7 +100,7 @@ export function TutorialAdmin({
         ) : (
           <button
             onClick={() => setConfirming(true)}
-            className={`${btn} ml-auto border-neutral-800 text-neutral-500 hover:border-rose-400/40 hover:text-rose-300`}
+            className={`${btn} ml-auto border-neutral-800 text-neutral-400 hover:border-rose-400/40 hover:text-rose-300`}
           >
             <Trash2 size={12} aria-hidden /> Delete
           </button>

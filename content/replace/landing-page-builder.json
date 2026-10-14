@@ -1,0 +1,28 @@
+{
+  "slug": "landing-page-builder",
+  "title": "A landing page builder",
+  "examples": [
+    "Unbounce",
+    "Leadpages",
+    "Carrd Pro"
+  ],
+  "costPerYear": 3000,
+  "verdict": "partly",
+  "oneLine": "Marketing pages with a form, without touching code.",
+  "why": "If you only need a few pages, AI tools build them beautifully and hosting is free. The same person who gave up on the social feed above kept his rebuilt landing pages and cancelled a $250/month tool. What you lose is the drag-and-drop editor and A/B testing.",
+  "tool": "v0 or Lovable for the page; Cloudflare Pages or Vercel free tier to host",
+  "hours": 4,
+  "keep": "A visual editor for non-technical teammates, A/B tests, integrations.",
+  "breaks": "Forms. Where does the submission go? Decide that before you start.",
+  "sources": [
+    {
+      "label": "Signal to Noise write-up",
+      "url": "https://signaltonoise.substack.com/"
+    },
+    {
+      "label": "Vercel v0 pricing",
+      "url": "https://uibakery.io/blog/vercel-v0-pricing-explained-what-you-get-and-how-it-compares"
+    }
+  ],
+  "verified": "2026-10-13"
+}

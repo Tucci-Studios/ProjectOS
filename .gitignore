@@ -45,3 +45,9 @@ next-env.d.ts
 
 # local wrangler/miniflare state
 .wrangler/
+
+# Database dumps. Contain the users table — never commit these.
+backups/
+
+# build output
+.open-next/

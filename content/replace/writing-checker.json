@@ -1,0 +1,22 @@
+{
+  "slug": "writing-checker",
+  "title": "A writing checker",
+  "examples": [
+    "Grammarly"
+  ],
+  "costPerYear": 144,
+  "verdict": "yes",
+  "oneLine": "Spelling, grammar and tone suggestions as you type.",
+  "why": "A local language model reads your text and suggests fixes. One person cancelled Grammarly this way and wrote it up; the catch is it needs a decent GPU or a paid model API, so the saving is real only if you already have one.",
+  "tool": "Claude Code or Gemini CLI to build it; a local model via LM Studio to run it",
+  "hours": 6,
+  "keep": "Browser-extension polish, the 'works everywhere' feeling, the team features.",
+  "breaks": "Model updates change the suggestions. Browser extensions need re-signing when the browser updates.",
+  "sources": [
+    {
+      "label": "How-To Geek: cancelled hundreds in yearly subscriptions by vibe-coding alternatives",
+      "url": "https://www.howtogeek.com/canceled-hundreds-in-yearly-subscriptions-by-vibe-coding-own-alternatives/"
+    }
+  ],
+  "verified": "2026-10-13"
+}

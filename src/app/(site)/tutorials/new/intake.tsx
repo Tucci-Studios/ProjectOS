@@ -91,7 +91,7 @@ export function TutorialIntake({
             {copied ? <Check size={12} aria-hidden /> : <Copy size={12} aria-hidden />}
             {copied ? "Copied" : "Copy the link"}
           </button>
-          <span className="break-all font-mono text-[11px] text-neutral-500">{specUrl}</span>
+          <span className="break-all font-mono text-[11px] text-neutral-400">{specUrl}</span>
         </div>
       </div>
 
